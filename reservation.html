@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Réservations – Camping Rivassland</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --glass: rgba(255,255,255,.58);
       --glass-strong: rgba(255,255,255,.70);
       --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
-      --ring:#3b82f6; --text:#0f172a; --muted:#475569; --muted2:#64748b;
+      --text:#0f172a; --muted:#334155; --muted2:#475569;
       --ok:#16a34a; --warn:#dc2626;
       --shadow: 0 18px 46px rgba(2,6,23,.20);
       --radius:22px;
@@ -22,54 +22,54 @@
       --glass: rgba(17,24,39,.48);
       --glass-strong: rgba(17,24,39,.60);
       --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
-      --ring:#93c5fd; --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
+      --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
       --shadow: 0 22px 56px rgba(0,0,0,.46);
     }
     @media (prefers-reduced-motion:no-preference){
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    /* Fond + vignette */
     html,body{ height:100%; }
-    body{ margin:0; color:var(--text); font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body{ margin:0; color:var(--text); font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; line-height:1.6; }
+
+    /* Fond (haut jour/nuit seulement) */
     body::before, body::after{
       content:""; position:fixed; inset:0; z-index:-4;
-      background-size:cover; background-position:center; background-attachment:fixed;
+      background-image:url("camping.jpg");
+      background-size:cover; background-position:center top; background-repeat:no-repeat;
       transition: opacity 900ms ease;
     }
-    body::before{ background-image:url("camping.jpg"); opacity:1; }
-    body::after { background-image:url("camping-nuit.jpg"); opacity:0; }
+    body::after{ background-image:url("camping-nuit.jpg"); opacity:0; }
+    html[data-theme="dark"] body::after{ opacity:1; }
+
     .vignette{ position:fixed; inset:0; z-index:-2; pointer-events:none;
-      background: radial-gradient(1200px 800px at 50% 15%, rgba(0,0,0,.22), transparent 60%),
-                  linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.10));
-      opacity:0; transition: opacity 600ms ease;
+      background: radial-gradient(1200px 800px at 50% 12%, rgba(0,0,0,.18), transparent 60%);
+      opacity:.15;
     }
-    html[data-theme="dark"] body::before{ opacity:0; }
-    html[data-theme="dark"] body::after { opacity:1; }
-    html[data-theme="dark"] .vignette   { opacity:.32; }
+    html[data-theme="dark"] .vignette{ opacity:.32; }
 
     /* Topbar */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 12px 18px;
-      backdrop-filter: blur(8px) saturate(120%);
-      background: color-mix(in oklab, rgba(0,0,0,.46) 46%, rgba(255,255,255,.28));
-      border-bottom: 1px solid rgba(0,0,0,.20);
+      backdrop-filter: blur(10px) saturate(120%);
+      background: color-mix(in oklab, rgba(0,0,0,.50) 50%, rgba(255,255,255,.28));
+      border-bottom: 1px solid rgba(0,0,0,.22);
       box-shadow: 0 12px 28px rgba(0,0,0,.22);
     }
     html[data-theme="dark"] .topbar{
-      background: color-mix(in oklab, rgba(0,0,0,.64) 64%, rgba(255,255,255,.10));
-      border-bottom-color: rgba(255,255,255,.14);
+      background: color-mix(in oklab, rgba(0,0,0,.66) 66%, rgba(255,255,255,.10));
+      border-bottom-color: rgba(255,255,255,.16);
       box-shadow: 0 14px 32px rgba(0,0,0,.44);
     }
     .nav-left{ display:flex; align-items:center; gap:16px; }
     .logo{ height:42px; width:auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.2); }
-    .nav{ display:flex; gap:12px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
-    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px; }
+    .nav{ display:flex; gap:10px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
+    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 12px; border-radius:999px; }
     .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.38); }
 
-    /* Contenu / panneau */
+    /* Contenu */
     .wrap{ max-width: 860px; margin: clamp(12px,4vw,36px) auto; padding: clamp(12px,2.6vw,24px); }
     .panel{
       background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
@@ -82,8 +82,8 @@
     .ok{ background: color-mix(in oklab, var(--ok) 12%, transparent); border:1px solid color-mix(in oklab, var(--ok) 35%, transparent); color: color-mix(in oklab, var(--ok) 80%, #000); padding:10px 12px; border-radius:12px; }
     .warn{ background: color-mix(in oklab, var(--warn) 12%, transparent); border:1px solid color-mix(in oklab, var(--warn) 35%, transparent); color: color-mix(in oklab, var(--warn) 80%, #000); padding:10px 12px; border-radius:12px; }
 
-    h1{ margin:0 0 12px; font-size: clamp(26px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
-    p.lead{ color:var(--muted2); }
+    h1{ margin:0 0 10px; font-size: clamp(28px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
+    p.lead{ color:var(--muted); font-size: 16px; }
 
     .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     button{
@@ -126,13 +126,13 @@
   <main class="wrap">
     <section class="panel reveal">
       <h1>Réserver un emplacement</h1>
-      <p class="ok">Réservation rapide : nous avons juste besoin de quelques informations avant de valider votre demande.</p>
+      <p class="ok">Réservation rapide : nous avons simplement besoin de quelques informations pour confirmer votre demande.</p>
       <div class="actions">
         <button id="startWizard">Commencer</button>
       </div>
     </section>
 
-    <section class="panel" id="wizard" aria-live="polite" aria-atomic="true" class="hidden"></section>
+    <section class="panel" id="wizard" aria-live="polite" aria-atomic="true"></section>
   </main>
 
   <script>
@@ -140,18 +140,19 @@
     (function themeInit(){
       const html = document.documentElement;
       const saved = localStorage.getItem("theme");
-      if (saved === "light" || saved === "dark") html.setAttribute("data-theme", saved);
-      else html.setAttribute("data-theme", matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      html.setAttribute("data-theme",
+        saved==="light"||saved==="dark" ? saved :
+        (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+      );
       const btn = document.getElementById("themeToggle");
       const icon = document.getElementById("themeIcon");
       const label = document.getElementById("themeLabel");
       function updateLabel(){ const isDark = html.getAttribute("data-theme")==="dark"; icon.textContent = isDark ? "🌙" : "🌞"; label.textContent = isDark ? "Mode sombre" : "Mode clair"; }
       btn.addEventListener("click", ()=>{ const next = html.getAttribute("data-theme")==="dark" ? "light" : "dark"; html.setAttribute("data-theme", next); localStorage.setItem("theme", next); updateLabel(); });
       updateLabel();
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{ if (!localStorage.getItem("theme")){ html.setAttribute("data-theme", e.matches ? "dark" : "light"); updateLabel(); } });
     })();
 
-    /* Reveal panneau */
+    /* Reveal */
     (function panelsReveal(){
       const items = document.querySelectorAll('.panel');
       const io = new IntersectionObserver((entries)=>{
@@ -168,7 +169,7 @@
       items.forEach(el=> io.observe(el));
     })();
 
-    /* Assistant de réservation (steps) */
+    /* Assistant de réservation — corrigé */
     (function wizard(){
       const start = document.getElementById('startWizard');
       const wizard = document.getElementById('wizard');
@@ -180,24 +181,36 @@
         chiens: 0, chiensMaleNonCastre: "non",
         chats: 0, autres: 0
       };
-      let step = 0;
+      let step = -1;
 
-      const steps = [
-        renderDates, renderPeople, renderVehicle, renderAnimals, renderSummary
-      ];
+      const steps = [ renderDates, renderPeople, renderVehicle, renderAnimals, renderSummary ];
 
       function mount(){
         wizard.innerHTML = steps[step]();
-        wizard.classList.add('reveal');
-        bindHandlers();
+        bindStepHandlers();
       }
 
-      function bindHandlers(){
+      function bindStepHandlers(){
         // boutons next/back
         const next = wizard.querySelector('[data-next]');
         const back = wizard.querySelector('[data-back]');
         next && next.addEventListener('click', onNext);
         back && back.addEventListener('click', ()=>{ step=Math.max(0, step-1); mount(); });
+
+        // spécifiques animaux (pour basculer zones en live)
+        if (step===3){
+          const animauxRadios = wizard.querySelectorAll('input[name="animaux"]');
+          const chiensInput = wizard.querySelector('#chiens');
+          const maleBox = wizard.querySelector('#maleBox');
+          const refresh = ()=>{
+            const withPets = wizard.querySelector('input[name="animaux"]:checked')?.value==="oui";
+            const dogs = Number((wizard.querySelector('#chiens')?.value)||0);
+            if (maleBox) maleBox.classList.toggle('hidden', !(withPets && dogs>0));
+          };
+          animauxRadios.forEach(r=> r.addEventListener('change', refresh));
+          chiensInput && chiensInput.addEventListener('input', refresh);
+          refresh();
+        }
       }
 
       function onNext(){
@@ -225,13 +238,11 @@
             state.chiens = Number(wizard.querySelector('#chiens').value||0);
             state.chats  = Number(wizard.querySelector('#chats').value||0);
             state.autres = Number(wizard.querySelector('#autres').value||0);
-            if (state.chiens>0){
-              state.chiensMaleNonCastre = wizard.querySelector('input[name="maleNonCastre"]:checked')?.value || "non";
-              if (state.chiensMaleNonCastre==="oui"){
-                // blocage
-                toast("Désolés, nous n’acceptons pas les chiens mâles non castrés. Notre propre chien est dominant et n’accepte que les mâles castrés. Merci de votre compréhension 🙏");
-                return;
-              }
+            // si chiens > 0, on lit la radio maleNonCastre; si non sélectionnée, on suppose "non" par défaut
+            const sel = wizard.querySelector('input[name="maleNonCastre"]:checked');
+            state.chiensMaleNonCastre = sel ? sel.value : "non";
+            if (state.chiens>0 && state.chiensMaleNonCastre==="oui"){
+              return toast("Désolés, nous n’acceptons pas les chiens mâles non castrés. Notre propre chien est dominant et n’accepte que les mâles castrés. Merci de votre compréhension 🙏");
             }
           } else {
             state.chiens=0; state.chats=0; state.autres=0; state.chiensMaleNonCastre="non";
@@ -256,11 +267,10 @@
         `;
       }
 
-      /* RENDER FUNCTIONS */
-
+      /* Renders */
       function renderDates(){
         return `
-          <h2>Étape 1 · Vos dates</h2>
+          <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 1 · Vos dates</h2>
           <div class="step cols">
             <label>Début du séjour<input type="date" id="debut" value="${state.debut}"></label>
             <label>Fin du séjour<input type="date" id="fin" value="${state.fin}"></label>
@@ -269,10 +279,9 @@
           ${actions(false)}
         `;
       }
-
       function renderPeople(){
         return `
-          <h2>Étape 2 · Voyageurs</h2>
+          <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 2 · Voyageurs</h2>
           <div class="step cols">
             <label>Adultes<input type="number" id="adultes" min="1" max="10" value="${state.adultes}"></label>
             <label>Enfants<input type="number" id="enfants" min="0" max="10" value="${state.enfants}"></label>
@@ -280,10 +289,9 @@
           ${actions(true)}
         `;
       }
-
       function renderVehicle(){
         return `
-          <h2>Étape 3 · Véhicule</h2>
+          <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 3 · Véhicule</h2>
           <div class="step cols">
             <label>Type de véhicule
               <select id="vehicule">
@@ -300,52 +308,40 @@
           ${actions(true)}
         `;
       }
-
       function renderAnimals(){
-        const dogBlock = state.animaux==="oui" ? `
-          <div class="cols">
-            <label>Chiens (nombre)<input type="number" id="chiens" min="0" max="6" value="${state.chiens}"></label>
-            <label>Chats (nombre)<input type="number" id="chats" min="0" max="6" value="${state.chats}"></label>
-          </div>
-          <div class="${(state.chiens||0)>0?"":"hidden"}" id="maleBox" style="margin-top:6px;">
-            <label>Au moins un mâle non castré ?
-              <div>
-                <label><input type="radio" name="maleNonCastre" value="oui" ${state.chiensMaleNonCastre==="oui"?"checked":""}> Oui</label>
-                <label style="margin-left:12px;"><input type="radio" name="maleNonCastre" value="non" ${state.chiensMaleNonCastre==="non"?"checked":""}> Non</label>
-              </div>
-            </label>
-            <small>Pour la sécurité des animaux, nous n’acceptons pas les mâles non castrés (notre chien est dominant).</small>
-          </div>
-          <label style="margin-top:6px;">Autres animaux (nombre)<input type="number" id="autres" min="0" max="6" value="${state.autres}"></label>
-        ` : ``;
-
-        // script pour afficher/masquer maleBox dès montage
-        setTimeout(()=>{
-          const chiens = wizard.querySelector('#chiens');
-          const maleBox = wizard.querySelector('#maleBox');
-          if (chiens && maleBox){
-            chiens.addEventListener('input', ()=>{
-              const v = Number(chiens.value||0);
-              maleBox.classList.toggle('hidden', v<=0);
-            });
-          }
-        });
-
+        const petsYes = state.animaux==="oui";
         return `
-          <h2>Étape 4 · Animaux</h2>
+          <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 4 · Animaux</h2>
           <div class="step">
             <label>Venez-vous avec des animaux ?
               <div>
-                <label><input type="radio" name="animaux" value="non" ${state.animaux==="non"?"checked":""}> Non</label>
-                <label style="margin-left:12px;"><input type="radio" name="animaux" value="oui" ${state.animaux==="oui"?"checked":""}> Oui</label>
+                <label><input type="radio" name="animaux" value="non" ${!petsYes?"checked":""}> Non</label>
+                <label style="margin-left:12px;"><input type="radio" name="animaux" value="oui" ${petsYes?"checked":""}> Oui</label>
               </div>
             </label>
-            ${state.animaux==="oui" ? dogBlock : ""}
+
+            <div id="petsFields" class="${petsYes?'':'hidden'}" style="margin-top:8px;">
+              <div class="cols">
+                <label>Chiens (nombre)<input type="number" id="chiens" min="0" max="6" value="${state.chiens}"></label>
+                <label>Chats (nombre)<input type="number" id="chats" min="0" max="6" value="${state.chats}"></label>
+              </div>
+
+              <div id="maleBox" class="${(state.chiens||0)>0?'':'hidden'}" style="margin-top:6px;">
+                <label>Au moins un mâle non castré ?
+                  <div>
+                    <label><input type="radio" name="maleNonCastre" value="oui" ${state.chiensMaleNonCastre==="oui"?"checked":""}> Oui</label>
+                    <label style="margin-left:12px;"><input type="radio" name="maleNonCastre" value="non" ${state.chiensMaleNonCastre==="non"?"checked":""}> Non</label>
+                  </div>
+                </label>
+                <small>Pour la sécurité des animaux, nous n’acceptons pas les mâles non castrés (notre chien est dominant).</small>
+              </div>
+
+              <label style="margin-top:6px;">Autres animaux (nombre)<input type="number" id="autres" min="0" max="6" value="${state.autres}"></label>
+            </div>
           </div>
           ${actions(true)}
         `;
       }
-
       function renderSummary(){
         const resume = `
           <ul style="margin:0; padding-left:18px;">
@@ -356,7 +352,7 @@
           </ul>
         `;
         return `
-          <h2>Étape 5 · Récapitulatif</h2>
+          <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 5 · Récapitulatif</h2>
           <div class="summary">${resume}</div>
           <div class="actions">
             <button type="button" class="ghost" data-back>Retour</button>
@@ -370,10 +366,10 @@
       start.addEventListener('click', ()=>{
         step = 0;
         mount();
-        start.closest('.panel').scrollIntoView({behavior:'smooth', block:'start'});
+        wizard.scrollIntoView({behavior:'smooth', block:'start'});
       });
 
-      // interception du dernier "next" pour message final
+      // Dernier envoi → message
       wizard.addEventListener('click', (e)=>{
         const btn = e.target.closest('[data-next]');
         if (!btn) return;

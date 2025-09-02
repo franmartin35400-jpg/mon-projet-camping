@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Accueil – Camping de Rivassland</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Poppins (titres) + Inter (texte) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
       --glass: rgba(255,255,255,.58);
       --glass-strong: rgba(255,255,255,.70);
       --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
-      --ring:#3b82f6; --text:#0f172a; --muted:#475569; --muted2:#64748b;
+      --text:#0f172a; --muted:#334155; --muted2:#475569;
       --ok:#16a34a;
       --shadow: 0 18px 46px rgba(2,6,23,.20);
       --radius:22px;
@@ -22,7 +23,7 @@
       --glass: rgba(17,24,39,.48);
       --glass-strong: rgba(17,24,39,.60);
       --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
-      --ring:#93c5fd; --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
+      --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
       --shadow: 0 22px 56px rgba(0,0,0,.46);
     }
     @media (prefers-reduced-motion:no-preference){
@@ -32,62 +33,74 @@
     html,body{ height:100%; }
     body{
       margin:0; color:var(--text);
-      font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height: 1.6;
       opacity:0; transform: translateY(8px);
       animation: pageEnter .7s ease-out forwards;
     }
     @keyframes pageEnter{ to{ opacity:1; transform: translateY(0); } }
 
-    /* fond principal jour/nuit */
-    body::before, body::after{
-      content:""; position:fixed; inset:0; z-index:-4;
-      background-size:cover; background-position:center; background-attachment:fixed;
+    /* calque principal: camping.jpg (haut) */
+    body::before{
+      content:""; position:fixed; inset:0 0 40vh 0; /* occupe le haut jusqu’à 40vh du bas */
+      z-index:-4;
+      background-image:url("camping.jpg");
+      background-size:cover; background-position:center top; background-repeat:no-repeat;
       transition: opacity 900ms ease;
     }
-    body::before{ background-image:url("camping.jpg"); opacity:1; }
-    body::after { background-image:url("camping-nuit.jpg"); opacity:0; }
+    /* calque nuit pour la partie haute (switch en dark) */
+    body::after{
+      content:""; position:fixed; inset:0 0 40vh 0;
+      z-index:-4;
+      background-image:url("camping-nuit.jpg");
+      background-size:cover; background-position:center top; background-repeat:no-repeat;
+      opacity:0; transition: opacity 900ms ease;
+    }
+    html[data-theme="dark"] body::after{ opacity:1; }
 
-    /* image du bas : occupe TOUT le bas de page */
+    /* image du bas : camping-accueil-2.jpg pleine largeur, collée au bas */
     .bg-bottom{
-      position:fixed; left:0; right:0; bottom:0; height:100vh; z-index:-3;
+      position:fixed; left:0; right:0; bottom:0; top:60vh; /* commence à 60vh → “se chevauche” 20vh avec l’image du haut */
+      z-index:-3;
       background-image:url("camping-accueil-2.jpg");
-      background-size:cover; background-position:bottom center; background-repeat:no-repeat;
-      opacity:.96;
-      /* doux fondu sur le haut pour fusionner avec l’image principale */
-      mask-image: linear-gradient(to top, black 60%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to top, black 60%, transparent 100%);
-      pointer-events:none;
+      background-size:cover; background-position:center bottom; background-repeat:no-repeat;
     }
 
-    .vignette{ position:fixed; inset:0; z-index:-2; pointer-events:none;
-      background: radial-gradient(1200px 800px at 50% 15%, rgba(0,0,0,.22), transparent 60%),
-                  linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.10));
-      opacity:0; transition: opacity 600ms ease;
+    /* FONDU léger uniquement sur la zone de recouvrement (20vh) */
+    .overlap-fade{
+      position:fixed; left:0; right:0; bottom:40vh; height:20vh; z-index:-2;
+      /* dégradé vertical qui fond l’image du bas sous l’image du haut */
+      background: linear-gradient(to top, rgba(0,0,0,.10), rgba(0,0,0,0));
+      mix-blend-mode: multiply; pointer-events:none;
+      opacity:.6;
     }
-    html[data-theme="dark"] body::before{ opacity:0; }
-    html[data-theme="dark"] body::after { opacity:1; }
-    html[data-theme="dark"] .vignette   { opacity:.32; }
 
-    /* Topbar plus distinguable */
+    /* Vignette douce globale */
+    .vignette{ position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background: radial-gradient(1200px 800px at 50% 12%, rgba(0,0,0,.18), transparent 60%);
+      opacity:.15;
+    }
+    html[data-theme="dark"] .vignette{ opacity:.32; }
+
+    /* Topbar bien lisible */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 12px 18px;
-      backdrop-filter: blur(8px) saturate(120%);
-      background: color-mix(in oklab, rgba(0,0,0,.46) 46%, rgba(255,255,255,.28));
-      border-bottom: 1px solid rgba(0,0,0,.20);
+      backdrop-filter: blur(10px) saturate(120%);
+      background: color-mix(in oklab, rgba(0,0,0,.50) 50%, rgba(255,255,255,.28));
+      border-bottom: 1px solid rgba(0,0,0,.22);
       box-shadow: 0 12px 28px rgba(0,0,0,.22);
     }
     html[data-theme="dark"] .topbar{
-      background: color-mix(in oklab, rgba(0,0,0,.64) 64%, rgba(255,255,255,.10));
-      border-bottom-color: rgba(255,255,255,.14);
+      background: color-mix(in oklab, rgba(0,0,0,.66) 66%, rgba(255,255,255,.10));
+      border-bottom-color: rgba(255,255,255,.16);
       box-shadow: 0 14px 32px rgba(0,0,0,.44);
     }
-
     .nav-left{ display:flex; align-items:center; gap:16px; }
     .logo{ height:42px; width:auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.2); }
-    .nav{ display:flex; gap:12px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
-    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px; }
+    .nav{ display:flex; gap:10px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
+    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 12px; border-radius:999px; }
     .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.38); }
     .theme-toggle{
       display:inline-flex; align-items:center; gap:8px; border-radius: 999px; padding:9px 15px; color:#fff; font-weight:700;
@@ -97,7 +110,8 @@
       cursor:pointer;
     }
 
-    .hero{ min-height: 60svh; display:grid; place-items:center; padding: clamp(16px,4vw,48px); }
+    /* HERO */
+    .hero{ min-height: 56svh; display:grid; place-items:center; padding: clamp(16px,4vw,48px); }
     .hero-title{
       font-family:"Poppins", system-ui, sans-serif; font-weight:700;
       font-size: clamp(34px, 6vw, 64px); letter-spacing:.5px; color:#fff; text-align:center;
@@ -106,32 +120,32 @@
     }
     @keyframes fadeSlide{ from{ opacity:0; transform: translateY(-16%);} to{opacity:1; transform: translateY(-10%);} }
 
+    /* Panneaux */
     .wrap{ max-width: 1200px; margin: 0 auto; padding: clamp(12px,3vw,24px); display:grid; grid-template-columns: 1.1fr .9fr; align-items:start; gap: clamp(16px,2.4vw,28px); }
     @media (max-width: 960px){ .wrap{ grid-template-columns: 1fr; } }
 
     .panel{
       background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
       border: 1px solid rgba(255,255,255,.35); border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: clamp(16px,2.4vw,26px); opacity:0; transform: translateY(10px);
+      padding: clamp(18px,2.6vw,28px); opacity:0; transform: translateY(10px);
     }
     .panel.reveal{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
 
-    .panel h2{ margin:0 0 10px; font-family:"Poppins",system-ui,sans-serif; font-weight:700; font-size: clamp(20px,2.4vw,28px); letter-spacing:.2px; color:var(--text); }
-    .lead{ color:var(--muted2); line-height:1.65; font-size: clamp(16px,1.3vw,18px); }
+    .panel h2{ margin:0 0 12px; font-family:"Poppins",system-ui,sans-serif; font-weight:700; font-size: clamp(22px,2.4vw,28px); letter-spacing:.2px; color:var(--text); }
+    .lead{ color:var(--muted); line-height:1.75; font-size: clamp(16px,1.3vw,18px); }
 
+    /* Vignettes vertes */
     .features{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
     @media (max-width: 900px){ .features{ grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 560px){ .features{ grid-template-columns: 1fr; } }
-
     .feature{
       position:relative; display:flex; align-items:center; gap:12px; padding:12px 14px;
-      background: color-mix(in oklab, rgba(22,163,74,.38) 60%, var(--glass-strong));
+      background: color-mix(in oklab, rgba(22,163,74,.40) 60%, var(--glass-strong));
       border:1px solid color-mix(in oklab, var(--ok) 55%, transparent);
       border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.08);
     }
     .feature svg{ width:28px; height:28px; flex:0 0 auto; color: var(--ok); }
     .feature span{ font-weight:600; color:var(--text); }
-
     .feature[data-tip]::after{
       content: attr(data-tip);
       position: absolute; left: 50%; bottom: -8px; transform: translate(-50%, 100%);
@@ -143,8 +157,8 @@
     .feature:hover::after, .feature:focus-within::after{ opacity:1; transform: translate(-50%, calc(100% + 4px)); }
 
     .cta{
-      margin-top: 10px; display:inline-flex; align-items:center; gap:10px;
-      border-radius: 12px; padding:10px 14px; color:#fff; font-weight:700;
+      margin-top: 12px; display:inline-flex; align-items:center; gap:10px;
+      border-radius: 12px; padding:12px 16px; color:#fff; font-weight:700;
       border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
       background: linear-gradient(180deg, var(--primary), var(--primary-700));
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
@@ -154,7 +168,9 @@
   </style>
 </head>
 <body>
+  <!-- bas de page + fondu de recouvrement-->
   <div class="bg-bottom" aria-hidden="true"></div>
+  <div class="overlap-fade" aria-hidden="true"></div>
   <div class="vignette" aria-hidden="true"></div>
 
   <header class="topbar">
@@ -197,7 +213,8 @@
         soit conviviale et authentique.
       </p>
 
-      <a class="cta" href="index.html">Donner votre avis</a>
+      <a class="cta" href="reservation.html">Réserver</a>
+      <a class="cta" href="index.html" style="margin-left:8px;">Donner votre avis</a>
     </section>
 
     <section class="panel" aria-labelledby="equip-title">
@@ -232,21 +249,23 @@
   </main>
 
   <script>
+    // Thème + UI
     (function themeInit(){
       const html = document.documentElement;
       const saved = localStorage.getItem("theme");
-      if (saved === "light" || saved === "dark") html.setAttribute("data-theme", saved);
-      else html.setAttribute("data-theme", matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      html.setAttribute("data-theme",
+        saved==="light"||saved==="dark" ? saved :
+        (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+      );
       const btn = document.getElementById("themeToggle");
       const icon = document.getElementById("themeIcon");
       const label = document.getElementById("themeLabel");
-      function updateLabel(){ const isDark = html.getAttribute("data-theme")==="dark"; icon.textContent = isDark ? "🌙" : "🌞"; label.textContent = isDark ? "Mode sombre" : "Mode clair"; }
+      function updateLabel(){ const dark = html.getAttribute("data-theme")==="dark"; icon.textContent = dark ? "🌙" : "🌞"; label.textContent = dark ? "Mode sombre" : "Mode clair"; }
       btn.addEventListener("click", ()=>{ const next = html.getAttribute("data-theme")==="dark" ? "light" : "dark"; html.setAttribute("data-theme", next); localStorage.setItem("theme", next); updateLabel(); });
       updateLabel();
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{ if (!localStorage.getItem("theme")){ html.setAttribute("data-theme", e.matches ? "dark" : "light"); updateLabel(); } });
     })();
 
-    /* Révélation douce des panneaux */
+    // Reveal panels
     (function panelsReveal(){
       const items = document.querySelectorAll('.panel');
       const io = new IntersectionObserver((entries)=>{
