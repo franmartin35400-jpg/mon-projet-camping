@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Camping Rivassland</title>
 
-  <!-- Typographies : Poppins (titres) + Cabin (texte) -->
+  <!-- Poppins (titres) + Cabin (texte) -->
   <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -29,57 +29,36 @@
       --transition:220ms cubic-bezier(.22,.61,.36,1);
     }
 
-    /* ========= Thème sombre (auto si OS) ========= */
-    @media (prefers-color-scheme: dark){
-      :root{
-        --bg1:#0f172a;
-        --bg2:#111827;
-        --glass: rgba(17,24,39,.46);
-        --glass-strong: rgba(17,24,39,.60);
-        --primary:#60a5fa;
-        --primary-700:#3b82f6;
-        --primary-800:#1d4ed8;
-        --ring:#93c5fd;
-        --text:#e5e7eb;
-        --muted:#cbd5e1;
-        --muted2:#94a3b8;
-        --shadow: 0 20px 50px rgba(0,0,0,.45);
-        --star-empty:#374151;
-        --star-full:#fbbf24;
-      }
-    }
-
-    /* ========= Forçage manuel du thème (override) ========= */
-    :root.theme-light{
-      --bg1:#eef2ff; --bg2:#ffffff;
-      --glass: rgba(255,255,255,.54);
-      --glass-strong: rgba(255,255,255,.68);
-      --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
-      --ring:#3b82f6; --text:#0f172a; --muted:#475569; --muted2:#64748b;
-      --shadow: 0 16px 44px rgba(2,6,23,.18);
-      --star-empty:#e5e7eb; --star-full:#f59e0b;
-    }
-    :root.theme-dark{
-      --bg1:#0f172a; --bg2:#111827;
+    /* ========= Thème sombre (appliqué quand [data-theme="dark"]) ========= */
+    html[data-theme="dark"]{
+      --bg1:#0f172a;
+      --bg2:#111827;
       --glass: rgba(17,24,39,.46);
       --glass-strong: rgba(17,24,39,.60);
-      --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
-      --ring:#93c5fd; --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
+      --primary:#60a5fa;
+      --primary-700:#3b82f6;
+      --primary-800:#1d4ed8;
+      --ring:#93c5fd;
+      --text:#e5e7eb;
+      --muted:#cbd5e1;
+      --muted2:#94a3b8;
       --shadow: 0 20px 50px rgba(0,0,0,.45);
-      --star-empty:#374151; --star-full:#fbbf24;
+      --star-empty:#374151;
+      --star-full:#fbbf24;
     }
 
     @media (prefers-reduced-motion:no-preference){
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    /* ========= Fond double calque pour transition fluide ========= */
+    /* ========= Fond double calque + vignette ========= */
     html,body{ height:100%; }
     body{
       margin:0;
       color:var(--text);
       font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
+    /* Images */
     body::before,
     body::after{
       content:"";
@@ -88,27 +67,30 @@
       background-size:cover;
       background-position:center;
       background-attachment:fixed;
-      z-index:-2;
+      z-index:-3;
       transition:opacity 900ms ease;
+      will-change: opacity;
     }
-    body::before{ background-image:url("camping.jpg"); opacity:1; }
+    body::before{ background-image:url("camping.jpg");  opacity:1; }
     body::after { background-image:url("camping-nuit.jpg"); opacity:0; }
-    :root.theme-dark body::after,
-    @media (prefers-color-scheme: dark){
-      body::after{ opacity:1; }
+    /* Vignette nuit (calque au-dessus des images) */
+    .vignette{
+      position:fixed; inset:0; z-index:-2; pointer-events:none;
+      background: radial-gradient(1200px 800px at 50% 20%, rgba(0,0,0,.28), transparent 60%),
+                  linear-gradient(180deg, rgba(0,0,0,.24), rgba(0,0,0,.12));
+      opacity:0; transition: opacity 600ms ease;
     }
-    :root.theme-dark body::before,
-    @media (prefers-color-scheme: dark){
-      body::before{ opacity:0; }
-    }
+    html[data-theme="dark"] body::before{ opacity:0; }
+    html[data-theme="dark"] body::after { opacity:1; }
+    html[data-theme="dark"] .vignette   { opacity:.35; }
 
-    /* ========= Bandeau haut (toggle thème) ========= */
+    /* ========= Barre d’actions (toggle thème) ========= */
     .topbar{
       position: sticky; top: 0; inset-inline: 0;
       display:flex; justify-content:flex-end; gap:8px;
       padding: 10px 16px;
       backdrop-filter: blur(6px) saturate(120%);
-      background: color-mix(in oklab, var(--glass) 70%, transparent);
+      background: color-mix(in oklab, rgba(255,255,255,.22) 70%, transparent);
       z-index: 10;
     }
     .theme-toggle{
@@ -129,7 +111,7 @@
       padding: clamp(8px,2vw,16px);
       display: grid;
       grid-template-columns: 1fr 1fr;
-      align-items: start; /* chaque panneau garde sa propre hauteur */
+      align-items: start;
       gap: clamp(16px,2.4vw,26px);
       animation: pageIn .7s ease-out both;
     }
@@ -177,7 +159,11 @@
       box-shadow: inset 0 -2px 0 rgba(2,6,23,.03);
     }
     @media (prefers-color-scheme: dark){
-      form input, form select, form textarea{ background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28); }
+      html:not([data-theme="light"]) form input,
+      html:not([data-theme="light"]) form select,
+      html:not([data-theme="light"]) form textarea{
+        background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28);
+      }
     }
     form textarea{ min-height:100px; resize:vertical; }
     form input:focus, form select:focus, form textarea:focus{
@@ -222,7 +208,9 @@
       opacity:0; transform: translateY(8px); /* reveal au scroll */
     }
     @media (prefers-color-scheme: dark){
-      .review{ background:#0b1220; border-color: rgba(148,163,184,.18); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+      html:not([data-theme="light"]) .review{
+        background:#0b1220; border-color: rgba(148,163,184,.18); box-shadow: 0 8px 20px rgba(0,0,0,.25);
+      }
     }
     .review.reveal-in{ opacity:1; transform: translateY(0); transition: opacity .5s ease, transform .5s ease; }
     .review:hover{ box-shadow: 0 12px 24px rgba(2,6,23,.12); transform: translateY(-2px); }
@@ -238,6 +226,8 @@
   </style>
 </head>
 <body>
+  <!-- Calque vignette (contraste) -->
+  <div class="vignette" aria-hidden="true"></div>
 
   <!-- Barre d’actions : switch thème -->
   <div class="topbar">
@@ -248,47 +238,22 @@
   </div>
 
   <div class="page">
-    <!-- Panneau Questionnaire (verre plus marqué) -->
+    <!-- Panneau Questionnaire -->
     <section class="panel form" aria-labelledby="title-form">
       <h1 id="title-form">Camping Rivassland</h1>
       <form id="form" autocomplete="on">
-        <label>Prénom
-          <input id="prenom" autocomplete="given-name" required />
-        </label>
-        <label>Nom
-          <input id="nom" autocomplete="family-name" required />
-        </label>
-
-        <label>Début du séjour
-          <input type="date" id="debut" />
-        </label>
-        <label>Fin du séjour
-          <input type="date" id="fin" />
-        </label>
-
+        <label>Prénom <input id="prenom" autocomplete="given-name" required /></label>
+        <label>Nom <input id="nom" autocomplete="family-name" required /></label>
+        <label>Début du séjour <input type="date" id="debut" /></label>
+        <label>Fin du séjour <input type="date" id="fin" /></label>
         <label>Note du lieu
-          <select id="noteLieu">
-            <option value="1">1</option><option value="2">2</option>
-            <option value="3">3</option><option value="4">4</option>
-            <option value="5" selected>5</option>
-          </select>
+          <select id="noteLieu"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select>
         </label>
-
         <label>Note de l’accueil
-          <select id="noteAccueil">
-            <option value="1">1</option><option value="2">2</option>
-            <option value="3">3</option><option value="4">4</option>
-            <option value="5" selected>5</option>
-          </select>
+          <select id="noteAccueil"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select>
         </label>
-
-        <label>Avis sur le lieu
-          <textarea id="avisLieu" placeholder="Ce que vous avez aimé, points à améliorer…"></textarea>
-        </label>
-        <label>Avis sur les hôtes
-          <textarea id="avisAccueil" placeholder="Accueil, disponibilité, ambiance…"></textarea>
-        </label>
-
+        <label>Avis sur le lieu <textarea id="avisLieu" placeholder="Ce que vous avez aimé, points à améliorer…"></textarea></label>
+        <label>Avis sur les hôtes <textarea id="avisAccueil" placeholder="Accueil, disponibilité, ambiance…"></textarea></label>
         <div class="buttons">
           <button type="submit" id="btnAdd" class="ripple">Ajouter la réponse</button>
           <button type="button" id="btnCsv" class="ripple">Exporter en CSV</button>
@@ -297,7 +262,7 @@
       <p id="msg" role="status" aria-live="polite"></p>
     </section>
 
-    <!-- Panneau Avis (verre plus léger) -->
+    <!-- Panneau Avis -->
     <section class="panel reviews" aria-labelledby="title-reviews">
       <h2 id="title-reviews">Avis des visiteurs <span id="countBadge"></span></h2>
       <div id="reviewsList"></div>
@@ -312,51 +277,50 @@
       location.hostname === "localhost" || location.hostname === "127.0.0.1"
     ) ? "/api/gas" : PROD_API;
 
-    /* ========= Thème : auto + forçage manuel mémorisé ========= */
+    /* ========= Thème : auto + forçage utilisateur (data-theme) ========= */
     (function themeInit(){
-      const root = document.documentElement;
+      const html = document.documentElement;
+      // 1) Charger préférence
       const saved = localStorage.getItem("theme"); // "light" | "dark" | null
-      if (saved === "light") root.classList.add("theme-light"), root.classList.remove("theme-dark");
-      if (saved === "dark")  root.classList.add("theme-dark"),  root.classList.remove("theme-light");
+      if (saved === "light" || saved === "dark") {
+        html.setAttribute("data-theme", saved);
+      } else {
+        // défaut = préférence système
+        const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
+        html.setAttribute("data-theme", prefersDark ? "dark" : "light");
+      }
 
+      // 2) UI bouton
       const btn = document.getElementById("themeToggle");
       const icon = document.getElementById("themeIcon");
       const label = document.getElementById("themeLabel");
 
       function updateLabel(){
-        const forcedDark  = root.classList.contains("theme-dark");
-        const forcedLight = root.classList.contains("theme-light");
-        const systemDark  = matchMedia("(prefers-color-scheme: dark)").matches;
-        const isDark = forcedDark || (!forcedLight && systemDark);
+        const isDark = html.getAttribute("data-theme")==="dark";
         icon.textContent = isDark ? "🌙" : "🌞";
         label.textContent = isDark ? "Mode sombre" : "Mode clair";
       }
       updateLabel();
 
       btn.addEventListener("click", ()=>{
-        if (root.classList.contains("theme-dark")){
-          root.classList.remove("theme-dark"); root.classList.add("theme-light");
-          localStorage.setItem("theme","light");
-        } else if (root.classList.contains("theme-light")){
-          root.classList.remove("theme-light"); root.classList.add("theme-dark");
-          localStorage.setItem("theme","dark");
-        } else {
-          // pas de forçage => inverse la préférence système
-          const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
-          if (prefersDark){ root.classList.add("theme-light"); localStorage.setItem("theme","light"); }
-          else { root.classList.add("theme-dark"); localStorage.setItem("theme","dark"); }
-        }
+        const isDark = html.getAttribute("data-theme")==="dark";
+        const next = isDark ? "light" : "dark";
+        html.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
         updateLabel();
       });
 
-      // si l’OS change en live et pas de forçage utilisateur
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>{
-        const saved = localStorage.getItem("theme");
-        if (!saved) updateLabel();
+      // 3) Si l’OS change et qu’il n’y a PAS de forçage, on suit l’OS
+      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e)=>{
+        const hasForced = localStorage.getItem("theme");
+        if (!hasForced){
+          html.setAttribute("data-theme", e.matches ? "dark" : "light");
+          updateLabel();
+        }
       });
     })();
 
-    /* ========= Utilitaires UI ========= */
+    /* ========= UI utilitaires ========= */
     function starHTML(avg){
       avg = Math.round(avg * 2) / 2;
       let h = '<span class="stars">';
@@ -457,7 +421,7 @@
           await apiAdd(formToRecord());
           showMessage('Réponse enregistrée ✅');
           renderReviews(await apiList());
-          form.reset(); // le panneau questionnaire garde sa hauteur auto
+          form.reset();
         }catch(err){
           showMessage('Erreur: '+err.message);
         }finally{
