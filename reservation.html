@@ -10,7 +10,7 @@
 
   <style>
     :root{
-      --glass: rgba(255,255,255,.58);
+      --glass: rgba(255,255,255,.56);
       --glass-strong: rgba(255,255,255,.70);
       --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
       --text:#0f172a; --muted:#334155; --muted2:#475569;
@@ -20,8 +20,8 @@
       --transition:220ms cubic-bezier(.22,.61,.36,1);
     }
     html[data-theme="dark"]{
-      --glass: rgba(17,24,39,.48);
-      --glass-strong: rgba(17,24,39,.60);
+      --glass: rgba(17,24,39,.46);
+      --glass-strong: rgba(17,24,39,.62);
       --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
       --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
       --shadow: 0 22px 56px rgba(0,0,0,.46);
@@ -30,46 +30,55 @@
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    /* Fond plein écran */
-    html,body{ height:100%; background:#0b1220; }
-    body{ margin:0; color:var(--text); font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; line-height:1.6; }
-
+    /* ===== Fond plein écran (sans overlay sombre) ===== */
+    html,body{ height:100%; }
+    body{
+      margin:0; color:var(--text);
+      font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.6;
+      background: transparent;
+    }
+    /* Deux calques : jour / nuit (fondu doux) */
     body::before, body::after{
       content:""; position:fixed; inset:0; z-index:-4;
-      background-size:cover; background-position:center top; background-repeat:no-repeat;
+      background-size:cover; background-position:center; background-repeat:no-repeat;
       transition: opacity 900ms ease;
+      will-change: opacity;
     }
     body::before{ background-image:url("camping.jpg"); opacity:1; }
     body::after { background-image:url("camping-nuit.jpg"); opacity:0; }
     html[data-theme="dark"] body::before{ opacity:0; }
     html[data-theme="dark"] body::after { opacity:1; }
 
-    .vignette{ position:fixed; inset:0; z-index:-2; pointer-events:none;
+    /* Vignette très légère pour le contraste */
+    .vignette{ position:fixed; inset:0; z-index:-3; pointer-events:none; opacity:.10; }
+    .vignette::before{
+      content:""; position:absolute; inset:0;
       background: radial-gradient(1200px 800px at 50% 12%, rgba(0,0,0,.18), transparent 60%);
-      opacity:.15;
     }
-    html[data-theme="dark"] .vignette{ opacity:.32; }
+    html[data-theme="dark"] .vignette{ opacity:.22; }
 
-    /* Topbar */
+    /* ===== Topbar ===== */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 12px 18px;
       backdrop-filter: blur(10px) saturate(120%);
-      background: color-mix(in oklab, rgba(0,0,0,.50) 50%, rgba(255,255,255,.28));
-      border-bottom: 1px solid rgba(0,0,0,.22);
-      box-shadow: 0 12px 28px rgba(0,0,0,.22);
+      background: color-mix(in oklab, rgba(255,255,255,.52) 62%, transparent);
+      border-bottom: 1px solid rgba(255,255,255,.45);
+      box-shadow: 0 12px 28px rgba(0,0,0,.18);
     }
     html[data-theme="dark"] .topbar{
-      background: color-mix(in oklab, rgba(0,0,0,.66) 66%, rgba(255,255,255,.10));
-      border-bottom-color: rgba(255,255,255,.16);
-      box-shadow: 0 14px 32px rgba(0,0,0,.44);
+      background: color-mix(in oklab, rgba(17,24,39,.62) 72%, transparent);
+      border-bottom-color: rgba(255,255,255,.18);
+      box-shadow: 0 14px 32px rgba(0,0,0,.42);
     }
     .nav-left{ display:flex; align-items:center; gap:16px; }
     .logo{ height:42px; width:auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.2); }
     .nav{ display:flex; gap:10px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
     .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 12px; border-radius:999px; }
     .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.38); }
+
     .theme-toggle{
       display:inline-flex; align-items:center; gap:8px; border-radius: 999px; padding:9px 15px; color:#fff; font-weight:700;
       border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
@@ -77,23 +86,23 @@
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
       cursor:pointer;
     }
+    .theme-toggle:hover{ transform: translateY(-1px); }
 
-    /* Contenu */
-    .wrap{ max-width: 860px; margin: clamp(12px,4vw,36px) auto; padding: clamp(12px,2.6vw,24px); }
+    /* ===== Layout ===== */
+    .wrap{ max-width: 920px; margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px); }
     .panel{
       background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
       border: 1px solid rgba(255,255,255,.35); border-radius: var(--radius);
       box-shadow: var(--shadow); padding: clamp(18px,3vw,28px);
       opacity:0; transform: translateY(10px);
     }
-    /* Le premier panneau est visible par défaut pour éviter toute page “vide” */
     .panel.reveal{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
+
+    h1{ margin:0 0 10px; font-size: clamp(28px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
+    p.lead{ color:var(--muted); font-size: 16px; margin: 6px 0 0; }
 
     .ok{ background: color-mix(in oklab, var(--ok) 12%, transparent); border:1px solid color-mix(in oklab, var(--ok) 35%, transparent); color: color-mix(in oklab, var(--ok) 80%, #000); padding:10px 12px; border-radius:12px; }
     .warn{ background: color-mix(in oklab, var(--warn) 12%, transparent); border:1px solid color-mix(in oklab, var(--warn) 35%, transparent); color: color-mix(in oklab, var(--warn) 80%, #000); padding:10px 12px; border-radius:12px; }
-
-    h1{ margin:0 0 10px; font-size: clamp(28px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
-    p.lead{ color:var(--muted); font-size: 16px; }
 
     .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     button{
@@ -103,15 +112,49 @@
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
     }
     button.ghost{ background: transparent; color: var(--text); border:1px dashed color-mix(in oklab, var(--text) 30%, transparent); }
+    button:hover{ transform: translateY(-1px); }
 
-    /* Étapes */
+    /* ===== Stepper clean & pro ===== */
+    .stepper{
+      display:flex; align-items:center; justify-content:center; gap:12px; margin: 8px 0 14px;
+      flex-wrap: wrap;
+    }
+    .stepper .item{ display:flex; flex-direction:column; align-items:center; gap:2px; min-width: 56px; }
+    .stepper .dot{
+      --sz: 34px;
+      width: var(--sz); height: var(--sz); border-radius: 50%;
+      display:grid; place-items:center; font-weight:700;
+      background: rgba(255,255,255,.72); border:1px solid rgba(0,0,0,.08); color: var(--text);
+      box-shadow: 0 6px 16px rgba(0,0,0,.08);
+    }
+    html[data-theme="dark"] .stepper .dot{ background: rgba(17,24,39,.66); border-color: rgba(255,255,255,.14); }
+    .stepper .label{ font-size: 12px; color: var(--muted2); margin-top: 4px; text-align:center; }
+    .stepper .bar{ width: 38px; height: 2px; background: rgba(255,255,255,.65); border-radius: 2px; }
+    html[data-theme="dark"] .stepper .bar{ background: rgba(255,255,255,.28); }
+    .stepper .item.active .dot{
+      background: linear-gradient(180deg, var(--primary), var(--primary-700));
+      color:#fff; border-color: color-mix(in oklab, var(--primary) 40%, transparent);
+    }
+    .stepper .item.done .dot{
+      background: color-mix(in oklab, var(--ok) 80%, #22c55e);
+      color:#fff; border-color: color-mix(in oklab, var(--ok) 40%, transparent);
+    }
+    .stepper .item.done .label{ color: color-mix(in oklab, var(--ok) 70%, var(--muted2)); }
+    .stepper .item.active .label{ color: var(--text); font-weight: 700; }
+
+    /* ===== Form ===== */
     .step{ display:grid; gap:12px; margin-top:10px; }
     .cols{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
     @media (max-width: 640px){ .cols{ grid-template-columns: 1fr; } }
     label{ font-size:13px; color: var(--muted2); display:flex; flex-direction:column; gap:6px; }
-    input, select, textarea{ padding: 12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,.16); background:#fff; color:#0f172a; }
+    input, select, textarea{
+      padding: 12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,.16); background:#fff; color:#0f172a;
+      box-shadow: 0 4px 10px rgba(0,0,0,.04) inset;
+    }
     textarea{ resize: vertical; }
-    html[data-theme="dark"] input, html[data-theme="dark"] select, html[data-theme="dark"] textarea{ background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28); }
+    html[data-theme="dark"] input, html[data-theme="dark"] select, html[data-theme="dark"] textarea{
+      background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28);
+    }
     small{ color: var(--muted2); }
     .hidden{ display:none !important; }
     .summary{ background: var(--glass-strong); border:1px solid rgba(255,255,255,.4); border-radius:14px; padding:12px 14px; }
@@ -135,7 +178,7 @@
   </header>
 
   <main class="wrap">
-    <!-- Panneau d’intro visible d’office (classe reveal) -->
+    <!-- Intro visible d’office -->
     <section class="panel reveal">
       <h1>Réserver un emplacement</h1>
       <p class="ok">Réservation rapide : nous avons simplement besoin de quelques informations pour confirmer votre demande.</p>
@@ -149,7 +192,6 @@
   </main>
 
   <script>
-  // Tout le JS est encapsulé + protégé pour éviter qu’un bug stoppe l’affichage
   (function(){
     try{
       /* Thème */
@@ -186,32 +228,37 @@
         items.forEach(el=> io.observe(el));
       })();
 
-      /* Assistant de réservation — Étape 4 scindée + envoi Google Sheet onglet Reservations */
+      /* ===== Assistant de réservation =====
+         Étapes : 0 Dates → 1 Personnes → 2 Véhicule → 3 Animaux (oui/non) → 4 Détail si oui → 5 Récap → POST
+      */
       (function wizard(){
         const start = document.getElementById('startWizard');
         const wizard = document.getElementById('wizard');
         if (!start || !wizard) return;
 
-        // Cible l’onglet "Reservations" du même Apps Script via proxy Netlify
         const SCRIPT_URL = "/api/gas?sheet=Reservations";
 
-        // Étapes
         const STEP_DATES = 0, STEP_PEOPLE = 1, STEP_VEHICLE = 2, STEP_HAVE_PETS = 3, STEP_PET_DETAIL = 4, STEP_SUMMARY = 5;
+        const labels = ["Dates","Voyageurs","Véhicule","Animaux","Détails","Récap"];
         const state = {
           debut:"", fin:"",
           adultes: 2, enfants: 0,
           vehicule: "Van", electricite: "oui",
-          animaux: "non",        // oui/non
-          animalType: "",        // "chien" | "autre"
-          chienSexe: "",         // "male" | "femelle"
-          chienCastre: "",       // "oui" | "non"
-          animauxDetails: ""     // texte libre si "autre"
+          animaux: "non",
+          animalType: "",
+          chienSexe: "",
+          chienCastre: "",
+          animauxDetails: ""
         };
         let step = -1;
 
         function mount(){
-          wizard.innerHTML = renderStep(step);
+          wizard.innerHTML = `
+            ${renderStepper(step)}
+            ${renderStep(step)}
+          `;
           bindHandlers();
+          updateStepper(step);
         }
 
         function bindHandlers(){
@@ -270,7 +317,7 @@
                 if (state.chienSexe === "male" && state.chienCastre === "non"){
                   return toast("Désolés, nous n’acceptons pas les chiens mâles non castrés. Notre chien est dominant et n’accepte que les mâles castrés. Merci de votre compréhension 🙏");
                 }
-              } else { // autre
+              } else {
                 state.animauxDetails = (wizard.querySelector('#animauxDetails')?.value || "").trim();
                 if (!state.animauxDetails) return toast("Merci de préciser le(s) animal(aux).");
               }
@@ -287,6 +334,28 @@
             console.error(err);
             toast("Une erreur est survenue. Essayez de recharger la page.");
           }
+        }
+
+        function renderStepper(s){
+          const items = labels.map((label, i) => `
+            <div class="item" data-step="${i}">
+              <div class="dot" role="img" aria-label="Étape ${i+1}">${i+1}</div>
+              <div class="label">${label}</div>
+            </div>
+          `).join(`<div class="bar" aria-hidden="true"></div>`);
+          return `<div class="stepper" aria-hidden="true">${items}</div>`;
+        }
+
+        function updateStepper(s){
+          const nodes = wizard.querySelectorAll('.stepper .item');
+          nodes.forEach((n, i)=>{
+            n.classList.toggle('active', i===s);
+            n.classList.toggle('done',   i<s);
+            const dot = n.querySelector('.dot');
+            if (!dot) return;
+            if (i<s) { dot.textContent = "✔︎"; dot.setAttribute('aria-label', `Étape ${i+1} validée`); }
+            else     { dot.textContent = String(i+1); dot.setAttribute('aria-label', `Étape ${i+1}`); }
+          });
         }
 
         function toast(msg){
@@ -312,7 +381,7 @@
             case STEP_HAVE_PETS: return renderHavePets();
             case STEP_PET_DETAIL:return renderPetDetail();
             case STEP_SUMMARY:   return renderSummary();
-            default:             return '';
+            default:             return "";
           }
         }
 
@@ -457,11 +526,18 @@
           mount();
           wizard.scrollIntoView({behavior:'smooth', block:'start'});
         });
+
+        // Bouton final → submit
+        wizard.addEventListener('click', (e)=>{
+          const btn = e.target.closest('[data-next]');
+          if (!btn) return;
+          if (step===STEP_SUMMARY){
+            submitReservation().catch(err=> toast("Erreur d’envoi : " + (err?.message || err)));
+          }
+        });
       })();
 
-    }catch(err){
-      console.error(err);
-    }
+    }catch(err){ console.error(err); }
   })();
   </script>
 </body>
