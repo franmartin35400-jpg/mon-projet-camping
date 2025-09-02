@@ -3,319 +3,166 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Camping Rivassland – Questionnaire</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-
+  <title>Avis – Camping de Rivassland</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --glass: rgba(255,255,255,.54);
-      --glass-strong: rgba(255,255,255,.68);
-      --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
-      --ring:#3b82f6; --text:#0f172a; --muted:#475569; --muted2:#64748b;
-      --star-empty:#e5e7eb; --star-full:#f59e0b;
-      --shadow: 0 16px 44px rgba(2,6,23,.18);
-      --radius:20px;
-      --transition:220ms cubic-bezier(.22,.61,.36,1);
-    }
-    html[data-theme="dark"]{
-      --glass: rgba(17,24,39,.46);
-      --glass-strong: rgba(17,24,39,.60);
-      --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
-      --ring:#93c5fd; --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
-      --star-empty:#374151; --star-full:#fbbf24;
-      --shadow: 0 20px 50px rgba(0,0,0,.45);
-    }
-    @media (prefers-reduced-motion:no-preference){
-      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
-    }
-
-    /* Fond + vignette */
-    html,body{ height:100%; }
-    body{ margin:0; color:var(--text); font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body::before, body::after{
-      content:""; position:fixed; inset:0; z-index:-4;
-      background-size:cover; background-position:center; background-attachment:fixed;
-      transition: opacity 900ms ease;
-    }
-    body::before{ background-image:url("camping.jpg"); opacity:1; }
-    body::after { background-image:url("camping-nuit.jpg"); opacity:0; }
-    .vignette{ position:fixed; inset:0; z-index:-2; pointer-events:none;
-      background: radial-gradient(1200px 800px at 50% 15%, rgba(0,0,0,.22), transparent 60%),
-                  linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.10));
-      opacity:0; transition: opacity 600ms ease;
-    }
-    html[data-theme="dark"] body::before{ opacity:0; }
-    html[data-theme="dark"] body::after { opacity:1; }
-    html[data-theme="dark"] .vignette   { opacity:.32; }
-
-    /* Topbar */
-    .topbar{
-      position: sticky; top:0; z-index:5;
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      padding: 12px 18px;
-      backdrop-filter: blur(8px) saturate(120%);
-      background: color-mix(in oklab, rgba(0,0,0,.46) 46%, rgba(255,255,255,.28));
-      border-bottom: 1px solid rgba(0,0,0,.20);
-      box-shadow: 0 12px 28px rgba(0,0,0,.22);
-    }
-    html[data-theme="dark"] .topbar{
-      background: color-mix(in oklab, rgba(0,0,0,.64) 64%, rgba(255,255,255,.10));
-      border-bottom-color: rgba(255,255,255,.14);
-      box-shadow: 0 14px 32px rgba(0,0,0,.44);
-    }
-    .nav-left{ display:flex; align-items:center; gap:16px; }
-    .logo{ height:42px; width:auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.2); }
-    .nav{ display:flex; gap:12px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
-    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px; }
-    .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.38); }
-
-    .theme-toggle{
-      display:inline-flex; align-items:center; gap:8px;
-      border-radius: 999px; padding:9px 15px; color:#fff; font-weight:700;
-      border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
-      background: linear-gradient(180deg, var(--primary), var(--primary-700));
-      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
-      cursor:pointer;
-    }
-
-    /* Grille */
-    .page{
-      max-width: 1200px; margin: clamp(12px,4vw,36px) auto; padding: clamp(8px,2vw,16px);
-      display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: clamp(16px,2.4vw,26px);
-    }
-    @media (max-width: 980px){ .page{ grid-template-columns:1fr; } }
-
-    /* Panneaux + reveal */
-    .panel{
-      background: var(--glass);
-      backdrop-filter: blur(10px) saturate(120%);
-      border: 1px solid rgba(255,255,255,.30);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(16px,2.6vw,28px);
-      overflow: clip;
-      opacity:0; transform: translateY(10px);
-    }
-    .panel.reveal{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
-    .panel.form{ background: var(--glass-strong); }
-
-    h1{ margin:0 0 12px; font-size: clamp(26px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
-    h2{ margin:0 0 14px; font-size: clamp(18px,2.2vw,24px); color: var(--muted); font-weight: 600; font-family: "Poppins", system-ui, sans-serif; }
-
-    /* Formulaire */
-    form{ display:grid; grid-template-columns:1fr 1fr; gap:14px 16px; }
-    form label{ font-size:13px; color: var(--muted2); display:flex; flex-direction:column; gap:6px; }
-    form input, form select, form textarea{
-      padding: 12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,.16);
-      background:#fff; color:#0f172a; box-shadow: inset 0 -2px 0 rgba(2,6,23,.03);
-    }
-    html[data-theme="dark"] form input, html[data-theme="dark"] form select, html[data-theme="dark"] form textarea{
-      background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28);
-    }
-    form textarea{ min-height:100px; resize:vertical; }
-    label:has(#avisLieu), label:has(#avisAccueil){ grid-column:1/-1; }
-    form input:focus, form select:focus, form textarea:focus{
-      border-color: var(--ring); box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 35%, transparent); outline:none;
-    }
-
-    .buttons{ display:flex; gap:10px; margin-top:6px; grid-column:1/-1; flex-wrap:wrap; }
-    button{
-      position:relative; display:inline-flex; align-items:center; justify-content:center;
-      gap:8px; padding:12px 18px; border-radius:14px;
-      border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
-      background: linear-gradient(180deg, var(--primary), var(--primary-700));
-      color:#fff; font-weight:700; cursor:pointer;
-      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
-    }
-
-    #msg{ margin:8px 0 0; color: var(--muted2); min-height: 1.2em; }
-
-    /* Avis */
-    #reviewsList{ display:grid; gap:12px; }
-    .review{
-      background:#fff; border:1px solid rgba(15,23,42,.08); border-radius:16px;
-      padding:14px 16px; box-shadow: 0 6px 14px rgba(2,6,23,.06);
-      opacity:0; transform: translateY(8px);
-    }
-    html[data-theme="dark"] .review{ background:#0b1220; border-color: rgba(148,163,184,.18); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
-    .review.reveal-in{ opacity:1; transform: translateY(0); transition: opacity .5s ease, transform .5s ease; }
-
-    .review .note{ color: var(--muted2); font-size:12px; margin-top:4px; }
-    .stars{ display:inline-block; font-size:20px; position:relative; }
-    .star{ display:inline-block; position:relative; width:1.25em; height:1.25em; }
-    .star::before{ content:"★"; position:absolute; inset:0; color: var(--star-empty); }
-    .star::after{ content:"★"; position:absolute; inset:0; width:var(--w,0%); overflow:hidden; color: var(--star-full); }
+    /* Variables & fond = mêmes principes que l’accueil */
+    :root{--glass:rgba(255,255,255,.56);--glass-strong:rgba(255,255,255,.70);--primary:#2563eb;--primary-700:#1d4ed8;--text:#0f172a;--muted:#334155;--ok:#16a34a;--shadow:0 18px 46px rgba(2,6,23,.20);--radius:22px;--transition:220ms cubic-bezier(.22,.61,.36,1);}
+    html[data-theme="dark"]{--glass:rgba(17,24,39,.46);--glass-strong:rgba(17,24,39,.62);--primary:#60a5fa;--primary-700:#3b82f6;--text:#e5e7eb;--muted:#cbd5e1;--shadow:0 22px 56px rgba(0,0,0,.46);}
+    html,body{height:100%} body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .bg,.bg-night,.bg2{position:fixed;inset:0;z-index:-5;background-size:cover;background-position:center;background-repeat:no-repeat}
+    .bg{background-image:url("camping.jpg")}
+    .bg-night{background-image:url("camping-nuit.jpg");opacity:0}
+    html[data-theme="dark"] .bg{opacity:0} html[data-theme="dark"] .bg-night{opacity:1;transition:opacity 900ms ease}
+    .bg,.bg-night{-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 55vh,rgba(0,0,0,.7) 68vh,rgba(0,0,0,0) 85vh);mask-image:linear-gradient(to bottom,#000 0,#000 55vh,rgba(0,0,0,.7) 68vh,rgba(0,0,0,0) 85vh)}
+    .bg2{background-image:url("camping-accueil-2.jpg");-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 55vh,rgba(0,0,0,.9) 68vh,#000 100%);mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 55vh,rgba(0,0,0,.9) 68vh,#000 100%)}
+    .topbar{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 18px;backdrop-filter:blur(10px) saturate(120%);background:color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.28));border-bottom:1px solid rgba(255,255,255,.2)}
+    .nav-left{display:flex;align-items:center;gap:16px}.logo{height:42px;border-radius:8px}.nav{display:flex;gap:10px;background:color-mix(in oklab,var(--glass) 84%,transparent);border:1px solid rgba(255,255,255,.45);padding:6px 10px;border-radius:999px}
+    .nav a{text-decoration:none;color:var(--text);font-weight:700;padding:6px 12px;border-radius:999px}.nav a:hover{background:rgba(255,255,255,.38)}.nav a[aria-current="page"]{background:rgba(255,255,255,.30)}
+    .theme-toggle{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 15px;color:#fff;font-weight:700;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700))}
+    .wrap{max-width:1100px;margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px);display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media (max-width: 980px){ .wrap{grid-template-columns:1fr} }
+    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,3vw,28px)}
+    h1,h2{font-family:Poppins,system-ui,sans-serif;margin:0 0 10px}
+    label{display:flex;flex-direction:column;gap:6px;color:#475569;font-size:14px}
+    input,select,textarea{padding:12px 14px;border-radius:14px;border:1px solid rgba(15,23,42,.16);background:#fff}
+    html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background:#0b1220;color:#e5e7eb;border-color:rgba(148,163,184,.28)}
+    button{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:800;cursor:pointer}
+    .stars{color:#f59e0b; font-size:18px; letter-spacing:2px}
+    .avis-item{background:var(--glass-strong);border:1px solid rgba(255,255,255,.45);border-radius:16px;padding:14px;margin-top:12px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px} @media(max-width:640px){ .row{grid-template-columns:1fr}}
+    .hint{color:#475569;font-size:12px}
   </style>
 </head>
 <body>
-  <div class="vignette" aria-hidden="true"></div>
+  <div class="bg"></div><div class="bg-night"></div><div class="bg2"></div>
 
   <header class="topbar">
     <div class="nav-left">
       <img src="logo.jpg" alt="Camping Rivassland" class="logo">
-      <nav class="nav" aria-label="Navigation principale">
+      <nav class="nav">
         <a href="accueil.html">Accueil</a>
         <a href="reservation.html">Réservations</a>
+        <a href="index.html" aria-current="page">Donner votre avis</a>
       </nav>
     </div>
-    <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
-      <span id="themeIcon" aria-hidden="true">🌞</span>
-      <span id="themeLabel">Mode clair</span>
-    </button>
+    <button id="themeToggle" class="theme-toggle"><span id="themeIcon">🌞</span><span id="themeLabel">Mode clair</span></button>
   </header>
 
-  <div class="page">
-    <section class="panel form" aria-labelledby="title-form">
-      <h1 id="title-form">Camping Rivassland</h1>
-      <form id="form" autocomplete="on">
-        <label>Prénom <input id="prenom" autocomplete="given-name" required /></label>
-        <label>Nom <input id="nom" autocomplete="family-name" required /></label>
-        <label>Début du séjour <input type="date" id="debut" /></label>
-        <label>Fin du séjour <input type="date" id="fin" /></label>
-        <label>Note du lieu
-          <select id="noteLieu"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select>
+  <main class="wrap">
+    <!-- Formulaire -->
+    <section class="panel">
+      <h1>Votre avis nous aide 💬</h1>
+      <form id="form">
+        <div class="row">
+          <label>Nom<input id="nom" required></label>
+          <label>Prénom<input id="prenom" required></label>
+        </div>
+        <label>Période du séjour <input id="periode" placeholder="ex. 12–15 août 2025" required></label>
+
+        <div class="row">
+          <label>Note sur le lieu
+            <select id="noteLieu" required>
+              <option value="" disabled selected>Choisir…</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+            <small class="hint">1 = médiocre, 5 = excellent</small>
+          </label>
+          <label>Note sur l’accueil
+            <select id="noteAccueil" required>
+              <option value="" disabled selected>Choisir…</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            </select>
+          </label>
+        </div>
+
+        <label>Avis sur le lieu<textarea id="avisLieu" rows="3" placeholder="Ce que vous avez aimé, pistes d’amélioration…" required></textarea></label>
+        <label>Avis sur les hôtes<textarea id="avisHotes" rows="3" placeholder="Accueil, disponibilité, ambiance…" required></textarea></label>
+
+        <label>Téléphone (international)
+          <input id="telephone" type="tel" placeholder="+33 6 12 34 56 78" required>
         </label>
-        <label>Note de l’accueil
-          <select id="noteAccueil"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select>
+
+        <label>Que pourrions-nous améliorer ?
+          <textarea id="ameliorations" rows="2" placeholder="Suggestions (facultatif)"></textarea>
         </label>
-        <label>Avis sur le lieu <textarea id="avisLieu" placeholder="Ce que vous avez aimé, points à améliorer…"></textarea></label>
-        <label>Avis sur les hôtes <textarea id="avisAccueil" placeholder="Accueil, disponibilité, ambiance…"></textarea></label>
-        <div class="buttons">
-          <button type="submit" id="btnAdd">Ajouter la réponse</button>
-          <button type="button" id="btnCsv">Exporter en CSV</button>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <button type="submit">Ajouter la réponse</button>
+          <span id="msg" class="hint"></span>
         </div>
       </form>
-      <p id="msg" role="status" aria-live="polite"></p>
     </section>
 
-    <section class="panel reviews" aria-labelledby="title-reviews">
-      <h2 id="title-reviews">Avis des visiteurs <span id="countBadge"></span></h2>
-      <div id="reviewsList"></div>
+    <!-- Avis -->
+    <section class="panel">
+      <h2>Avis des visiteurs</h2>
+      <div id="avisList"></div>
     </section>
-  </div>
+  </main>
 
   <script>
-    const PROD_API = "https://gleeful-alfajores-133e70.netlify.app/api/gas";
-    const SCRIPT_URL = (
-      location.hostname.endsWith("netlify.app") ||
-      location.hostname === "localhost" || location.hostname === "127.0.0.1"
-    ) ? "/api/gas" : PROD_API;
-
-    (function themeInit(){
-      const html = document.documentElement;
-      const saved = localStorage.getItem("theme");
-      if (saved === "light" || saved === "dark") html.setAttribute("data-theme", saved);
-      else html.setAttribute("data-theme", matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-      const btn = document.getElementById("themeToggle");
-      const icon = document.getElementById("themeIcon");
-      const label = document.getElementById("themeLabel");
-      function updateLabel(){ const isDark = html.getAttribute("data-theme")==="dark"; icon.textContent = isDark ? "🌙" : "🌞"; label.textContent = isDark ? "Mode sombre" : "Mode clair"; }
-      btn.addEventListener("click", ()=>{ const next = html.getAttribute("data-theme")==="dark" ? "light" : "dark"; html.setAttribute("data-theme", next); localStorage.setItem("theme", next); updateLabel(); });
-      updateLabel();
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{ if (!localStorage.getItem("theme")){ html.setAttribute("data-theme", e.matches ? "dark" : "light"); updateLabel(); } });
+    // Thème
+    (function(){
+      const html=document.documentElement, saved=localStorage.getItem("theme");
+      html.setAttribute("data-theme",(saved==="light"||saved==="dark")?saved:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
+      const btn=document.getElementById("themeToggle"), icon=document.getElementById("themeIcon"), label=document.getElementById("themeLabel");
+      function u(){ const d=html.getAttribute("data-theme")==="dark"; icon.textContent=d?"🌙":"🌞"; label.textContent=d?"Mode sombre":"Mode clair"; }
+      btn.addEventListener("click",()=>{const next=html.getAttribute("data-theme")==="dark"?"light":"dark"; html.setAttribute("data-theme",next); localStorage.setItem("theme",next); u();}); u();
     })();
 
-    /* Reveal des panneaux */
-    (function panelsReveal(){
-      const items = document.querySelectorAll('.panel');
-      const io = new IntersectionObserver((entries)=>{
-        let d = 0;
-        entries.forEach(e=>{
-          if (e.isIntersecting){
-            e.target.style.transitionDelay = (d*80)+'ms';
-            e.target.classList.add('reveal');
-            io.unobserve(e.target);
-            d++;
-          }
+    const API="/api/gas"; // proxy Netlify -> Apps Script
+    const form=document.getElementById('form'), msg=document.getElementById('msg'), list=document.getElementById('avisList');
+
+    function stars(n){ const s=Math.round(Number(n)||0); return '★'.repeat(s)+'☆'.repeat(5-s); }
+
+    async function load(){
+      list.innerHTML="Chargement…";
+      try{
+        const r=await fetch(API); const data=await r.json();
+        list.innerHTML="";
+        if(!Array.isArray(data) || !data.length){ list.textContent="Pas encore d’avis. Soyez le premier !"; return; }
+        data.forEach(row=>{
+          const nom=row.nom||row.Nom||""; const prenom=row.prenom||row.Prénom||row.Prenom||"";
+          const avisLieu=row.avisLieu||row["Avis sur le lieu"]||row.avis_lieu||"";
+          const avisH=row.avisHotes||row["Avis sur les hotes"]||row["Avis sur les hôtes"]||row.avis_hotes||"";
+          const noteL=Number(row.noteLieu||row["Note lieu"]||row.note_lieu||0);
+          const noteA=Number(row.noteAccueil||row["Note accueil"]||row.note_accueil||0);
+          const date=row.horodatage||row.date||row.timestamp||"";
+          const moyenne = (noteL+noteA)/2 || 0;
+
+          const el=document.createElement('div'); el.className='avis-item';
+          el.innerHTML=`
+            <div class="stars" title="Note globale">${stars(moyenne)}</div>
+            <div style="font-weight:700; margin-top:6px">${nom} ${prenom}</div>
+            <div style="margin-top:8px"><strong>Avis sur le lieu :</strong><br>${avisLieu||"<em>(vide)</em>"}</div>
+            <div style="margin-top:8px"><strong>Avis sur les hôtes :</strong><br>${avisH||"<em>(vide)</em>"}</div>
+            <div style="margin-top:8px; color:#475569">${date?new Date(date).toLocaleString():''}</div>
+          `;
+          list.appendChild(el);
         });
-      }, { threshold:.12 });
-      items.forEach(el=> io.observe(el));
-    })();
-
-    /* Stars + Avis (inchangé) */
-    function starHTML(avg){
-      avg = Math.round(avg * 2) / 2;
-      let h = '<span class="stars">';
-      for (let i=1;i<=5;i++){
-        const p=Math.min(Math.max(avg-(i-1),0),1);
-        h+=`<span class="star" style="--w:${p*100}%"></span>`;
+      }catch(e){
+        list.textContent="Impossible de charger les avis.";
       }
-      return h+'</span> '+avg.toFixed(1)+'/5';
-    }
-    function revealReviews(){
-      const items = document.querySelectorAll(".review");
-      const io = new IntersectionObserver((entries)=>{
-        for (const e of entries){
-          if (e.isIntersecting){
-            e.target.classList.add("reveal-in");
-            io.unobserve(e.target);
-          }
-        }
-      }, { threshold:.15 });
-      items.forEach(el=> io.observe(el));
-    }
-    function renderReviews(rows){
-      const seen=new Set(), deduped=[];
-      for(const r of rows){
-        const key=[r.horodatage??'',(r.prenom??'').trim().toLowerCase(),(r.nom??'').trim().toLowerCase(),(r.avis_lieu??'').trim().toLowerCase(),(r.avis_accueil??'').trim().toLowerCase()].join('|');
-        if(!seen.has(key)){ seen.add(key); deduped.push(r); }
-      }
-      const list=document.getElementById('reviewsList');
-      const badge=document.getElementById('countBadge');
-      list.innerHTML=''; badge.textContent=`(${deduped.length})`;
-      list.innerHTML=deduped.map(r=>{
-        const noteLieu=Number(r.note_lieu||0), noteAccueil=Number(r.note_accueil||0);
-        const avg=(noteLieu+noteAccueil)/2;
-        const periode=(r.debut_sejour||r.fin_sejour)?`Séjour : ${r.debut_sejour||'?'} → ${r.fin_sejour||'?'}`:'';
-        return `<article class="review">
-          <div><strong>Note globale :</strong> ${starHTML(avg)}</div>
-          <div>${(r.prenom||'')} ${(r.nom||'')}</div>
-          <div><strong>Avis sur le lieu :</strong> ${(r.avis_lieu||'—')}</div>
-          <div><strong>Avis sur les hôtes :</strong> ${(r.avis_accueil||'—')}</div>
-          ${periode?`<div class="note">${periode}</div>`:''}
-        </article>`;
-      }).join('');
-      requestAnimationFrame(revealReviews);
     }
 
-    async function apiList(){
-      const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{cache:'no-store'});
-      const text=await r.text();
-      try{ return JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
-    }
-    async function apiAdd(rec){
-      const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{
-        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(rec), cache:'no-store'
-      });
-      const text=await r.text(); let d;
-      try{ d=JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
-      if(!d.ok) throw new Error(d.error||'Erreur serveur');
-    }
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault(); msg.textContent="Envoi en cours…";
+      const payload={
+        nom:nom.value.trim(), prenom:prenom.value.trim(), periode:periode.value.trim(),
+        noteLieu:noteLieu.value, noteAccueil:noteAccueil.value,
+        avisLieu:avisLieu.value.trim(), avisHotes:avisHotes.value.trim(),
+        telephone:telephone.value.trim(), ameliorations:ameliorations.value.trim()
+      };
+      try{
+        const r=await fetch(API,{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)});
+        const data=await r.json().catch(()=>({ok:false}));
+        if(data.ok){ msg.textContent="✅ Merci ! Votre avis a été enregistré."; form.reset(); await load(); }
+        else{ msg.textContent="Erreur lors de l’envoi."; }
+      }catch(e){ msg.textContent="Erreur réseau."; }
+    });
 
-    (function init(){
-      const $=s=>document.querySelector(s);
-      const form=$('#form'), msg=$('#msg'), btnAdd=$('#btnAdd'), btnCsv=$('#btnCsv');
-      function showMessage(t){ msg.textContent=t; }
-      function formToRecord(){ return{ prenom: $('#prenom').value.trim(), nom: $('#nom').value.trim(), debut_sejour: $('#debut').value, fin_sejour: $('#fin').value, note_lieu: Number($('#noteLieu').value), note_accueil: Number($('#noteAccueil').value), avis_lieu: $('#avisLieu').value.trim(), avis_accueil: $('#avisAccueil').value.trim(), ameliorations: "" }; }
-      form.addEventListener('submit', async (e)=>{
-        e.preventDefault();
-        try{ btnAdd.disabled = true; btnAdd.style.opacity=.85; await apiAdd(formToRecord()); showMessage('Réponse enregistrée ✅'); renderReviews(await apiList()); form.reset(); }
-        catch(err){ showMessage('Erreur: '+err.message); }
-        finally{ btnAdd.disabled = false; btnAdd.style.opacity=1; }
-      });
-      btnCsv.addEventListener('click', async ()=>{
-        try{
-          const rows=await apiList(); if(!rows.length){ alert('Aucune donnée.'); return; }
-          const headers=['horodatage','prenom','nom','debut_sejour','fin_sejour','note_lieu','note_accueil','avis_lieu','avis_accueil','ameliorations'];
-          const lines=[headers.join(',')];
-          for(const r of rows){ const vals=headers.map(h=>`"${(r[h]??'').toString().replace(/"/g,'""').replace(/\r?\n/g,' / ')}"`); lines.push(vals.join(',')); }
-          const csv='\ufeff'+lines.join('\n'); const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob);
-          const a=document.createElement('a'); a.href=url; a.download='reponses_camping.csv'; a.click(); URL.revokeObjectURL(url);
-        }catch(e){ alert('Export impossible : '+(e.message||e)); }
-      });
-      (async()=>{ try{ renderReviews(await apiList()); } catch(e){ showMessage('Chargement impossible : '+e.message); } })();
-    })();
+    load();
   </script>
 </body>
 </html>

@@ -4,587 +4,189 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Réservations – Camping Rivassland</title>
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --glass: rgba(255,255,255,.56);
-      --glass-strong: rgba(255,255,255,.70);
-      --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
-      --text:#0f172a; --muted:#334155; --muted2:#475569;
-      --ok:#16a34a; --warn:#dc2626;
-      --shadow: 0 18px 46px rgba(2,6,23,.20);
-      --radius:22px;
-      --transition:220ms cubic-bezier(.22,.61,.36,1);
-    }
-    html[data-theme="dark"]{
-      --glass: rgba(17,24,39,.46);
-      --glass-strong: rgba(17,24,39,.62);
-      --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
-      --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
-      --shadow: 0 22px 56px rgba(0,0,0,.46);
-    }
-    @media (prefers-reduced-motion:no-preference){
-      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
-    }
+    :root{--glass:rgba(255,255,255,.56);--glass-strong:rgba(255,255,255,.70);--primary:#2563eb;--primary-700:#1d4ed8;--text:#0f172a;--muted:#334155;--muted2:#475569;--ok:#16a34a;--warn:#dc2626;--shadow:0 18px 46px rgba(2,6,23,.20);--radius:22px;--transition:220ms cubic-bezier(.22,.61,.36,1)}
+    html[data-theme="dark"]{--glass:rgba(17,24,39,.46);--glass-strong:rgba(17,24,39,.62);--primary:#60a5fa;--primary-700:#3b82f6;--text:#e5e7eb;--muted:#cbd5e1;--muted2:#94a3b8;--shadow:0 22px 56px rgba(0,0,0,.46)}
+    html,body{height:100%} body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .bg,.bg-night,.bg2{position:fixed;inset:0;z-index:-5;background-size:cover;background-position:center;background-repeat:no-repeat}
+    .bg{background-image:url("camping.jpg")}
+    .bg-night{background-image:url("camping-nuit.jpg");opacity:0}
+    html[data-theme="dark"] .bg{opacity:0} html[data-theme="dark"] .bg-night{opacity:1;transition:opacity 900ms ease}
+    .bg,.bg-night{-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 55vh,rgba(0,0,0,.7) 68vh,rgba(0,0,0,0) 85vh);mask-image:linear-gradient(to bottom,#000 0,#000 55vh,rgba(0,0,0,.7) 68vh,rgba(0,0,0,0) 85vh)}
+    .bg2{background-image:url("camping-accueil-2.jpg");-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 55vh,rgba(0,0,0,.9) 68vh,#000 100%);mask-image:linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 55vh,rgba(0,0,0,.9) 68vh,#000 100%)}
 
-    /* ===== Fond plein écran (sans overlay sombre) ===== */
-    html,body{ height:100%; }
-    body{
-      margin:0; color:var(--text);
-      font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      line-height:1.6;
-      background: transparent;
-    }
-    body::before, body::after{
-      content:""; position:fixed; inset:0; z-index:-4;
-      background-size:cover; background-position:center; background-repeat:no-repeat;
-      transition: opacity 900ms ease;
-      will-change: opacity;
-    }
-    body::before{ background-image:url("camping.jpg"); opacity:1; }
-    body::after { background-image:url("camping-nuit.jpg"); opacity:0; }
-    html[data-theme="dark"] body::before{ opacity:0; }
-    html[data-theme="dark"] body::after { opacity:1; }
+    .topbar{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 18px;backdrop-filter:blur(10px) saturate(120%);background:color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.28));border-bottom:1px solid rgba(255,255,255,.2)}
+    .nav-left{display:flex;align-items:center;gap:16px}.logo{height:42px;border-radius:8px}.nav{display:flex;gap:10px;background:color-mix(in oklab,var(--glass) 84%,transparent);border:1px solid rgba(255,255,255,.45);padding:6px 10px;border-radius:999px}
+    .nav a{text-decoration:none;color:var(--text);font-weight:700;padding:6px 12px;border-radius:999px}.nav a:hover{background:rgba(255,255,255,.38)}.nav a[aria-current="page"]{background:rgba(255,255,255,.30)}
+    .theme-toggle{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 15px;color:#fff;font-weight:700;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700))}
 
-    /* Vignette légère */
-    .vignette{ position:fixed; inset:0; z-index:-3; pointer-events:none; opacity:.10; }
-    .vignette::before{
-      content:""; position:absolute; inset:0;
-      background: radial-gradient(1200px 800px at 50% 12%, rgba(0,0,0,.18), transparent 60%);
-    }
-    html[data-theme="dark"] .vignette{ opacity:.22; }
-
-    /* ===== Topbar ===== */
-    .topbar{
-      position: sticky; top:0; z-index:5;
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      padding: 12px 18px;
-      backdrop-filter: blur(10px) saturate(120%);
-      background: color-mix(in oklab, rgba(255,255,255,.52) 62%, transparent);
-      border-bottom: 1px solid rgba(255,255,255,.45);
-      box-shadow: 0 12px 28px rgba(0,0,0,.18);
-    }
-    html[data-theme="dark"] .topbar{
-      background: color-mix(in oklab, rgba(17,24,39,.62) 72%, transparent);
-      border-bottom-color: rgba(255,255,255,.18);
-      box-shadow: 0 14px 32px rgba(0,0,0,.42);
-    }
-    .nav-left{ display:flex; align-items:center; gap:16px; }
-    .logo{ height:42px; width:auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.2); }
-    .nav{ display:flex; gap:10px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
-    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 12px; border-radius:999px; }
-    .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.38); }
-
-    .theme-toggle{
-      display:inline-flex; align-items:center; gap:8px; border-radius: 999px; padding:9px 15px; color:#fff; font-weight:700;
-      border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
-      background: linear-gradient(180deg, var(--primary), var(--primary-700));
-      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
-      cursor:pointer;
-    }
-    .theme-toggle:hover{ transform: translateY(-1px); }
-
-    /* ===== Layout ===== */
-    .wrap{ max-width: 920px; margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px); }
-    .panel{
-      background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
-      border: 1px solid rgba(255,255,255,.35); border-radius: var(--radius);
-      box-shadow: var(--shadow); padding: clamp(18px,3vw,28px);
-      opacity:0; transform: translateY(10px);
-    }
-    .panel.reveal{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
-
-    h1{ margin:0 0 10px; font-size: clamp(28px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
-    p.lead{ color:var(--muted); font-size: 16px; margin: 6px 0 0; }
-
-    .ok{ background: color-mix(in oklab, var(--ok) 12%, transparent); border:1px solid color-mix(in oklab, var(--ok) 35%, transparent); color: color-mix(in oklab, var(--ok) 80%, #000); padding:10px 12px; border-radius:12px; }
-    .warn{ background: color-mix(in oklab, var(--warn) 12%, transparent); border:1px solid color-mix(in oklab, var(--warn) 35%, transparent); color: color-mix(in oklab, var(--warn) 80%, #000); padding:10px 12px; border-radius:12px; }
-
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-    button{
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      padding:12px 18px; border-radius:14px; border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
-      background: linear-gradient(180deg, var(--primary), var(--primary-700)); color:#fff; font-weight:700; cursor:pointer;
-      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
-    }
-    button.ghost{ background: transparent; color: var(--text); border:1px dashed color-mix(in oklab, var(--text) 30%, transparent); }
-    button:hover{ transform: translateY(-1px); }
-
-    /* ===== Stepper ===== */
-    .stepper{
-      display:flex; align-items:center; justify-content:center; gap:12px; margin: 8px 0 14px;
-      flex-wrap: wrap;
-    }
-    .stepper .item{ display:flex; flex-direction:column; align-items:center; gap:2px; min-width: 56px; }
-    .stepper .dot{
-      --sz: 34px;
-      width: var(--sz); height: var(--sz); border-radius: 50%;
-      display:grid; place-items:center; font-weight:700;
-      background: rgba(255,255,255,.72); border:1px solid rgba(0,0,0,.08); color: var(--text);
-      box-shadow: 0 6px 16px rgba(0,0,0,.08);
-    }
-    html[data-theme="dark"] .stepper .dot{ background: rgba(17,24,39,.66); border-color: rgba(255,255,255,.14); }
-    .stepper .label{ font-size: 12px; color: var(--muted2); margin-top: 4px; text-align:center; }
-    .stepper .bar{ width: 38px; height: 2px; background: rgba(255,255,255,.65); border-radius: 2px; }
-    html[data-theme="dark"] .stepper .bar{ background: rgba(255,255,255,.28); }
-    .stepper .item.active .dot{
-      background: linear-gradient(180deg, var(--primary), var(--primary-700));
-      color:#fff; border-color: color-mix(in oklab, var(--primary) 40%, transparent);
-    }
-    .stepper .item.done .dot{
-      background: color-mix(in oklab, var(--ok) 80%, #22c55e);
-      color:#fff; border-color: color-mix(in oklab, var(--ok) 40%, transparent);
-    }
-    .stepper .item.done .label{ color: color-mix(in oklab, var(--ok) 70%, var(--muted2)); }
-    .stepper .item.active .label{ color: var(--text); font-weight: 700; }
-
-    /* ===== Form ===== */
-    .step{ display:grid; gap:12px; margin-top:10px; }
-    .cols{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    @media (max-width: 640px){ .cols{ grid-template-columns: 1fr; } }
-    label{ font-size:13px; color: var(--muted2); display:flex; flex-direction:column; gap:6px; }
-    input, select, textarea{
-      padding: 12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,.16); background:#fff; color:#0f172a;
-      box-shadow: 0 4px 10px rgba(0,0,0,.04) inset;
-    }
-    textarea{ resize: vertical; }
-    html[data-theme="dark"] input, html[data-theme="dark"] select, html[data-theme="dark"] textarea{
-      background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28);
-    }
-    small{ color: var(--muted2); }
-    .hidden{ display:none !important; }
-    .summary{ background: var(--glass-strong); border:1px solid rgba(255,255,255,.4); border-radius:14px; padding:12px 14px; }
-
-    /* Animation d’apparition des étapes */
-    @keyframes stepIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in { animation: stepIn 120ms ease-out; }
+    .wrap{max-width:920px;margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px)}
+    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,3vw,28px)}
+    h1{margin:0 0 10px; font-family:Poppins,system-ui,sans-serif}
+    .ok{background:color-mix(in oklab,var(--ok) 12%,transparent);border:1px solid color-mix(in oklab,var(--ok) 35%,transparent);color:color-mix(in oklab,var(--ok) 80%,#000);padding:10px 12px;border-radius:12px}
+    .warn{background:color-mix(in oklab,var(--warn) 12%,transparent);border:1px solid color-mix(in oklab,var(--warn) 35%,transparent);color:color-mix(in oklab,var(--warn) 80%,#000);padding:10px 12px;border-radius:12px}
+    button{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:800;cursor:pointer}
+    button.ghost{background:transparent;color:var(--text);border:1px dashed color-mix(in oklab,var(--text) 30%,transparent)}
+    .stepper{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0 14px;flex-wrap:wrap}
+    .stepper .item{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:56px}
+    .stepper .dot{--sz:34px;width:var(--sz);height:var(--sz);border-radius:50%;display:grid;place-items:center;font-weight:700;background:rgba(255,255,255,.72);border:1px solid rgba(0,0,0,.08)}
+    .stepper .label{font-size:12px;color:#94a3b8;margin-top:4px}
+    .stepper .bar{width:38px;height:2px;background:rgba(255,255,255,.65);border-radius:2px}
+    .stepper .item.active .dot{background:linear-gradient(180deg,var(--primary),var(--primary-700)); color:#fff}
+    .stepper .item.done .dot{background:color-mix(in oklab,var(--ok) 80%,#22c55e); color:#fff}
+    .step{display:grid;gap:12px;margin-top:10px}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px} @media(max-width:640px){.cols{grid-template-columns:1fr}}
+    label{font-size:13px;color:#94a3b8;display:flex;flex-direction:column;gap:6px}
+    input,select,textarea{padding:12px 14px;border-radius:14px;border:1px solid rgba(15,23,42,.16);background:#fff}
+    html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background:#0b1220;color:#e5e7eb;border-color:rgba(148,163,184,.28)}
+    .summary{background:var(--glass-strong);border:1px solid rgba(255,255,255,.4);border-radius:14px;padding:12px 14px}
+    @keyframes stepIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}} .fade-in{animation:stepIn 120ms ease-out}
   </style>
 </head>
 <body>
-  <div class="vignette" aria-hidden="true"></div>
+  <div class="bg"></div><div class="bg-night"></div><div class="bg2"></div>
 
   <header class="topbar">
     <div class="nav-left">
       <img src="logo.jpg" alt="Camping Rivassland" class="logo">
-      <nav class="nav" aria-label="Navigation principale">
+      <nav class="nav">
         <a href="accueil.html">Accueil</a>
         <a href="reservation.html" aria-current="page">Réservations</a>
+        <a href="index.html">Donner votre avis</a>
       </nav>
     </div>
-    <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
-      <span id="themeIcon" aria-hidden="true">🌞</span>
-      <span id="themeLabel">Mode clair</span>
-    </button>
+    <button id="themeToggle" class="theme-toggle"><span id="themeIcon">🌞</span><span id="themeLabel">Mode clair</span></button>
   </header>
 
   <main class="wrap">
-    <!-- Intro visible d’office -->
-    <section class="panel reveal">
+    <section class="panel">
       <h1>Réserver un emplacement</h1>
-      <p class="ok">Réservation rapide : nous avons simplement besoin de quelques informations pour confirmer votre demande.</p>
-      <div class="actions">
-        <button id="startWizard">Commencer</button>
-      </div>
-      <noscript><p class="warn">Activez JavaScript pour effectuer une réservation.</p></noscript>
+      <p class="ok">Réservation rapide : nous avons simplement besoin de quelques informations.</p>
+      <div class="actions"><button id="startWizard">Commencer</button></div>
     </section>
 
     <section class="panel" id="wizard" aria-live="polite" aria-atomic="true"></section>
   </main>
 
   <script>
-  (function(){
-    try{
-      /* Thème */
-      (function themeInit(){
-        const html = document.documentElement;
-        const saved = localStorage.getItem("theme");
-        html.setAttribute("data-theme",
-          saved==="light"||saved==="dark" ? saved :
-          (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-        );
-        const btn = document.getElementById("themeToggle");
-        const icon = document.getElementById("themeIcon");
-        const label = document.getElementById("themeLabel");
-        function updateLabel(){ const isDark = html.getAttribute("data-theme")==="dark"; if(icon) icon.textContent = isDark ? "🌙" : "🌞"; if(label) label.textContent = isDark ? "Mode sombre" : "Mode clair"; }
-        if (btn) btn.addEventListener("click", ()=>{ const next = html.getAttribute("data-theme")==="dark" ? "light" : "dark"; html.setAttribute("data-theme", next); localStorage.setItem("theme", next); updateLabel(); });
-        updateLabel();
-      })();
+    // Thème
+    (function(){const html=document.documentElement,s=localStorage.getItem("theme");html.setAttribute("data-theme",(s==="light"||s==="dark")?s:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));const b=document.getElementById("themeToggle"),i=document.getElementById("themeIcon"),l=document.getElementById("themeLabel");function u(){const d=html.getAttribute("data-theme")==="dark";i.textContent=d?"🌙":"🌞";l.textContent=d?"Mode sombre":"Mode clair"}b.addEventListener("click",()=>{const n=html.getAttribute("data-theme")==="dark"?"light":"dark";html.setAttribute("data-theme",n);localStorage.setItem("theme",n);u()});u()})();
 
-      /* Reveal panels */
-      (function panelsReveal(){
-        const items = document.querySelectorAll('.panel:not(.reveal)');
-        if (!('IntersectionObserver' in window)){ items.forEach(el=> el.classList.add('reveal')); return; }
-        const io = new IntersectionObserver((entries)=>{
-          let d = 0;
-          entries.forEach(e=>{
-            if (e.isIntersecting){
-              e.target.style.transitionDelay = (d*80)+'ms';
-              e.target.classList.add('reveal');
-              io.unobserve(e.target);
-              d++;
-            }
-          });
-        }, { threshold:.12 });
-        items.forEach(el=> io.observe(el));
-      })();
+    (function wizard(){
+      const start=document.getElementById('startWizard'), root=document.getElementById('wizard');
+      if(!start||!root) return;
+      const API="/api/gas?sheet=Reservations";
+      const STEP={DATES:0,PEOPLE:1,VEHICLE:2,HAVE_PETS:3,PET_TYPE:4,DOG_SEX:5,DOG_CASTRE:6,OTHER_DETAILS:7,SUMMARY:8};
+      const labels=["Dates","Voyageurs","Véhicule","Animaux","Type","Sexe","Castré","Détails","Récap"];
+      const st={debut:"",fin:"",adultes:2,enfants:0,vehicule:"Van",electricite:"oui",animaux:"non",animalType:"",chienSexe:"",chienCastre:"",animauxDetails:""};
+      let step=-1;
 
-      /* ===== Assistant de réservation (étapes scindées) ===== */
-      (function wizard(){
-        const start = document.getElementById('startWizard');
-        const wizard = document.getElementById('wizard');
-        if (!start || !wizard) return;
+      function mount(){ root.innerHTML=`${stepper(step)}<div class="fade-in">${view(step)}</div>`; bind(); updateStepper(); }
+      function bind(){
+        const n=root.querySelector('[data-next]'); const b=root.querySelector('[data-back]');
+        if(n) n.addEventListener('click',onNext); if(b) b.addEventListener('click',()=>{step=Math.max(STEP.DATES,step-1);mount()});
+      }
+      function onNext(){
+        if(step===STEP.DATES){ const d=root.querySelector('#debut')?.value,f=root.querySelector('#fin')?.value; if(!d||!f) return toast("Dates manquantes"); if(new Date(f)<new Date(d)) return toast("Fin avant début"); st.debut=d;st.fin=f; step=STEP.PEOPLE; return mount(); }
+        if(step===STEP.PEOPLE){ const a=+root.querySelector('#adultes').value||0, e=+root.querySelector('#enfants').value||0; if(a<1) return toast("Au moins 1 adulte"); st.adultes=a;st.enfants=e; step=STEP.VEHICLE; return mount(); }
+        if(step===STEP.VEHICLE){ st.vehicule=root.querySelector('#vehicule').value; st.electricite=root.querySelector('input[name="elec"]:checked')?.value||"non"; step=STEP.HAVE_PETS; return mount(); }
+        if(step===STEP.HAVE_PETS){ st.animaux=root.querySelector('input[name="animaux"]:checked')?.value||"non"; if(st.animaux==="non"){ step=STEP.SUMMARY; return mount(); } step=STEP.PET_TYPE; return mount(); }
+        if(step===STEP.PET_TYPE){ st.animalType=root.querySelector('input[name="animalType"]:checked')?.value||""; if(!st.animalType) return toast("Choisissez le type"); if(st.animalType==="chien"){ step=STEP.DOG_SEX; } else { step=STEP.OTHER_DETAILS; } return mount(); }
+        if(step===STEP.DOG_SEX){ st.chienSexe=root.querySelector('input[name="chienSexe"]:checked')?.value||""; if(!st.chienSexe) return toast("Sexe du chien"); if(st.chienSexe==="male"){ step=STEP.DOG_CASTRE; } else { step=STEP.SUMMARY; } return mount(); }
+        if(step===STEP.DOG_CASTRE){ st.chienCastre=root.querySelector('input[name="chienCastre"]:checked')?.value||""; if(!st.chienCastre) return toast("Castration ?"); if(st.chienCastre==="non"){ return toast("Désolés, nous n’acceptons pas les mâles non castrés (chien résident dominant)."); } step=STEP.SUMMARY; return mount(); }
+        if(step===STEP.OTHER_DETAILS){ st.animauxDetails=(root.querySelector('#animauxDetails')?.value||"").trim(); if(!st.animauxDetails) return toast("Précisez l’animal"); step=STEP.SUMMARY; return mount(); }
+        if(step===STEP.SUMMARY){ submit().catch(e=>toast("Erreur d’envoi")); }
+      }
+      function toast(t){ let n=root.querySelector('.warn'); if(!n){n=document.createElement('p');n.className='warn';root.appendChild(n);} n.textContent=t; }
 
-        const SCRIPT_URL = "/api/gas?sheet=Reservations";
+      function stepper(s){ return `<div class="stepper">${labels.map((lab,i)=>`
+          <div class="item ${i<s?'done':i===s?'active':''}">
+            <div class="dot">${i<s?'✔︎':i+1}</div>
+            <div class="label">${lab}</div>
+          </div>`).join(`<div class="bar"></div>`)}</div>`; }
 
-        // Étapes
-        const STEP_DATES       = 0;
-        const STEP_PEOPLE      = 1;
-        const STEP_VEHICLE     = 2;
-        const STEP_HAVE_PETS   = 3;
-        const STEP_PET_TYPE    = 4;
-        const STEP_DOG_SEX     = 5;
-        const STEP_DOG_CASTRE  = 6;
-        const STEP_OTHER_DETAILS = 7;
-        const STEP_SUMMARY     = 8;
-
-        const labels = ["Dates","Voyageurs","Véhicule","Animaux","Type","Sexe","Castré","Détails","Récap"];
-
-        const state = {
-          debut:"", fin:"",
-          adultes: 2, enfants: 0,
-          vehicule: "Van", electricite: "oui",
-          animaux: "non",        // oui | non
-          animalType: "",        // chien | autre
-          chienSexe: "",         // male | femelle
-          chienCastre: "",       // oui | non
-          animauxDetails: ""     // texte si "autre"
-        };
-
-        let step = -1;
-
-        function mount(){
-          wizard.innerHTML = `
-            ${renderStepper(step)}
-            <div class="fade-in">${renderStep(step)}</div>
-          `;
-          bindHandlers();
-          updateStepper(step);
-        }
-
-        function bindHandlers(){
-          const next = wizard.querySelector('[data-next]');
-          const back = wizard.querySelector('[data-back]');
-          if (next) next.addEventListener('click', onNext);
-          if (back) back.addEventListener('click', ()=>{ step = Math.max(STEP_DATES, step-1); mount(); });
-
-          if (step === STEP_PET_TYPE){
-            // Rien de spécial
-          }
-        }
-
-        function onNext(){
-          try{
-            if (step===STEP_DATES){
-              const debut = wizard.querySelector('#debut')?.value;
-              const fin   = wizard.querySelector('#fin')?.value;
-              if (!debut || !fin) return toast('Merci de renseigner les deux dates.');
-              if (new Date(fin) < new Date(debut)) return toast('La date de fin doit être après la date de début.');
-              state.debut = debut; state.fin = fin;
-              step = STEP_PEOPLE; return mount();
-            }
-
-            if (step===STEP_PEOPLE){
-              const ad = Number(wizard.querySelector('#adultes')?.value||0);
-              const en = Number(wizard.querySelector('#enfants')?.value||0);
-              if (ad<1) return toast('Au moins 1 adulte.');
-              state.adultes = ad; state.enfants = en;
-              step = STEP_VEHICLE; return mount();
-            }
-
-            if (step===STEP_VEHICLE){
-              state.vehicule    = wizard.querySelector('#vehicule')?.value || "Van";
-              state.electricite = wizard.querySelector('input[name="elec"]:checked')?.value || "non";
-              step = STEP_HAVE_PETS; return mount();
-            }
-
-            if (step===STEP_HAVE_PETS){
-              state.animaux = wizard.querySelector('input[name="animaux"]:checked')?.value || "non";
-              if (state.animaux === "non"){ step = STEP_SUMMARY; return mount(); }
-              step = STEP_PET_TYPE; return mount();
-            }
-
-            if (step===STEP_PET_TYPE){
-              state.animalType = wizard.querySelector('input[name="animalType"]:checked')?.value || "";
-              if (!state.animalType) return toast("Merci de choisir le type d’animal.");
-              if (state.animalType === "chien"){ step = STEP_DOG_SEX; return mount(); }
-              // autre → demander détails
-              step = STEP_OTHER_DETAILS; return mount();
-            }
-
-            if (step===STEP_DOG_SEX){
-              state.chienSexe = wizard.querySelector('input[name="chienSexe"]:checked')?.value || "";
-              if (!state.chienSexe) return toast("Merci d’indiquer si le chien est mâle ou femelle.");
-              if (state.chienSexe === "male"){ step = STEP_DOG_CASTRE; return mount(); }
-              // femelle → ok
-              step = STEP_SUMMARY; return mount();
-            }
-
-            if (step===STEP_DOG_CASTRE){
-              state.chienCastre = wizard.querySelector('input[name="chienCastre"]:checked')?.value || "";
-              if (!state.chienCastre) return toast("Merci d’indiquer si le chien est castré ou non.");
-              if (state.chienCastre === "non"){
-                return toast("Désolés, nous n’acceptons pas les chiens mâles non castrés. Notre chien est dominant et n’accepte que les mâles castrés. Merci de votre compréhension 🙏");
-              }
-              // mâle castré → ok
-              step = STEP_SUMMARY; return mount();
-            }
-
-            if (step===STEP_OTHER_DETAILS){
-              state.animauxDetails = (wizard.querySelector('#animauxDetails')?.value || "").trim();
-              if (!state.animauxDetails) return toast("Merci de préciser le(s) animal(aux).");
-              step = STEP_SUMMARY; return mount();
-            }
-
-            if (step===STEP_SUMMARY){
-              submitReservation().catch(err=> toast("Erreur d’envoi : " + (err?.message || err)));
-              return;
-            }
-
-          }catch(err){
-            console.error(err);
-            toast("Une erreur est survenue. Essayez de recharger la page.");
-          }
-        }
-
-        function renderStepper(s){
-          const items = labels.map((label, i) => `
-            <div class="item" data-step="${i}">
-              <div class="dot" role="img" aria-label="Étape ${i+1}">${i+1}</div>
-              <div class="label">${label}</div>
+      function view(s){
+        if(s===STEP.DATES) return `<h2 style="font-family:Poppins;">Étape 1 · Vos dates</h2>
+          <div class="step cols">
+            <label>Début<input type="date" id="debut" value="${st.debut}"></label>
+            <label>Fin<input type="date" id="fin" value="${st.fin}"></label>
+          </div>
+          ${actions(false)}`;
+        if(s===STEP.PEOPLE) return `<h2 style="font-family:Poppins;">Étape 2 · Voyageurs</h2>
+          <div class="step cols">
+            <label>Adultes<input type="number" id="adultes" min="1" value="${st.adultes}"></label>
+            <label>Enfants<input type="number" id="enfants" min="0" value="${st.enfants}"></label>
+          </div>${actions(true)}`;
+        if(s===STEP.VEHICLE) return `<h2 style="font-family:Poppins;">Étape 3 · Véhicule</h2>
+          <div class="step cols">
+            <label>Type
+              <select id="vehicule">${["Tente","Van","Camping-car","Caravane","Autre"].map(v=>`<option ${st.vehicule===v?"selected":""}>${v}</option>`).join("")}</select>
+            </label>
+            <label>Électricité ?
+              <div><label><input type="radio" name="elec" value="oui" ${st.electricite==="oui"?"checked":""}> Oui</label>
+              <label style="margin-left:12px"><input type="radio" name="elec" value="non" ${st.electricite==="non"?"checked":""}> Non</label></div>
+            </label>
+          </div>${actions(true)}`;
+        if(s===STEP.HAVE_PETS) return `<h2 style="font-family:Poppins;">Étape 4 · Animaux</h2>
+          <div class="step">
+            <label>Venez-vous avec des animaux ?
+              <div><label><input type="radio" name="animaux" value="non" ${st.animaux==="non"?"checked":""}> Non</label>
+              <label style="margin-left:12px"><input type="radio" name="animaux" value="oui" ${st.animaux==="oui"?"checked":""}> Oui</label></div>
+            </label>
+          </div>${actions(true,"Continuer")}`;
+        if(s===STEP.PET_TYPE) return `<h2 style="font-family:Poppins;">Étape 5 · Type d’animal</h2>
+          <div class="step"><label>Quel type ?
+            <div><label><input type="radio" name="animalType" value="chien" ${st.animalType==="chien"?"checked":""}> Chien</label>
+            <label style="margin-left:12px"><input type="radio" name="animalType" value="autre" ${st.animalType==="autre"?"checked":""}> Autre</label></div>
+          </label></div>${actions(true)}`;
+        if(s===STEP.DOG_SEX) return `<h2 style="font-family:Poppins;">Étape 6 · Sexe du chien</h2>
+          <div class="step"><div><label>
+            <div><label><input type="radio" name="chienSexe" value="male" ${st.chienSexe==="male"?"checked":""}> Mâle</label>
+            <label style="margin-left:12px"><input type="radio" name="chienSexe" value="femelle" ${st.chienSexe==="femelle"?"checked":""}> Femelle</label></div>
+          </label></div><small>Si mâle → question suivante.</small></div>${actions(true)}`;
+        if(s===STEP.DOG_CASTRE) return `<h2 style="font-family:Poppins;">Étape 7 · Castration</h2>
+          <div class="step"><label>Votre chien mâle est-il castré ?
+            <div><label><input type="radio" name="chienCastre" value="oui" ${st.chienCastre==="oui"?"checked":""}> Oui</label>
+            <label style="margin-left:12px"><input type="radio" name="chienCastre" value="non" ${st.chienCastre==="non"?"checked":""}> Non</label></div>
+          </label><small>Par sécurité, nous n’acceptons pas les mâles non castrés.</small></div>${actions(true)}`;
+        if(s===STEP.OTHER_DETAILS) return `<h2 style="font-family:Poppins;">Étape 6 · Détails des animaux</h2>
+          <div class="step"><label>Précisions
+            <textarea id="animauxDetails" rows="3" placeholder="Ex. 1 chat stérilisé, 2 lapins…">${st.animauxDetails||""}</textarea>
+          </label></div>${actions(true)}`;
+        if(s===STEP.SUMMARY){
+          const animauxTxt=(st.animaux==="non")?"aucun":(st.animalType==="chien"?`chien (${st.chienSexe}${st.chienSexe==="male"?(st.chienCastre==="oui"?", castré":", non castré"):""})`:`autre : ${st.animauxDetails||"non précisé"}`);
+          return `<h2 style="font-family:Poppins;">Étape 8 · Récapitulatif</h2>
+            <div class="summary">
+              <ul style="margin:0;padding-left:18px">
+                <li><strong>Dates :</strong> ${st.debut} → ${st.fin}</li>
+                <li><strong>Voyageurs :</strong> ${st.adultes} adulte(s)${st.enfants?`, ${st.enfants} enfant(s)`:``}</li>
+                <li><strong>Véhicule :</strong> ${st.vehicule}${st.electricite==="oui"?" · électricité":""}</li>
+                <li><strong>Animaux :</strong> ${animauxTxt}</li>
+              </ul>
             </div>
-          `).join(`<div class="bar" aria-hidden="true"></div>`);
-          return `<div class="stepper" aria-hidden="true">${items}</div>`;
+            <div class="actions"><button class="ghost" data-back>Retour</button><button data-next>Envoyer la demande</button></div>
+            <p id="finalMsg" class="ok" style="display:none;margin-top:10px"></p>`;
         }
+        return "";
+      }
+      function actions(back=true,next="Continuer"){ return `<div class="actions">${back?`<button class="ghost" data-back>Retour</button>`:""}<button data-next>${next}</button></div>`; }
+      function updateStepper(){
+        const nodes=root.querySelectorAll('.stepper .item');
+        nodes.forEach((n,i)=>{ n.classList.toggle('active',i===step); n.classList.toggle('done',i<step); const d=n.querySelector('.dot'); if(d) d.textContent=i<step?"✔︎":String(i+1); });
+      }
+      async function submit(){
+        const payload={debut:st.debut,fin:st.fin,adultes:String(st.adultes),enfants:String(st.enfants),vehicule:st.vehicule,electricite:st.electricite,animaux:st.animaux,animalType:st.animalType,chienSexe:st.chienSexe,chienCastre:st.chienCastre,animauxDetails:st.animauxDetails};
+        const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+        const data=await r.json().catch(()=>({ok:false}));
+        const m=document.getElementById('finalMsg'); if(!m) return;
+        if(data.ok){ m.style.display="block"; m.textContent="✅ Demande envoyée ! Nous vous recontactons rapidement."; }
+        else { m.style.display="block"; m.className="warn"; m.textContent="Erreur d’envoi."; }
+      }
 
-        function updateStepper(s){
-          const nodes = wizard.querySelectorAll('.stepper .item');
-          nodes.forEach((n, i)=>{
-            n.classList.toggle('active', i===s);
-            n.classList.toggle('done',   i<s);
-            const dot = n.querySelector('.dot');
-            if (!dot) return;
-            if (i<s) { dot.textContent = "✔︎"; dot.setAttribute('aria-label', `Étape ${i+1} validée`); }
-            else     { dot.textContent = String(i+1); dot.setAttribute('aria-label', `Étape ${i+1}`); }
-          });
-        }
-
-        function toast(msg){
-          let n = wizard.querySelector('.warn');
-          if (!n){ n=document.createElement('p'); n.className='warn'; wizard.appendChild(n); }
-          n.textContent = msg;
-        }
-
-        function actions(back=true, nextLabel="Continuer"){
-          return `
-            <div class="actions">
-              ${back?`<button type="button" class="ghost" data-back>Retour</button>`:''}
-              <button type="button" data-next>${nextLabel}</button>
-            </div>
-          `;
-        }
-
-        function renderStep(s){
-          switch(s){
-            case STEP_DATES:        return renderDates();
-            case STEP_PEOPLE:       return renderPeople();
-            case STEP_VEHICLE:      return renderVehicle();
-            case STEP_HAVE_PETS:    return renderHavePets();
-            case STEP_PET_TYPE:     return renderPetType();
-            case STEP_DOG_SEX:      return renderDogSex();
-            case STEP_DOG_CASTRE:   return renderDogCastre();
-            case STEP_OTHER_DETAILS:return renderOtherDetails();
-            case STEP_SUMMARY:      return renderSummary();
-            default:                return "";
-          }
-        }
-
-        function renderDates(){
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 1 · Vos dates</h2>
-            <div class="step cols">
-              <label>Début du séjour<input type="date" id="debut" value="${state.debut}"></label>
-              <label>Fin du séjour<input type="date" id="fin" value="${state.fin}"></label>
-              <small>Vous pourrez ajuster ensuite si besoin.</small>
-            </div>
-            ${actions(false)}
-          `;
-        }
-        function renderPeople(){
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 2 · Voyageurs</h2>
-            <div class="step cols">
-              <label>Adultes<input type="number" id="adultes" min="1" max="10" value="${state.adultes}"></label>
-              <label>Enfants<input type="number" id="enfants" min="0" max="10" value="${state.enfants}"></label>
-            </div>
-            ${actions(true)}
-          `;
-        }
-        function renderVehicle(){
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 3 · Véhicule</h2>
-            <div class="step cols">
-              <label>Type de véhicule
-                <select id="vehicule">
-                  ${["Tente","Van","Camping-car","Caravane","Autre"].map(v=>`<option ${state.vehicule===v?"selected":""}>${v}</option>`).join("")}
-                </select>
-              </label>
-              <label>Électricité nécessaire ?
-                <div>
-                  <label><input type="radio" name="elec" value="oui" ${state.electricite==="oui"?"checked":""}> Oui</label>
-                  <label style="margin-left:12px;"><input type="radio" name="elec" value="non" ${state.electricite==="non"?"checked":""}> Non</label>
-                </div>
-              </label>
-            </div>
-            ${actions(true)}
-          `;
-        }
-        function renderHavePets(){
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 4 · Animaux</h2>
-            <div class="step">
-              <label>Venez-vous avec des animaux ?
-                <div>
-                  <label><input type="radio" name="animaux" value="non" ${state.animaux==="non"?"checked":""}> Non</label>
-                  <label style="margin-left:12px;"><input type="radio" name="animaux" value="oui" ${state.animaux==="oui"?"checked":""}> Oui</label>
-                </div>
-              </label>
-            </div>
-            ${actions(true, "Continuer")}
-          `;
-        }
-        function renderPetType(){
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 5 · Type d’animal</h2>
-            <div class="step">
-              <label>Quel type d’animal amenez-vous ?
-                <div>
-                  <label><input type="radio" name="animalType" value="chien" ${state.animalType==="chien"?"checked":""}> Chien</label>
-                  <label style="margin-left:12px;"><input type="radio" name="animalType" value="autre" ${state.animalType==="autre"?"checked":""}> Autre</label>
-                </div>
-              </label>
-            </div>
-            ${actions(true)}
-          `;
-        }
-        function renderDogSex(){
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 6 · Sexe du chien</h2>
-            <div class="step">
-              <div>
-                <label>
-                  <div>
-                    <label><input type="radio" name="chienSexe" value="male" ${state.chienSexe==="male"?"checked":""}> Mâle</label>
-                    <label style="margin-left:12px;"><input type="radio" name="chienSexe" value="femelle" ${state.chienSexe==="femelle"?"checked":""}> Femelle</label>
-                  </div>
-                </label>
-              </div>
-              <small>Si votre chien est mâle, nous demanderons s’il est castré à l’étape suivante.</small>
-            </div>
-            ${actions(true)}
-          `;
-        }
-        function renderDogCastre(){
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 7 · Castration</h2>
-            <div class="step">
-              <label>Votre chien mâle est-il castré ?
-                <div>
-                  <label><input type="radio" name="chienCastre" value="oui" ${state.chienCastre==="oui"?"checked":""}> Oui</label>
-                  <label style="margin-left:12px;"><input type="radio" name="chienCastre" value="non" ${state.chienCastre==="non"?"checked":""}> Non</label>
-                </div>
-              </label>
-              <small>Par sécurité, nous n’acceptons pas les mâles non castrés (notre chien est dominant).</small>
-            </div>
-            ${actions(true)}
-          `;
-        }
-        function renderOtherDetails(){
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 6 · Détails des animaux</h2>
-            <div class="step">
-              <label>Précisez le(s) animal(aux)
-                <textarea id="animauxDetails" rows="3" placeholder="Exemples : 1 chat stérilisé, 2 lapins…">${state.animauxDetails||""}</textarea>
-              </label>
-            </div>
-            ${actions(true)}
-          `;
-        }
-        function renderSummary(){
-          const animauxTxt = (state.animaux==="non")
-            ? "aucun"
-            : (state.animalType==="chien"
-                ? `chien (${state.chienSexe}${state.chienSexe==="male" ? (state.chienCastre==="oui" ? ", castré" : ", non castré") : ""})`
-                : `autre : ${state.animauxDetails || "non précisé"}`);
-          const resume = `
-            <ul style="margin:0; padding-left:18px;">
-              <li><strong>Dates :</strong> ${state.debut} → ${state.fin}</li>
-              <li><strong>Voyageurs :</strong> ${state.adultes} adulte(s)${state.enfants?`, ${state.enfants} enfant(s)`:``}</li>
-              <li><strong>Véhicule :</strong> ${state.vehicule}${state.electricite==="oui"?" · électricité":""}</li>
-              <li><strong>Animaux :</strong> ${animauxTxt}</li>
-            </ul>
-          `;
-          return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 8 · Récapitulatif</h2>
-            <div class="summary">${resume}</div>
-            <div class="actions">
-              <button type="button" class="ghost" data-back>Retour</button>
-              <button type="button" data-next>Envoyer la demande</button>
-            </div>
-            <p id="finalMsg" class="ok hidden" style="margin-top:10px;"></p>
-          `;
-        }
-
-        async function submitReservation(){
-          const payload = {
-            debut: state.debut, fin: state.fin,
-            adultes: String(state.adultes), enfants: String(state.enfants),
-            vehicule: state.vehicule, electricite: state.electricite,
-            animaux: state.animaux, animalType: state.animalType,
-            chienSexe: state.chienSexe, chienCastre: state.chienCastre,
-            animauxDetails: state.animauxDetails
-          };
-          const r = await fetch(SCRIPT_URL, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
-          const data = await r.json().catch(()=>({ok:false,error:"Réponse non-JSON"}));
-          const msg = wizard.querySelector('#finalMsg') || (()=>{ const p=document.createElement('p'); p.id='finalMsg'; p.className='ok'; p.style.marginTop='10px'; wizard.appendChild(p); return p; })();
-          if (data.ok){ msg.textContent = "✅ Demande envoyée ! Nous vous recontactons rapidement pour confirmer la disponibilité et finaliser la réservation."; }
-          else{ msg.className='warn'; msg.textContent = "Une erreur est survenue : " + (data.error || "inconnue"); }
-        }
-
-        // Lancer
-        start.addEventListener('click', ()=>{
-          step = STEP_DATES;
-          mount();
-          wizard.scrollIntoView({behavior:'smooth', block:'start'});
-        });
-
-        // Bouton final → submit (sécurité)
-        wizard.addEventListener('click', (e)=>{
-          const btn = e.target.closest('[data-next]');
-          if (!btn) return;
-          if (step===STEP_SUMMARY){
-            submitReservation().catch(err=> toast("Erreur d’envoi : " + (err?.message || err)));
-          }
-        });
-      })();
-
-    }catch(err){ console.error(err); }
-  })();
+      start.addEventListener('click', ()=>{ step=STEP.DATES; mount(); root.scrollIntoView({behavior:'smooth',block:'start'}); });
+      root.addEventListener('click', (e)=>{ if(e.target.closest && e.target.closest('[data-next]') && step===STEP.SUMMARY){ submit(); } });
+    })();
   </script>
 </body>
 </html>
