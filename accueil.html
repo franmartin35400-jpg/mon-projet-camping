@@ -27,7 +27,6 @@
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    /* Sécurité anti flash blanc */
     html,body{ height:100%; background:#0b1220; }
     body{
       margin:0; color:var(--text);
@@ -38,15 +37,13 @@
     }
     @keyframes pageEnter{ to{ opacity:1; transform: translateY(0);} }
 
-    /* ===== FOND PLEIN ÉCRAN (2 IMAGES, SANS BANDE NOIRE) ===== */
-    .bg-frame{
-      position: fixed; inset: 0; z-index: -5;
-      background: #0b1220; /* back-up */
-      overflow:hidden;
+    /* ===== FOND GLOBAL : 2 IMAGES COUVRANT TOUT L’ASCENSEUR ===== */
+    .bg{
+      position: fixed; inset:0; z-index:-5; overflow:hidden; background:#0b1220;
     }
-    /* Bande haute (55vh) */
+    /* 1) Bande haute (70vh) */
     .bg-top, .bg-top-night{
-      position:absolute; left:0; right:0; top:0; height:55vh;
+      position:absolute; left:0; right:0; top:0; height:70vh;
       background-size:cover; background-position:center top; background-repeat:no-repeat;
       transition: opacity 900ms ease, transform 900ms ease;
       will-change: transform, opacity;
@@ -56,29 +53,32 @@
     html[data-theme="dark"] .bg-top       { opacity:0; }
     html[data-theme="dark"] .bg-top-night { opacity:1; }
 
-    /* Bande basse : PRÉSENTE PARTOUT (remplace le “noir”) */
+    /* 2) Bande basse, s’étend bien sous la page pour éviter tout trou :
+          - commence à 70vh
+          - descend largement sous le fold grâce à bottom:-120vh  */
     .bg-bottom{
-      position:absolute; left:0; right:0; top:55vh; bottom:-20vh; /* déborde sous le viewport pour éviter toute coupe */
+      position:absolute; left:0; right:0; top:70vh; bottom:-120vh;
       background-image:url("camping-accueil-2.jpg");
       background-size:cover; background-position:center bottom; background-repeat:no-repeat;
       transform: translateZ(0);
       will-change: transform;
     }
 
-    /* Chevauchement fondu sur ~12vh */
+    /* Chevauchement fondu ~12vh */
     .bg-overlap-fade{
-      position:absolute; left:0; right:0; top:55vh; height:12vh;
+      position:absolute; left:0; right:0; top:70vh; height:12vh;
       background: linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,0));
       mix-blend-mode: multiply; opacity:.7; pointer-events:none;
     }
 
     /* Vignette douce */
-    .vignette{
-      position:fixed; inset:0; z-index:-4; pointer-events:none;
+    .vignette{ position:fixed; inset:0; z-index:-4; pointer-events:none; }
+    .vignette::before{
+      content:""; position:absolute; inset:0;
       background: radial-gradient(1200px 800px at 50% 12%, rgba(0,0,0,.18), transparent 60%);
       opacity:.15;
     }
-    html[data-theme="dark"] .vignette{ opacity:.30; }
+    html[data-theme="dark"] .vignette::before{ opacity:.30; }
 
     /* ===== TOPBAR ===== */
     .topbar{
@@ -99,8 +99,12 @@
     .nav-left{ display:flex; align-items:center; gap:16px; }
     .logo{ height:42px; width:auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.2); }
     .nav{ display:flex; gap:10px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
-    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 12px; border-radius:999px; }
-    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.38); }
+    .nav a{
+      text-decoration:none; color:var(--text); font-weight:700; padding:6px 12px; border-radius:999px;
+      transform: translateZ(0);
+    }
+    .nav a:hover{ background: rgba(255,255,255,.38); transform: translateY(-1px); }
+    .nav a[aria-current="page"]{ background: rgba(255,255,255,.30); }
 
     .theme-toggle{
       display:inline-flex; align-items:center; gap:8px; border-radius: 999px; padding:9px 15px; color:#fff; font-weight:700;
@@ -109,28 +113,31 @@
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
       cursor:pointer; transform: translateZ(0);
     }
-    .theme-toggle:hover{ transform: translateY(-1px); }
+    .theme-toggle:hover{ transform: translateY(-1px) scale(1.01); }
 
-    /* ===== HERO + CONTENUS ===== */
-    .hero{ min-height: 56svh; display:grid; place-items:center; padding: clamp(16px,4vw,48px); }
+    /* ===== HERO ===== */
+    .hero{ min-height: 64svh; display:grid; place-items:center; padding: clamp(16px,4vw,48px); }
     .hero-title{
       font-family:"Poppins", system-ui, sans-serif; font-weight:700;
       font-size: clamp(34px, 6vw, 64px); letter-spacing:.5px; color:#fff; text-align:center;
       text-shadow: 0 2px 22px rgba(0,0,0,.35), 0 1px 0 rgba(0,0,0,.3);
-      transform: translateY(-10%); animation: fadeSlide .9s ease-out both .12s;
+      transform: translateY(-8%); animation: fadeSlide .9s ease-out both .12s;
     }
-    @keyframes fadeSlide{ from{ opacity:0; transform: translateY(-16%);} to{opacity:1; transform: translateY(-10%);} }
+    @keyframes fadeSlide{ from{ opacity:0; transform: translateY(-16%);} to{opacity:1; transform: translateY(-8%);} }
 
+    /* ===== CONTENU ===== */
     .wrap{ max-width: 1200px; margin: 0 auto; padding: clamp(12px,3vw,24px); display:grid; grid-template-columns: 1.1fr .9fr; align-items:start; gap: clamp(16px,2.4vw,28px); }
-    @media (max-width: 960px){ .wrap{ grid-template-columns: 1fr; } }
+    @media (max-width: 1080px){ .wrap{ grid-template-columns: 1fr; } }
 
     .panel{
       background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
       border: 1px solid rgba(255,255,255,.35); border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: clamp(18px,2.6vw,28px); opacity:0; transform: translateY(12px) scale(.98);
+      padding: clamp(18px,2.6vw,28px); opacity:0; transform: translateY(12px) scale(.985);
       will-change: transform, opacity;
     }
     .panel.reveal{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
+    .panel:hover{ transform: translateY(-2px) scale(1.005); }
+
     .panel h2{ margin:0 0 12px; font-family:"Poppins",system-ui,sans-serif; font-weight:700; font-size: clamp(22px,2.4vw,28px); letter-spacing:.2px; color:var(--text); }
     .lead{ color:var(--muted); line-height:1.75; font-size: clamp(16px,1.3vw,18px); }
 
@@ -138,28 +145,28 @@
     @media (max-width: 900px){ .features{ grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 560px){ .features{ grid-template-columns: 1fr; } }
     .feature{
-      position:relative; display:flex; align-items:center; gap:12px; padding:12px 14px;
-      background: color-mix(in oklab, rgba(22,163,74,.40) 60%, var(--glass-strong));
+      position:relative; display:flex; align-items:center; gap:12px; padding:14px 16px;
+      background: color-mix(in oklab, rgba(22,163,74,.40) 66%, var(--glass-strong));
       border:1px solid color-mix(in oklab, var(--ok) 55%, transparent);
-      border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.10);
       transform: translateZ(0);
     }
+    .feature:hover{ transform: translateY(-2px) scale(1.01); box-shadow: 0 14px 28px rgba(0,0,0,.14); }
     .feature svg{ width:28px; height:28px; flex:0 0 auto; color: var(--ok); }
-    .feature span{ font-weight:600; color:var(--text); }
+    .feature span{ font-weight:700; color:var(--text); letter-spacing:.2px; }
     .feature[data-tip]::after{
       content: attr(data-tip);
       position: absolute; left: 50%; bottom: -8px; transform: translate(-50%, 100%);
       white-space: nowrap; background: rgba(17,24,39,.92); color: #fff;
-      font-size:12px; padding:6px 10px; border-radius:10px;
-      opacity:0; pointer-events:none; transition: opacity .18s ease, transform .18s ease;
+      font-size:12px; padding:6px 10px; border-radius:10px; opacity:0; pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
     }
     html[data-theme="dark"] .feature[data-tip]::after{ background: rgba(0,0,0,.92); }
-    .feature:hover{ transform: translateY(-1px); }
     .feature:hover::after{ opacity:1; transform: translate(-50%, calc(100% + 4px)); }
 
     .cta{
       margin-top: 12px; display:inline-flex; align-items:center; gap:10px;
-      border-radius: 12px; padding:12px 16px; color:#fff; font-weight:700;
+      border-radius: 12px; padding:12px 16px; color:#fff; font-weight:800; letter-spacing:.2px;
       border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
       background: linear-gradient(180deg, var(--primary), var(--primary-700));
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
@@ -169,8 +176,8 @@
   </style>
 </head>
 <body>
-  <!-- FOND global : 2 images, chevauchement, sans bande noire -->
-  <div class="bg-frame" aria-hidden="true">
+  <!-- FOND global : 2 images couvrant tout le scroll -->
+  <div class="bg" aria-hidden="true">
     <div class="bg-top"></div>
     <div class="bg-top-night"></div>
     <div class="bg-overlap-fade"></div>
@@ -273,6 +280,7 @@
     /* Apparition séquencée des panneaux */
     (function panelsReveal(){
       const items = document.querySelectorAll('.panel');
+      if (!('IntersectionObserver' in window)){ items.forEach(el=> el.classList.add('reveal')); return; }
       const io = new IntersectionObserver((entries)=>{
         let d = 0;
         entries.forEach(e=>{
@@ -287,7 +295,7 @@
       items.forEach(el=> io.observe(el));
     })();
 
-    /* Parallaxe fluide (top bouge un peu, bottom bouge très légèrement) */
+    /* Parallaxe fluide (top bouge un peu, bottom légèrement) */
     (function parallax(){
       const top = document.querySelector('.bg-top');
       const topNight = document.querySelector('.bg-top-night');
@@ -300,8 +308,8 @@
         ticking = true;
         requestAnimationFrame(()=>{
           const y = window.scrollY || 0;
-          const t = Math.min(40, y * 0.06);   // déplacement doux bande haute
-          const b = Math.min(30, y * 0.03);   // déplacement encore plus doux bande basse
+          const t = Math.min(48, y * 0.06);   // déplacement doux bande haute
+          const b = Math.min(36, y * 0.03);   // déplacement encore plus doux bande basse
           top.style.transform = `translate3d(0, ${t}px, 0)`;
           if (topNight) topNight.style.transform = `translate3d(0, ${t}px, 0)`;
           bottom.style.transform = `translate3d(0, ${-b}px, 0)`;
