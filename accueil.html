@@ -52,13 +52,21 @@
     html[data-theme="dark"] body::after { opacity:1; }
     html[data-theme="dark"] .vignette   { opacity:.32; }
 
-    /* Barre top (nav + thème) */
+    /* Topbar : logo + nav + thème */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 10px 16px;
       backdrop-filter: blur(6px) saturate(120%);
       background: color-mix(in oklab, rgba(255,255,255,.22) 70%, transparent);
+    }
+    .nav-left{
+      display:flex; align-items:center; gap:16px;
+    }
+    .logo{
+      height:42px; width:auto;
+      border-radius:8px;
+      box-shadow:0 4px 10px rgba(0,0,0,.2);
     }
     .nav{
       display:flex; gap:12px; flex-wrap:wrap;
@@ -69,7 +77,8 @@
     .nav a{
       text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px;
     }
-    .nav a:hover{ background: rgba(255,255,255,.35); }
+    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35); }
+
     .theme-toggle{
       display:inline-flex; align-items:center; gap:8px;
       border-radius: 999px; padding:8px 14px; color:#fff; font-weight:700;
@@ -80,7 +89,7 @@
     }
     .theme-toggle:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); transform: translateY(-1px); }
 
-    /* HERO : titre centré dans le haut de la page (zone 0–50%) */
+    /* HERO */
     .hero{
       min-height: 60svh;
       display:grid; place-items:center;
@@ -90,27 +99,19 @@
       font-family:"Poppins", system-ui, sans-serif;
       font-weight:700;
       font-size: clamp(34px, 6vw, 64px);
-      letter-spacing:.5px;
-      color:#fff;
+      letter-spacing:.5px; color:#fff; text-align:center;
       text-shadow: 0 2px 22px rgba(0,0,0,.35), 0 1px 0 rgba(0,0,0,.3);
       transform: translateY(-10%);
       animation: fadeSlide .9s ease-out both;
-      text-align:center;
     }
-    @keyframes fadeSlide{
-      from{ opacity:0; transform: translateY(-16%); }
-      to  { opacity:1; transform: translateY(-10%); }
-    }
+    @keyframes fadeSlide{ from{ opacity:0; transform: translateY(-16%);} to{opacity:1; transform: translateY(-10%);} }
 
-    /* Section panneaux */
+    /* Panneaux */
     .wrap{
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 1200px; margin: 0 auto;
       padding: clamp(12px,3vw,24px);
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      align-items:start;
-      gap: clamp(16px,2.4vw,28px);
+      display:grid; grid-template-columns: 1.1fr .9fr;
+      align-items:start; gap: clamp(16px,2.4vw,28px);
     }
     @media (max-width: 960px){ .wrap{ grid-template-columns: 1fr; } }
 
@@ -131,47 +132,32 @@
     .lead{ color:var(--muted2); line-height:1.6; font-size: clamp(16px,1.3vw,18px); }
 
     /* Équipements */
-    .features{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 12px;
-    }
+    .features{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
     @media (max-width: 900px){ .features{ grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 560px){ .features{ grid-template-columns: 1fr; } }
 
     .feature{
-      position:relative;
-      display:flex; align-items:center; gap:12px;
-      padding:12px 14px;
-      background: var(--glass-strong);
-      border:1px solid rgba(255,255,255,.40);
-      border-radius: 16px;
+      position:relative; display:flex; align-items:center; gap:12px;
+      padding:12px 14px; background: var(--glass-strong);
+      border:1px solid rgba(255,255,255,.40); border-radius: 16px;
       box-shadow: 0 10px 24px rgba(0,0,0,.08);
-      cursor: default;
     }
     .feature svg{ width:28px; height:28px; flex:0 0 auto; }
     .feature span{ font-weight:600; color:var(--text); }
 
-    /* Tooltip au survol/focus */
+    /* Tooltip */
     .feature[data-tip]::after{
       content: attr(data-tip);
-      position: absolute;
-      left: 50%; bottom: -8px; transform: translate(-50%, 100%);
-      white-space: nowrap;
-      background: rgba(17,24,39,.92);
-      color: #fff; font-size:12px; padding:6px 10px; border-radius:10px;
-      opacity:0; pointer-events:none;
-      transition: opacity .18s ease, transform .18s ease;
+      position: absolute; left: 50%; bottom: -8px; transform: translate(-50%, 100%);
+      white-space: nowrap; background: rgba(17,24,39,.92); color: #fff;
+      font-size:12px; padding:6px 10px; border-radius:10px;
+      opacity:0; pointer-events:none; transition: opacity .18s ease, transform .18s ease;
     }
     html[data-theme="dark"] .feature[data-tip]::after{ background: rgba(0,0,0,.92); }
-    .feature:hover::after, .feature:focus-within::after{
-      opacity:1; transform: translate(-50%, calc(100% + 4px));
-    }
+    .feature:hover::after, .feature:focus-within::after{ opacity:1; transform: translate(-50%, calc(100% + 4px)); }
 
-    /* Bouton CTA (optionnel) */
     .cta{
-      margin-top: 10px;
-      display:inline-flex; align-items:center; gap:10px;
+      margin-top: 10px; display:inline-flex; align-items:center; gap:10px;
       border-radius: 12px; padding:10px 14px; color:#fff; font-weight:700;
       border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
       background: linear-gradient(180deg, var(--primary), var(--primary-700));
@@ -182,29 +168,27 @@
   </style>
 </head>
 <body>
-  <!-- Calque vignette -->
   <div class="vignette" aria-hidden="true"></div>
 
-  <!-- Topbar : nav + thème -->
   <header class="topbar">
-    <nav class="nav" aria-label="Navigation principale">
-      <a href="accueil.html" aria-current="page">Accueil</a>
-      <a href="index.html">Questionnaire</a>
-    </nav>
+    <div class="nav-left">
+      <img src="logo.jpg" alt="Camping Rivassland" class="logo">
+      <nav class="nav" aria-label="Navigation principale">
+        <a href="accueil.html" aria-current="page">Accueil</a>
+        <a href="index.html">Questionnaire</a>
+      </nav>
+    </div>
     <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
       <span id="themeIcon" aria-hidden="true">🌞</span>
       <span id="themeLabel">Mode clair</span>
     </button>
   </header>
 
-  <!-- HERO -->
   <section class="hero" aria-label="Identité du site">
     <h1 class="hero-title">Camping de Rivassland</h1>
   </section>
 
-  <!-- PANNEAUX -->
   <main class="wrap">
-    <!-- Description -->
     <section class="panel" aria-labelledby="desc-title">
       <h2 id="desc-title">Bienvenue au bord de la mer</h2>
       <p class="lead">
@@ -215,41 +199,29 @@
       <a class="cta" href="index.html">Donner votre avis</a>
     </section>
 
-    <!-- Équipements -->
     <section class="panel" aria-labelledby="equip-title">
       <h2 id="equip-title">Équipements & Services</h2>
       <div class="features">
-        <!-- Sanitaires -->
         <div class="feature" tabindex="0" data-tip="Sanitaires modernes & entretenus">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 3a1 1 0 0 0-1 1v7H3a1 1 0 1 0 0 2h3v2a4 4 0 0 0 4 4h1a1 1 0 1 0 0-2H10a2 2 0 0 1-2-2v-2h8v2a2 2 0 0 1-2 2h-1a1 1 0 1 0 0 2h1a4 4 0 0 0 4-4v-2h3a1 1 0 1 0 0-2h-3V4a1 1 0 0 0-1-1H7z"/></svg>
           <span>Sanitaires</span>
         </div>
-
-        <!-- Vidange eaux usées -->
         <div class="feature" tabindex="0" data-tip="Point de vidange eaux usées">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V3a1 1 0 0 1 1-1zm-7 18a1 1 0 0 0 1 1h12a1 1 0 1 0 0-2H6a1 1 0 0 0-1 1z"/></svg>
           <span>Vidange</span>
         </div>
-
-        <!-- Machine à laver -->
         <div class="feature" tabindex="0" data-tip="Laverie (machines à laver)">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 4h12V4H6v2zm6 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm-4-9h2V7H8v2z"/></svg>
           <span>Laverie</span>
         </div>
-
-        <!-- Piscine -->
         <div class="feature" tabindex="0" data-tip="Piscine extérieure">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 17c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S4.5 21 3 21v-2zM7 5l2-2 2 2-2 2-2-2zm6 2l2-2 2 2-2 2-2-2z"/></svg>
           <span>Piscine</span>
         </div>
-
-        <!-- Accès mer -->
         <div class="feature" tabindex="0" data-tip="Accès direct à la mer">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a2 2 0 0 1 2 2v6.17a3 3 0 1 1-2 0V4a2 2 0 0 1 2-2zm-8 16c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 4 21v-2z"/></svg>
           <span>Accès mer</span>
         </div>
-
-        <!-- Centre-ville -->
         <div class="feature" tabindex="0" data-tip="Centre-ville à proximité">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a6 6 0 0 1 6 6c0 4.5-6 12-6 12S6 12.5 6 8a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
           <span>Centre-ville</span>

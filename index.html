@@ -3,121 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Camping Rivassland</title>
+  <title>Camping Rivassland – Questionnaire</title>
 
   <!-- Poppins (titres) + Cabin (texte) -->
   <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ========= Variables (thème clair par défaut) ========= */
+    /* ========= Variables ========= */
     :root{
-      --bg1:#eef2ff;
-      --bg2:#ffffff;
+      --bg1:#eef2ff; --bg2:#ffffff;
       --glass: rgba(255,255,255,.54);
       --glass-strong: rgba(255,255,255,.68);
-      --primary:#2563eb;
-      --primary-700:#1d4ed8;
-      --primary-800:#1e40af;
-      --ring:#3b82f6;
-      --text:#0f172a;
-      --muted:#475569;
-      --muted2:#64748b;
+      --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
+      --ring:#3b82f6; --text:#0f172a; --muted:#475569; --muted2:#64748b;
       --shadow: 0 16px 44px rgba(2,6,23,.18);
       --radius:20px;
-      --star-empty:#e5e7eb;
-      --star-full:#f59e0b;
+      --star-empty:#e5e7eb; --star-full:#f59e0b;
       --transition:220ms cubic-bezier(.22,.61,.36,1);
     }
-
-    /* ========= Thème sombre (appliqué quand [data-theme="dark"]) ========= */
     html[data-theme="dark"]{
-      --bg1:#0f172a;
-      --bg2:#111827;
+      --bg1:#0f172a; --bg2:#111827;
       --glass: rgba(17,24,39,.46);
       --glass-strong: rgba(17,24,39,.60);
-      --primary:#60a5fa;
-      --primary-700:#3b82f6;
-      --primary-800:#1d4ed8;
-      --ring:#93c5fd;
-      --text:#e5e7eb;
-      --muted:#cbd5e1;
-      --muted2:#94a3b8;
+      --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
+      --ring:#93c5fd; --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
       --shadow: 0 20px 50px rgba(0,0,0,.45);
-      --star-empty:#374151;
-      --star-full:#fbbf24;
+      --star-empty:#374151; --star-full:#fbbf24;
     }
-
     @media (prefers-reduced-motion:no-preference){
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
     /* ========= Fond double calque + vignette ========= */
     html,body{ height:100%; }
-    body{
-      margin:0;
-      color:var(--text);
-      font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    body{ margin:0; color:var(--text); font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body::before, body::after{
+      content:""; position:fixed; inset:0; z-index:-3;
+      background-size:cover; background-position:center; background-attachment:fixed;
+      transition: opacity 900ms ease;
     }
-    /* Images */
-    body::before,
-    body::after{
-      content:"";
-      position:fixed;
-      inset:0;
-      background-size:cover;
-      background-position:center;
-      background-attachment:fixed;
-      z-index:-3;
-      transition:opacity 900ms ease;
-      will-change: opacity;
-    }
-    body::before{ background-image:url("camping.jpg");  opacity:1; }
+    body::before{ background-image:url("camping.jpg"); opacity:1; }
     body::after { background-image:url("camping-nuit.jpg"); opacity:0; }
-    /* Vignette nuit (calque au-dessus des images) */
-    .vignette{
-      position:fixed; inset:0; z-index:-2; pointer-events:none;
-      background: radial-gradient(1200px 800px at 50% 20%, rgba(0,0,0,.28), transparent 60%),
-                  linear-gradient(180deg, rgba(0,0,0,.24), rgba(0,0,0,.12));
+    .vignette{ position:fixed; inset:0; z-index:-2; pointer-events:none;
+      background: radial-gradient(1200px 800px at 50% 15%, rgba(0,0,0,.22), transparent 60%),
+                  linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.10));
       opacity:0; transition: opacity 600ms ease;
     }
     html[data-theme="dark"] body::before{ opacity:0; }
     html[data-theme="dark"] body::after { opacity:1; }
-    html[data-theme="dark"] .vignette   { opacity:.35; }
+    html[data-theme="dark"] .vignette   { opacity:.32; }
 
-    /* ========= Barre d’actions (toggle thème) ========= */
+    /* ========= Topbar : logo + nav + thème ========= */
     .topbar{
-      position: sticky; top: 0; inset-inline: 0;
-      display:flex; justify-content:flex-end; gap:8px;
+      position: sticky; top:0; z-index:5;
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 10px 16px;
       backdrop-filter: blur(6px) saturate(120%);
       background: color-mix(in oklab, rgba(255,255,255,.22) 70%, transparent);
-      z-index: 10;
     }
+    .nav-left{ display:flex; align-items:center; gap:16px; }
+    .logo{
+      height:42px; width:auto;
+      border-radius:8px;
+      box-shadow:0 4px 10px rgba(0,0,0,.2);
+    }
+    .nav{
+      display:flex; gap:12px; flex-wrap:wrap;
+      background: color-mix(in oklab, var(--glass) 80%, transparent);
+      border:1px solid rgba(255,255,255,.4);
+      padding:6px 10px; border-radius:999px;
+    }
+    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px; }
+    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35); }
+
     .theme-toggle{
-      display:inline-flex; align-items:center; gap:10px;
-      border-radius: 999px;
+      display:inline-flex; align-items:center; gap:8px;
+      border-radius: 999px; padding:8px 14px; color:#fff; font-weight:700;
       border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
       background: linear-gradient(180deg, var(--primary), var(--primary-700));
-      color:#fff; font-weight:700; padding:8px 14px; cursor:pointer;
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
+      cursor:pointer;
     }
     .theme-toggle:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); transform: translateY(-1px); }
-    .theme-toggle svg{ width:18px; height:18px; }
 
-    /* ========= Grille principale : panneaux séparés ========= */
+    /* ========= Grille principale ========= */
     .page{
-      max-width: 1200px;
-      margin: clamp(12px,4vw,36px) auto;
-      padding: clamp(8px,2vw,16px);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
-      gap: clamp(16px,2.4vw,26px);
+      max-width: 1200px; margin: clamp(12px,4vw,36px) auto; padding: clamp(8px,2vw,16px);
+      display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: clamp(16px,2.4vw,26px);
       animation: pageIn .7s ease-out both;
     }
     @keyframes pageIn{ from{ opacity:0; transform:translateY(14px) } to{ opacity:1; transform:translateY(0) } }
 
-    /* ========= Panneaux verre ========= */
+    /* ========= Panneaux ========= */
     .panel{
       background: var(--glass);
       backdrop-filter: blur(10px) saturate(120%);
@@ -130,66 +107,37 @@
     .panel.form{ background: var(--glass-strong); }
     .panel.reviews{ background: var(--glass); }
     .panel:hover{ transform: translateY(-2px); }
-    .panel:focus-within{ box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 28%, transparent), var(--shadow); }
 
-    /* ========= Titres ========= */
-    h1{
-      margin:0 0 12px;
-      font-size: clamp(26px,3.2vw,36px);
-      font-family: "Poppins", system-ui, sans-serif;
-      letter-spacing:.2px;
-      text-shadow: 0 1px 0 rgba(255,255,255,.25);
-    }
-    h2{
-      margin:0 0 14px;
-      font-size: clamp(18px,2.2vw,24px);
-      color: var(--muted);
-      font-weight: 600;
-      font-family: "Poppins", system-ui, sans-serif;
-    }
+    h1{ margin:0 0 12px; font-size: clamp(26px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
+    h2{ margin:0 0 14px; font-size: clamp(18px,2.2vw,24px); color: var(--muted); font-weight: 600; font-family: "Poppins", system-ui, sans-serif; }
 
-    /* ========= Formulaire ========= */
+    /* Formulaire */
     form{ display:grid; grid-template-columns:1fr 1fr; gap:14px 16px; }
     form label{ font-size:13px; color: var(--muted2); display:flex; flex-direction:column; gap:6px; }
     form input, form select, form textarea{
-      padding: 12px 14px;
-      border-radius:14px;
-      border:1px solid rgba(15,23,42,.16);
-      background:#fff; color:#0f172a;
-      box-shadow: inset 0 -2px 0 rgba(2,6,23,.03);
+      padding: 12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,.16);
+      background:#fff; color:#0f172a; box-shadow: inset 0 -2px 0 rgba(2,6,23,.03);
     }
-    @media (prefers-color-scheme: dark){
-      html:not([data-theme="light"]) form input,
-      html:not([data-theme="light"]) form select,
-      html:not([data-theme="light"]) form textarea{
-        background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28);
-      }
+    html[data-theme="dark"] form input, html[data-theme="dark"] form select, html[data-theme="dark"] form textarea{
+      background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28);
     }
     form textarea{ min-height:100px; resize:vertical; }
-    form input:focus, form select:focus, form textarea:focus{
-      border-color: var(--ring);
-      box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 35%, transparent);
-      outline:none;
-    }
     label:has(#avisLieu), label:has(#avisAccueil){ grid-column:1/-1; }
+    form input:focus, form select:focus, form textarea:focus{
+      border-color: var(--ring); box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 35%, transparent); outline:none;
+    }
 
-    /* ========= Boutons + ripple ========= */
     .buttons{ display:flex; gap:10px; margin-top:6px; grid-column:1/-1; flex-wrap:wrap; }
     button{
-      position:relative;
-      display:inline-flex; align-items:center; justify-content:center;
+      position:relative; display:inline-flex; align-items:center; justify-content:center;
       gap:8px; padding:12px 18px; border-radius:14px;
       border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
       background: linear-gradient(180deg, var(--primary), var(--primary-700));
-      color:#fff; font-weight:700; letter-spacing:.2px; cursor:pointer;
+      color:#fff; font-weight:700; cursor:pointer;
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
-      transform: translateY(0);
     }
-    button:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); transform: translateY(-1px); }
-    button:active{ transform: translateY(1px); }
-    button:focus-visible{ outline:none; box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 58%, transparent), var(--shadow); }
-    .ripple::after{
-      content:""; position:absolute; inset:0;
+    button:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); }
+    .ripple::after{ content:""; position:absolute; inset:0;
       background: radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.35), transparent 60%);
       opacity:0; transform: scale(0.9);
     }
@@ -197,23 +145,15 @@
 
     #msg{ margin:8px 0 0; color: var(--muted2); min-height: 1.2em; }
 
-    /* ========= Avis ========= */
+    /* Avis */
     #reviewsList{ display:grid; gap:12px; }
     .review{
-      background:#fff;
-      border:1px solid rgba(15,23,42,.08);
-      border-radius:16px;
-      padding:14px 16px;
-      box-shadow: 0 6px 14px rgba(2,6,23,.06);
-      opacity:0; transform: translateY(8px); /* reveal au scroll */
+      background:#fff; border:1px solid rgba(15,23,42,.08); border-radius:16px;
+      padding:14px 16px; box-shadow: 0 6px 14px rgba(2,6,23,.06);
+      opacity:0; transform: translateY(8px);
     }
-    @media (prefers-color-scheme: dark){
-      html:not([data-theme="light"]) .review{
-        background:#0b1220; border-color: rgba(148,163,184,.18); box-shadow: 0 8px 20px rgba(0,0,0,.25);
-      }
-    }
+    html[data-theme="dark"] .review{ background:#0b1220; border-color: rgba(148,163,184,.18); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
     .review.reveal-in{ opacity:1; transform: translateY(0); transition: opacity .5s ease, transform .5s ease; }
-    .review:hover{ box-shadow: 0 12px 24px rgba(2,6,23,.12); transform: translateY(-2px); }
 
     .review .note{ color: var(--muted2); font-size:12px; margin-top:4px; }
     .stars{ display:inline-block; font-size:20px; position:relative; }
@@ -221,24 +161,27 @@
     .star::before{ content:"★"; position:absolute; inset:0; color: var(--star-empty); }
     .star::after{ content:"★"; position:absolute; inset:0; width:var(--w,0%); overflow:hidden; color: var(--star-full); }
 
-    /* ========= Responsive ========= */
     @media (max-width: 980px){ .page{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <!-- Calque vignette (contraste) -->
   <div class="vignette" aria-hidden="true"></div>
 
-  <!-- Barre d’actions : switch thème -->
-  <div class="topbar">
-    <button id="themeToggle" class="theme-toggle ripple" aria-label="Changer de thème">
+  <header class="topbar">
+    <div class="nav-left">
+      <img src="logo.jpg" alt="Camping Rivassland" class="logo">
+      <nav class="nav" aria-label="Navigation principale">
+        <a href="accueil.html">Accueil</a>
+        <a href="index.html" aria-current="page">Questionnaire</a>
+      </nav>
+    </div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
       <span id="themeIcon" aria-hidden="true">🌞</span>
       <span id="themeLabel">Mode clair</span>
     </button>
-  </div>
+  </header>
 
   <div class="page">
-    <!-- Panneau Questionnaire -->
     <section class="panel form" aria-labelledby="title-form">
       <h1 id="title-form">Camping Rivassland</h1>
       <form id="form" autocomplete="on">
@@ -262,7 +205,6 @@
       <p id="msg" role="status" aria-live="polite"></p>
     </section>
 
-    <!-- Panneau Avis -->
     <section class="panel reviews" aria-labelledby="title-reviews">
       <h2 id="title-reviews">Avis des visiteurs <span id="countBadge"></span></h2>
       <div id="reviewsList"></div>
@@ -277,43 +219,33 @@
       location.hostname === "localhost" || location.hostname === "127.0.0.1"
     ) ? "/api/gas" : PROD_API;
 
-    /* ========= Thème : auto + forçage utilisateur (data-theme) ========= */
+    /* ========= Thème : auto + forçage via data-theme ========= */
     (function themeInit(){
       const html = document.documentElement;
-      // 1) Charger préférence
-      const saved = localStorage.getItem("theme"); // "light" | "dark" | null
+      const saved = localStorage.getItem("theme");
       if (saved === "light" || saved === "dark") {
         html.setAttribute("data-theme", saved);
       } else {
-        // défaut = préférence système
         const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
         html.setAttribute("data-theme", prefersDark ? "dark" : "light");
       }
-
-      // 2) UI bouton
       const btn = document.getElementById("themeToggle");
       const icon = document.getElementById("themeIcon");
       const label = document.getElementById("themeLabel");
-
       function updateLabel(){
         const isDark = html.getAttribute("data-theme")==="dark";
         icon.textContent = isDark ? "🌙" : "🌞";
         label.textContent = isDark ? "Mode sombre" : "Mode clair";
       }
-      updateLabel();
-
       btn.addEventListener("click", ()=>{
-        const isDark = html.getAttribute("data-theme")==="dark";
-        const next = isDark ? "light" : "dark";
+        const next = html.getAttribute("data-theme")==="dark" ? "light" : "dark";
         html.setAttribute("data-theme", next);
         localStorage.setItem("theme", next);
         updateLabel();
       });
-
-      // 3) Si l’OS change et qu’il n’y a PAS de forçage, on suit l’OS
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e)=>{
-        const hasForced = localStorage.getItem("theme");
-        if (!hasForced){
+      updateLabel();
+      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{
+        if (!localStorage.getItem("theme")){
           html.setAttribute("data-theme", e.matches ? "dark" : "light");
           updateLabel();
         }
