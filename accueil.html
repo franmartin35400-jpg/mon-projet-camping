@@ -29,12 +29,17 @@
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    /* Fond */
+    /* Fond double calque + vignette sombre */
     html,body{ height:100%; }
     body{
-      margin:0; color:var(--text);
+      margin:0;
+      color:var(--text);
       font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      opacity:0; transform: translateY(8px);
+      animation: pageEnter .7s ease-out forwards;
     }
+    @keyframes pageEnter{ to{ opacity:1; transform: translateY(0); } }
+
     body::before, body::after{
       content:""; position:fixed; inset:0; z-index:-3;
       background-size:cover; background-position:center; background-attachment:fixed;
@@ -51,20 +56,20 @@
     html[data-theme="dark"] body::after { opacity:1; }
     html[data-theme="dark"] .vignette   { opacity:.32; }
 
-    /* Topbar plus foncée */
+    /* Topbar : un peu plus distinguable/contrastée */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
-      padding: 10px 16px;
-      backdrop-filter: blur(6px) saturate(120%);
-      background: color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.22));
-      border-bottom: 1px solid rgba(0,0,0,.12);
-      box-shadow: 0 6px 16px rgba(0,0,0,.12);
+      padding: 12px 18px;
+      backdrop-filter: blur(8px) saturate(120%);
+      background: color-mix(in oklab, rgba(0,0,0,.42) 42%, rgba(255,255,255,.28));
+      border-bottom: 1px solid rgba(0,0,0,.18);
+      box-shadow: 0 10px 26px rgba(0,0,0,.18);
     }
     html[data-theme="dark"] .topbar{
-      background: color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.08));
-      border-bottom-color: rgba(255,255,255,.10);
-      box-shadow: 0 8px 20px rgba(0,0,0,.35);
+      background: color-mix(in oklab, rgba(0,0,0,.62) 62%, rgba(255,255,255,.10));
+      border-bottom-color: rgba(255,255,255,.14);
+      box-shadow: 0 12px 30px rgba(0,0,0,.42);
     }
 
     .nav-left{ display:flex; align-items:center; gap:16px; }
@@ -74,29 +79,27 @@
     }
     .nav{
       display:flex; gap:12px; flex-wrap:wrap;
-      background: color-mix(in oklab, var(--glass) 80%, transparent);
-      border:1px solid rgba(255,255,255,.4);
+      background: color-mix(in oklab, var(--glass) 84%, transparent);
+      border:1px solid rgba(255,255,255,.45);
       padding:6px 10px; border-radius:999px;
     }
     .nav a{
       text-decoration:none; color:var(--text); font-weight:600;
       padding:6px 10px; border-radius:999px;
     }
-    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35); }
+    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.38); }
 
-    /* Pill muet “bientôt” */
     .pill-muted{
       padding:6px 10px; border-radius:999px; font-weight:600;
       color: color-mix(in oklab, var(--text) 70%, #000);
       background: rgba(255,255,255,.22);
       border:1px solid rgba(255,255,255,.4);
-      opacity:.75;
-      user-select:none;
+      opacity:.78; user-select:none;
     }
 
     .theme-toggle{
       display:inline-flex; align-items:center; gap:8px;
-      border-radius: 999px; padding:8px 14px; color:#fff; font-weight:700;
+      border-radius: 999px; padding:9px 15px; color:#fff; font-weight:700;
       border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
       background: linear-gradient(180deg, var(--primary), var(--primary-700));
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
@@ -113,7 +116,7 @@
       font-family:"Poppins", system-ui, sans-serif; font-weight:700;
       font-size: clamp(34px, 6vw, 64px); letter-spacing:.5px; color:#fff; text-align:center;
       text-shadow: 0 2px 22px rgba(0,0,0,.35), 0 1px 0 rgba(0,0,0,.3);
-      transform: translateY(-10%); animation: fadeSlide .9s ease-out both;
+      transform: translateY(-10%); animation: fadeSlide .9s ease-out both .12s;
     }
     @keyframes fadeSlide{ from{ opacity:0; transform: translateY(-16%);} to{opacity:1; transform: translateY(-10%);} }
 
@@ -123,7 +126,9 @@
       padding: clamp(12px,3vw,24px);
       display:grid; grid-template-columns: 1.1fr .9fr;
       align-items:start; gap: clamp(16px,2.4vw,28px);
+      animation: panelsIn .6s ease-out .2s both;
     }
+    @keyframes panelsIn{ from{ opacity:0; transform: translateY(8px);} to{ opacity:1; transform:none;} }
     @media (max-width: 960px){ .wrap{ grid-template-columns: 1fr; } }
 
     .panel{
@@ -136,7 +141,7 @@
       margin:0 0 10px; font-family:"Poppins",system-ui,sans-serif;
       font-weight:700; font-size: clamp(20px,2.4vw,28px); letter-spacing:.2px; color:var(--text);
     }
-    .lead{ color:var(--muted2); line-height:1.6; font-size: clamp(16px,1.3vw,18px); }
+    .lead{ color:var(--muted2); line-height:1.65; font-size: clamp(16px,1.3vw,18px); }
 
     /* Équipements */
     .features{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
@@ -192,17 +197,30 @@
   </header>
 
   <section class="hero" aria-label="Identité du site">
-    <h1 class="hero-title">Camping de Rivassland</h1>
+    <h1 class="hero-title">Bienvenue à Saint-Malo</h1>
   </section>
 
   <main class="wrap">
     <section class="panel" aria-labelledby="desc-title">
-      <h2 id="desc-title">Bienvenue au bord de la mer</h2>
+      <h2 id="desc-title">Camping de Rivassland</h2>
       <p class="lead">
-        Le Camping de Rivassland vous accueille entre plages de sable, sentiers côtiers et centre-ville
-        à proximité. Emplacements spacieux, ambiance conviviale, et services pensés pour un séjour
-        confortable : sanitaires entretenus, point de vidange, laverie, piscine et accès direct au littoral.
+        Au cœur de Paramé, à seulement quelques minutes de la mer et du centre-ville de Saint-Malo, nous vous accueillons
+        sur un grand terrain privé de plus de 18 000 m² entouré de verdure.
       </p>
+      <p class="lead">
+        Dans une ambiance décontractée, respectueuse et calme, notre camping chez l’habitant est l’endroit idéal pour faire
+        une pause nature tout en restant proche de la ville.
+      </p>
+      <p class="lead">
+        ✨ Sur place, vous trouverez :
+        <br>• Des emplacements spacieux pour vans et tentes
+        <br>• Une piscine chauffée (ouverte de juin à septembre)
+        <br>• Un cadre verdoyant et reposant, parfait pour se ressourcer
+      </p>
+      <p class="lead">
+        Que vous soyez de passage ou en séjour plus long, nous mettons tout en œuvre pour que votre expérience soit conviviale et authentique.
+      </p>
+
       <a class="cta" href="index.html">Donner votre avis</a>
     </section>
 
@@ -222,7 +240,7 @@
           <span>Laverie</span>
         </div>
         <div class="feature" tabindex="0" data-tip="Piscine extérieure">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 17c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S4.5 21 3 21v-2zM7 5l2-2 2 2-2 2-2-2zm6 2l2-2 2 2-2 2-2-2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 17c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 3 21v-2zM7 5l2-2 2 2-2 2-2-2zm6 2l2-2 2 2-2 2-2-2z"/></svg>
           <span>Piscine</span>
         </div>
         <div class="feature" tabindex="0" data-tip="Accès direct à la mer">
@@ -238,6 +256,7 @@
   </main>
 
   <script>
+    /* Thème : auto + mémorisation, bascule d’images jour/nuit */
     (function themeInit(){
       const html = document.documentElement;
       const saved = localStorage.getItem("theme");
