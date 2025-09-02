@@ -69,45 +69,41 @@
     .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px; }
     .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.38); }
 
-    /* Contenu */
-    .wrap{
-      max-width: 980px; margin: clamp(12px,4vw,36px) auto; padding: clamp(12px,2.6vw,24px);
-      display:grid; gap:16px;
-    }
+    /* Contenu / panneau */
+    .wrap{ max-width: 860px; margin: clamp(12px,4vw,36px) auto; padding: clamp(12px,2.6vw,24px); }
     .panel{
       background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
-      border: 1px solid rgba(255,255,255,.35);
-      border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: clamp(16px,2.4vw,26px);
+      border: 1px solid rgba(255,255,255,.35); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: clamp(18px,3vw,28px);
       opacity:0; transform: translateY(10px);
     }
     .panel.reveal{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
-    h1{ margin:0 0 12px; font-size: clamp(26px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
-    h2{ margin:0 0 12px; font-size: clamp(18px,2.2vw,24px); color: var(--muted); font-weight: 600; font-family: "Poppins", system-ui, sans-serif; }
-
-    form{ display:grid; grid-template-columns: 1fr 1fr; gap:14px 16px; }
-    form label{ font-size:13px; color: var(--muted2); display:flex; flex-direction:column; gap:6px; }
-    input, select{
-      padding: 12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,.16);
-      background:#fff; color:#0f172a;
-    }
-    html[data-theme="dark"] input, html[data-theme="dark"] select{
-      background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28);
-    }
-    .row-full{ grid-column:1/-1; }
-    .inline{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-    .hidden{ display:none !important; }
 
     .ok{ background: color-mix(in oklab, var(--ok) 12%, transparent); border:1px solid color-mix(in oklab, var(--ok) 35%, transparent); color: color-mix(in oklab, var(--ok) 80%, #000); padding:10px 12px; border-radius:12px; }
     .warn{ background: color-mix(in oklab, var(--warn) 12%, transparent); border:1px solid color-mix(in oklab, var(--warn) 35%, transparent); color: color-mix(in oklab, var(--warn) 80%, #000); padding:10px 12px; border-radius:12px; }
 
-    .actions{ grid-column:1/-1; display:flex; gap:10px; flex-wrap:wrap; }
+    h1{ margin:0 0 12px; font-size: clamp(26px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
+    p.lead{ color:var(--muted2); }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     button{
       display:inline-flex; align-items:center; justify-content:center; gap:8px;
       padding:12px 18px; border-radius:14px; border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
       background: linear-gradient(180deg, var(--primary), var(--primary-700)); color:#fff; font-weight:700; cursor:pointer;
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
     }
+    button.ghost{ background: transparent; color: var(--text); border:1px dashed color-mix(in oklab, var(--text) 30%, transparent); }
+
+    /* Étapes */
+    .step{ display:grid; gap:12px; margin-top:10px; }
+    .cols{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    @media (max-width: 640px){ .cols{ grid-template-columns: 1fr; } }
+    label{ font-size:13px; color: var(--muted2); display:flex; flex-direction:column; gap:6px; }
+    input, select{ padding: 12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,.16); background:#fff; color:#0f172a; }
+    html[data-theme="dark"] input, html[data-theme="dark"] select{ background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28); }
+    small{ color: var(--muted2); }
+    .hidden{ display:none !important; }
+    .summary{ background: var(--glass-strong); border:1px solid rgba(255,255,255,.4); border-radius:14px; padding:12px 14px; }
   </style>
 </head>
 <body>
@@ -130,65 +126,13 @@
   <main class="wrap">
     <section class="panel reveal">
       <h1>Réserver un emplacement</h1>
-      <p class="ok">Réservation simple : dites-nous combien vous êtes, pour combien de nuits, et si vous avez besoin d’électricité.</p>
+      <p class="ok">Réservation rapide : nous avons juste besoin de quelques informations avant de valider votre demande.</p>
+      <div class="actions">
+        <button id="startWizard">Commencer</button>
+      </div>
     </section>
 
-    <section class="panel" id="panelForm">
-      <h2>Vos informations</h2>
-      <form id="resaForm" novalidate>
-        <label>Prénom<input id="prenom" required></label>
-        <label>Nom<input id="nom" required></label>
-
-        <label>Nombre de personnes
-          <input id="nbPersonnes" type="number" min="1" max="8" value="2" required>
-        </label>
-
-        <label>Nombre de nuits
-          <input id="nbNuits" type="number" min="1" max="30" value="1" required>
-        </label>
-
-        <label class="row-full">Besoin d’un accès à l’électricité ?
-          <div class="inline">
-            <label><input type="radio" name="elec" value="oui" checked> Oui</label>
-            <label><input type="radio" name="elec" value="non"> Non</label>
-          </div>
-        </label>
-
-        <label class="row-full">Venez-vous avec un chien ?
-          <div class="inline">
-            <label><input type="radio" name="dog" value="non" checked> Non</label>
-            <label><input type="radio" name="dog" value="oui"> Oui</label>
-          </div>
-        </label>
-
-        <!-- Bloc chiens (conditionnel) -->
-        <div id="dogBlock" class="row-full hidden">
-          <label class="row-full">Votre chien est-il une femelle ?
-            <div class="inline">
-              <label><input type="radio" name="femelle" value="oui"> Oui</label>
-              <label><input type="radio" name="femelle" value="non"> Non</label>
-            </div>
-          </label>
-
-          <div id="maleBlock" class="row-full hidden">
-            <label class="row-full">Si mâle : est-il castré ?
-              <div class="inline">
-                <label><input type="radio" name="castre" value="oui"> Oui</label>
-                <label><input type="radio" name="castre" value="non"> Non</label>
-              </div>
-            </label>
-          </div>
-
-          <p id="dogMsg" class="warn hidden"></p>
-        </div>
-
-        <div class="actions">
-          <button type="submit" id="btnSubmit">Vérifier & réserver</button>
-          <button type="button" id="btnReset">Réinitialiser</button>
-        </div>
-        <p id="resaMsg" class="row-full" role="status" aria-live="polite"></p>
-      </form>
-    </section>
+    <section class="panel" id="wizard" aria-live="polite" aria-atomic="true" class="hidden"></section>
   </main>
 
   <script>
@@ -207,7 +151,7 @@
       matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{ if (!localStorage.getItem("theme")){ html.setAttribute("data-theme", e.matches ? "dark" : "light"); updateLabel(); } });
     })();
 
-    /* Reveal des panneaux */
+    /* Reveal panneau */
     (function panelsReveal(){
       const items = document.querySelectorAll('.panel');
       const io = new IntersectionObserver((entries)=>{
@@ -224,105 +168,221 @@
       items.forEach(el=> io.observe(el));
     })();
 
-    /* Logique chiens + validation */
-    (function dogsLogic(){
-      const $=s=>document.querySelector(s);
-      const dogRadios = document.querySelectorAll('input[name="dog"]');
-      const femelleRadios = document.querySelectorAll('input[name="femelle"]');
-      const castreRadios = document.querySelectorAll('input[name="castre"]');
-      const dogBlock = $('#dogBlock');
-      const maleBlock = $('#maleBlock');
-      const dogMsg = $('#dogMsg');
-      const form = $('#resaForm');
-      const resaMsg = $('#resaMsg');
-      const btnSubmit = $('#btnSubmit');
-      const btnReset  = $('#btnReset');
+    /* Assistant de réservation (steps) */
+    (function wizard(){
+      const start = document.getElementById('startWizard');
+      const wizard = document.getElementById('wizard');
+      const state = {
+        debut:"", fin:"",
+        adultes: 2, enfants: 0,
+        vehicule: "Van", electricite: "oui",
+        animaux: "non",
+        chiens: 0, chiensMaleNonCastre: "non",
+        chats: 0, autres: 0
+      };
+      let step = 0;
 
-      function hide(el){ el.classList.add('hidden'); }
-      function show(el){ el.classList.remove('hidden'); }
-      function resetRadios(nodeList){ nodeList.forEach(r=> r.checked = false); }
+      const steps = [
+        renderDates, renderPeople, renderVehicle, renderAnimals, renderSummary
+      ];
 
-      function updateUI(){
-        const withDog = [...dogRadios].find(r=>r.checked)?.value === 'oui';
-        if (!withDog){
-          hide(dogBlock); hide(maleBlock); dogMsg.textContent=''; hide(dogMsg);
-          resetRadios(femelleRadios); resetRadios(castreRadios);
-          btnSubmit.disabled = false;
-          resaMsg.textContent = '';
-          return;
-        }
-        show(dogBlock);
-        const isFemelle = [...femelleRadios].find(r=>r.checked)?.value === 'oui';
-        const isFemelleSelected = [...femelleRadios].some(r=>r.checked);
-
-        if (!isFemelleSelected){
-          hide(maleBlock); dogMsg.textContent=''; hide(dogMsg);
-          btnSubmit.disabled = false;
-          return;
-        }
-
-        if (isFemelle){
-          hide(maleBlock);
-          dogMsg.textContent = "Parfait, les femelles sont les bienvenues.";
-          dogMsg.className = 'ok'; show(dogMsg);
-          btnSubmit.disabled = false;
-          return;
-        }
-
-        // mâle
-        show(maleBlock);
-        const isCastreSelected = [...castreRadios].some(r=>r.checked);
-        const isCastre = [...castreRadios].find(r=>r.checked)?.value === 'oui';
-
-        if (!isCastreSelected){
-          dogMsg.textContent=''; hide(dogMsg);
-          btnSubmit.disabled = false;
-          return;
-        }
-
-        if (isCastre){
-          dogMsg.textContent = "Très bien, les mâles castrés sont acceptés ✅";
-          dogMsg.className = 'ok'; show(dogMsg);
-          btnSubmit.disabled = false;
-        } else {
-          dogMsg.textContent = "Désolés, nous n’acceptons pas les chiens mâles non castrés. Notre propre chien est dominant et n’accepte que les mâles castrés. Merci de votre compréhension 🙏";
-          dogMsg.className = 'warn'; show(dogMsg);
-          btnSubmit.disabled = true;
-        }
+      function mount(){
+        wizard.innerHTML = steps[step]();
+        wizard.classList.add('reveal');
+        bindHandlers();
       }
 
-      dogRadios.forEach(r=> r.addEventListener('change', updateUI));
-      femelleRadios.forEach(r=> r.addEventListener('change', updateUI));
-      castreRadios.forEach(r=> r.addEventListener('change', updateUI));
+      function bindHandlers(){
+        // boutons next/back
+        const next = wizard.querySelector('[data-next]');
+        const back = wizard.querySelector('[data-back]');
+        next && next.addEventListener('click', onNext);
+        back && back.addEventListener('click', ()=>{ step=Math.max(0, step-1); mount(); });
+      }
 
-      btnReset.addEventListener('click', ()=>{
-        form.reset();
-        updateUI();
-        resaMsg.textContent = '';
-      });
-
-      form.addEventListener('submit', (e)=>{
-        e.preventDefault();
-        if (btnSubmit.disabled) return; // blocage logique chiens
-
-        const nbPers = Number(document.getElementById('nbPersonnes').value || 0);
-        const nbNuits = Number(document.getElementById('nbNuits').value || 0);
-        const elec = document.querySelector('input[name="elec"]:checked')?.value === 'oui';
-
-        if (!nbPers || !nbNuits){
-          resaMsg.textContent = "Merci de renseigner le nombre de personnes et de nuits.";
-          return;
+      function onNext(){
+        // validation par step
+        if (step===0){
+          const debut = wizard.querySelector('#debut').value;
+          const fin = wizard.querySelector('#fin').value;
+          if (!debut || !fin) return toast('Merci de renseigner les deux dates.');
+          if (new Date(fin) < new Date(debut)) return toast('La date de fin doit être après la date de début.');
+          state.debut=debut; state.fin=fin;
         }
+        if (step===1){
+          const ad = Number(wizard.querySelector('#adultes').value||0);
+          const en = Number(wizard.querySelector('#enfants').value||0);
+          if (ad<1) return toast('Au moins 1 adulte.');
+          state.adultes=ad; state.enfants=en;
+        }
+        if (step===2){
+          state.vehicule = wizard.querySelector('#vehicule').value;
+          state.electricite = wizard.querySelector('input[name="elec"]:checked')?.value || "non";
+        }
+        if (step===3){
+          state.animaux = wizard.querySelector('input[name="animaux"]:checked')?.value || "non";
+          if (state.animaux==="oui"){
+            state.chiens = Number(wizard.querySelector('#chiens').value||0);
+            state.chats  = Number(wizard.querySelector('#chats').value||0);
+            state.autres = Number(wizard.querySelector('#autres').value||0);
+            if (state.chiens>0){
+              state.chiensMaleNonCastre = wizard.querySelector('input[name="maleNonCastre"]:checked')?.value || "non";
+              if (state.chiensMaleNonCastre==="oui"){
+                // blocage
+                toast("Désolés, nous n’acceptons pas les chiens mâles non castrés. Notre propre chien est dominant et n’accepte que les mâles castrés. Merci de votre compréhension 🙏");
+                return;
+              }
+            }
+          } else {
+            state.chiens=0; state.chats=0; state.autres=0; state.chiensMaleNonCastre="non";
+          }
+        }
+        step = Math.min(steps.length-1, step+1);
+        mount();
+      }
 
-        // Ici on pourrait envoyer vers Google Sheets comme pour le questionnaire.
-        // Pour l’instant, on confirme simplement :
-        resaMsg.className='ok';
-        resaMsg.textContent = `✅ Demande enregistrée : ${nbPers} personne(s) pour ${nbNuits} nuit(s)${elec?' avec électricité':''}. Nous vous recontactons rapidement !`;
-        form.reset();
-        updateUI();
+      function toast(msg){
+        let n = wizard.querySelector('.warn');
+        if (!n){ n=document.createElement('p'); n.className='warn'; wizard.appendChild(n); }
+        n.textContent = msg;
+      }
+
+      function actions(back=true, nextLabel="Continuer"){
+        return `
+          <div class="actions">
+            ${back?`<button type="button" class="ghost" data-back>Retour</button>`:''}
+            <button type="button" data-next>${nextLabel}</button>
+          </div>
+        `;
+      }
+
+      /* RENDER FUNCTIONS */
+
+      function renderDates(){
+        return `
+          <h2>Étape 1 · Vos dates</h2>
+          <div class="step cols">
+            <label>Début du séjour<input type="date" id="debut" value="${state.debut}"></label>
+            <label>Fin du séjour<input type="date" id="fin" value="${state.fin}"></label>
+            <small>Vous pourrez ajuster ensuite si besoin.</small>
+          </div>
+          ${actions(false)}
+        `;
+      }
+
+      function renderPeople(){
+        return `
+          <h2>Étape 2 · Voyageurs</h2>
+          <div class="step cols">
+            <label>Adultes<input type="number" id="adultes" min="1" max="10" value="${state.adultes}"></label>
+            <label>Enfants<input type="number" id="enfants" min="0" max="10" value="${state.enfants}"></label>
+          </div>
+          ${actions(true)}
+        `;
+      }
+
+      function renderVehicle(){
+        return `
+          <h2>Étape 3 · Véhicule</h2>
+          <div class="step cols">
+            <label>Type de véhicule
+              <select id="vehicule">
+                ${["Tente","Van","Camping-car","Caravane","Autre"].map(v=>`<option ${state.vehicule===v?"selected":""}>${v}</option>`).join("")}
+              </select>
+            </label>
+            <label>Électricité nécessaire ?
+              <div>
+                <label><input type="radio" name="elec" value="oui" ${state.electricite==="oui"?"checked":""}> Oui</label>
+                <label style="margin-left:12px;"><input type="radio" name="elec" value="non" ${state.electricite==="non"?"checked":""}> Non</label>
+              </div>
+            </label>
+          </div>
+          ${actions(true)}
+        `;
+      }
+
+      function renderAnimals(){
+        const dogBlock = state.animaux==="oui" ? `
+          <div class="cols">
+            <label>Chiens (nombre)<input type="number" id="chiens" min="0" max="6" value="${state.chiens}"></label>
+            <label>Chats (nombre)<input type="number" id="chats" min="0" max="6" value="${state.chats}"></label>
+          </div>
+          <div class="${(state.chiens||0)>0?"":"hidden"}" id="maleBox" style="margin-top:6px;">
+            <label>Au moins un mâle non castré ?
+              <div>
+                <label><input type="radio" name="maleNonCastre" value="oui" ${state.chiensMaleNonCastre==="oui"?"checked":""}> Oui</label>
+                <label style="margin-left:12px;"><input type="radio" name="maleNonCastre" value="non" ${state.chiensMaleNonCastre==="non"?"checked":""}> Non</label>
+              </div>
+            </label>
+            <small>Pour la sécurité des animaux, nous n’acceptons pas les mâles non castrés (notre chien est dominant).</small>
+          </div>
+          <label style="margin-top:6px;">Autres animaux (nombre)<input type="number" id="autres" min="0" max="6" value="${state.autres}"></label>
+        ` : ``;
+
+        // script pour afficher/masquer maleBox dès montage
+        setTimeout(()=>{
+          const chiens = wizard.querySelector('#chiens');
+          const maleBox = wizard.querySelector('#maleBox');
+          if (chiens && maleBox){
+            chiens.addEventListener('input', ()=>{
+              const v = Number(chiens.value||0);
+              maleBox.classList.toggle('hidden', v<=0);
+            });
+          }
+        });
+
+        return `
+          <h2>Étape 4 · Animaux</h2>
+          <div class="step">
+            <label>Venez-vous avec des animaux ?
+              <div>
+                <label><input type="radio" name="animaux" value="non" ${state.animaux==="non"?"checked":""}> Non</label>
+                <label style="margin-left:12px;"><input type="radio" name="animaux" value="oui" ${state.animaux==="oui"?"checked":""}> Oui</label>
+              </div>
+            </label>
+            ${state.animaux==="oui" ? dogBlock : ""}
+          </div>
+          ${actions(true)}
+        `;
+      }
+
+      function renderSummary(){
+        const resume = `
+          <ul style="margin:0; padding-left:18px;">
+            <li><strong>Dates :</strong> ${state.debut} → ${state.fin}</li>
+            <li><strong>Voyageurs :</strong> ${state.adultes} adulte(s)${state.enfants?`, ${state.enfants} enfant(s)`:``}</li>
+            <li><strong>Véhicule :</strong> ${state.vehicule}${state.electricite==="oui"?" · électricité":""}</li>
+            <li><strong>Animaux :</strong> ${state.animaux==="oui" ? `${state.chiens} chien(s), ${state.chats} chat(s), ${state.autres} autre(s)` : "aucun"}</li>
+          </ul>
+        `;
+        return `
+          <h2>Étape 5 · Récapitulatif</h2>
+          <div class="summary">${resume}</div>
+          <div class="actions">
+            <button type="button" class="ghost" data-back>Retour</button>
+            <button type="button" data-next>Envoyer la demande</button>
+          </div>
+          <p id="finalMsg" class="ok hidden" style="margin-top:10px;"></p>
+        `;
+      }
+
+      // Start
+      start.addEventListener('click', ()=>{
+        step = 0;
+        mount();
+        start.closest('.panel').scrollIntoView({behavior:'smooth', block:'start'});
       });
 
-      updateUI(); // init
+      // interception du dernier "next" pour message final
+      wizard.addEventListener('click', (e)=>{
+        const btn = e.target.closest('[data-next]');
+        if (!btn) return;
+        if (step===steps.length-1){
+          const msg = wizard.querySelector('#finalMsg');
+          msg.textContent = "✅ Demande envoyée ! Nous vous recontactons rapidement pour confirmer la disponibilité et finaliser la réservation.";
+          msg.classList.remove('hidden');
+        }
+      });
     })();
   </script>
 </body>
