@@ -9,24 +9,22 @@
 
   <style>
     :root{
-      --bg1:#eef2ff; --bg2:#ffffff;
       --glass: rgba(255,255,255,.54);
       --glass-strong: rgba(255,255,255,.68);
       --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
       --ring:#3b82f6; --text:#0f172a; --muted:#475569; --muted2:#64748b;
+      --star-empty:#e5e7eb; --star-full:#f59e0b;
       --shadow: 0 16px 44px rgba(2,6,23,.18);
       --radius:20px;
-      --star-empty:#e5e7eb; --star-full:#f59e0b;
       --transition:220ms cubic-bezier(.22,.61,.36,1);
     }
     html[data-theme="dark"]{
-      --bg1:#0f172a; --bg2:#111827;
       --glass: rgba(17,24,39,.46);
       --glass-strong: rgba(17,24,39,.60);
       --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
       --ring:#93c5fd; --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
-      --shadow: 0 20px 50px rgba(0,0,0,.45);
       --star-empty:#374151; --star-full:#fbbf24;
+      --shadow: 0 20px 50px rgba(0,0,0,.45);
     }
     @media (prefers-reduced-motion:no-preference){
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
@@ -36,7 +34,7 @@
     html,body{ height:100%; }
     body{ margin:0; color:var(--text); font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
     body::before, body::after{
-      content:""; position:fixed; inset:0; z-index:-3;
+      content:""; position:fixed; inset:0; z-index:-4;
       background-size:cover; background-position:center; background-attachment:fixed;
       transition: opacity 900ms ease;
     }
@@ -51,63 +49,56 @@
     html[data-theme="dark"] body::after { opacity:1; }
     html[data-theme="dark"] .vignette   { opacity:.32; }
 
-    /* Topbar plus foncée */
+    /* Topbar */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
-      padding: 10px 16px;
-      backdrop-filter: blur(6px) saturate(120%);
-      background: color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.22));
-      border-bottom: 1px solid rgba(0,0,0,.12);
-      box-shadow: 0 6px 16px rgba(0,0,0,.12);
+      padding: 12px 18px;
+      backdrop-filter: blur(8px) saturate(120%);
+      background: color-mix(in oklab, rgba(0,0,0,.46) 46%, rgba(255,255,255,.28));
+      border-bottom: 1px solid rgba(0,0,0,.20);
+      box-shadow: 0 12px 28px rgba(0,0,0,.22);
     }
     html[data-theme="dark"] .topbar{
-      background: color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.08));
-      border-bottom-color: rgba(255,255,255,.10);
-      box-shadow: 0 8px 20px rgba(0,0,0,.35);
+      background: color-mix(in oklab, rgba(0,0,0,.64) 64%, rgba(255,255,255,.10));
+      border-bottom-color: rgba(255,255,255,.14);
+      box-shadow: 0 14px 32px rgba(0,0,0,.44);
     }
-
     .nav-left{ display:flex; align-items:center; gap:16px; }
-    .logo{
-      height:42px; width:auto; border-radius:8px;
-      box-shadow:0 4px 10px rgba(0,0,0,.2);
-    }
-    .nav{
-      display:flex; gap:12px; flex-wrap:wrap;
-      background: color-mix(in oklab, var(--glass) 80%, transparent);
-      border:1px solid rgba(255,255,255,.4);
-      padding:6px 10px; border-radius:999px;
-    }
-    .nav a{
-      text-decoration:none; color:var(--text); font-weight:600;
-      padding:6px 10px; border-radius:999px;
-    }
-    .nav a:hover{ background: rgba(255,255,255,.35); }
-    .pill-muted{
-      padding:6px 10px; border-radius:999px; font-weight:600;
-      color: color-mix(in oklab, var(--text) 70%, #000);
-      background: rgba(255,255,255,.22);
-      border:1px solid rgba(255,255,255,.4);
-      opacity:.75; user-select:none;
+    .logo{ height:42px; width:auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.2); }
+    .nav{ display:flex; gap:12px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px; }
+    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px; }
+    .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.38); }
+
+    .theme-toggle{
+      display:inline-flex; align-items:center; gap:8px;
+      border-radius: 999px; padding:9px 15px; color:#fff; font-weight:700;
+      border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
+      background: linear-gradient(180deg, var(--primary), var(--primary-700));
+      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
+      cursor:pointer;
     }
 
     /* Grille */
     .page{
       max-width: 1200px; margin: clamp(12px,4vw,36px) auto; padding: clamp(8px,2vw,16px);
       display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: clamp(16px,2.4vw,26px);
-      animation: pageIn .7s ease-out both;
     }
-    @keyframes pageIn{ from{ opacity:0; transform:translateY(14px) } to{ opacity:1; transform:translateY(0) } }
+    @media (max-width: 980px){ .page{ grid-template-columns:1fr; } }
 
-    /* Panneaux */
+    /* Panneaux + reveal */
     .panel{
-      background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
-      border: 1px solid rgba(255,255,255,.30); border-radius: var(--radius);
-      box-shadow: var(--shadow); padding: clamp(16px,2.6vw,28px); overflow: clip;
+      background: var(--glass);
+      backdrop-filter: blur(10px) saturate(120%);
+      border: 1px solid rgba(255,255,255,.30);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(16px,2.6vw,28px);
+      overflow: clip;
+      opacity:0; transform: translateY(10px);
     }
+    .panel.reveal{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
     .panel.form{ background: var(--glass-strong); }
-    .panel.reviews{ background: var(--glass); }
-    .panel:hover{ transform: translateY(-2px); }
 
     h1{ margin:0 0 12px; font-size: clamp(26px,3.2vw,36px); font-family: "Poppins", system-ui, sans-serif; letter-spacing:.2px; }
     h2{ margin:0 0 14px; font-size: clamp(18px,2.2vw,24px); color: var(--muted); font-weight: 600; font-family: "Poppins", system-ui, sans-serif; }
@@ -137,12 +128,6 @@
       color:#fff; font-weight:700; cursor:pointer;
       box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
     }
-    button:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); }
-    .ripple::after{ content:""; position:absolute; inset:0;
-      background: radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.35), transparent 60%);
-      opacity:0; transform: scale(0.9);
-    }
-    .ripple.play::after{ opacity:1; transform:scale(1); transition: opacity .45s ease, transform .45s ease; }
 
     #msg{ margin:8px 0 0; color: var(--muted2); min-height: 1.2em; }
 
@@ -161,8 +146,6 @@
     .star{ display:inline-block; position:relative; width:1.25em; height:1.25em; }
     .star::before{ content:"★"; position:absolute; inset:0; color: var(--star-empty); }
     .star::after{ content:"★"; position:absolute; inset:0; width:var(--w,0%); overflow:hidden; color: var(--star-full); }
-
-    @media (max-width: 980px){ .page{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -173,7 +156,7 @@
       <img src="logo.jpg" alt="Camping Rivassland" class="logo">
       <nav class="nav" aria-label="Navigation principale">
         <a href="accueil.html">Accueil</a>
-        <span class="pill-muted" title="Bientôt disponible">Réservations (bientôt)</span>
+        <a href="reservation.html">Réservations</a>
       </nav>
     </div>
     <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
@@ -199,8 +182,8 @@
         <label>Avis sur le lieu <textarea id="avisLieu" placeholder="Ce que vous avez aimé, points à améliorer…"></textarea></label>
         <label>Avis sur les hôtes <textarea id="avisAccueil" placeholder="Accueil, disponibilité, ambiance…"></textarea></label>
         <div class="buttons">
-          <button type="submit" id="btnAdd" class="ripple">Ajouter la réponse</button>
-          <button type="button" id="btnCsv" class="ripple">Exporter en CSV</button>
+          <button type="submit" id="btnAdd">Ajouter la réponse</button>
+          <button type="button" id="btnCsv">Exporter en CSV</button>
         </div>
       </form>
       <p id="msg" role="status" aria-live="polite"></p>
@@ -213,14 +196,12 @@
   </div>
 
   <script>
-    /* API via Netlify Function */
     const PROD_API = "https://gleeful-alfajores-133e70.netlify.app/api/gas";
     const SCRIPT_URL = (
       location.hostname.endsWith("netlify.app") ||
       location.hostname === "localhost" || location.hostname === "127.0.0.1"
     ) ? "/api/gas" : PROD_API;
 
-    /* Thème */
     (function themeInit(){
       const html = document.documentElement;
       const saved = localStorage.getItem("theme");
@@ -235,16 +216,43 @@
       matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{ if (!localStorage.getItem("theme")){ html.setAttribute("data-theme", e.matches ? "dark" : "light"); updateLabel(); } });
     })();
 
-    /* UI utils */
+    /* Reveal des panneaux */
+    (function panelsReveal(){
+      const items = document.querySelectorAll('.panel');
+      const io = new IntersectionObserver((entries)=>{
+        let d = 0;
+        entries.forEach(e=>{
+          if (e.isIntersecting){
+            e.target.style.transitionDelay = (d*80)+'ms';
+            e.target.classList.add('reveal');
+            io.unobserve(e.target);
+            d++;
+          }
+        });
+      }, { threshold:.12 });
+      items.forEach(el=> io.observe(el));
+    })();
+
+    /* Stars + Avis (inchangé) */
     function starHTML(avg){
       avg = Math.round(avg * 2) / 2;
       let h = '<span class="stars">';
-      for (let i=1;i<=5;i++){ const p=Math.min(Math.max(avg-(i-1),0),1); h+=`<span class="star" style="--w:${p*100}%"></span>`; }
+      for (let i=1;i<=5;i++){
+        const p=Math.min(Math.max(avg-(i-1),0),1);
+        h+=`<span class="star" style="--w:${p*100}%"></span>`;
+      }
       return h+'</span> '+avg.toFixed(1)+'/5';
     }
-    function revealOnScroll(){
+    function revealReviews(){
       const items = document.querySelectorAll(".review");
-      const io = new IntersectionObserver((entries)=>{ for (const e of entries){ if (e.isIntersecting){ e.target.classList.add("reveal-in"); io.unobserve(e.target); } } }, { threshold:.15 });
+      const io = new IntersectionObserver((entries)=>{
+        for (const e of entries){
+          if (e.isIntersecting){
+            e.target.classList.add("reveal-in");
+            io.unobserve(e.target);
+          }
+        }
+      }, { threshold:.15 });
       items.forEach(el=> io.observe(el));
     }
     function renderReviews(rows){
@@ -268,21 +276,26 @@
           ${periode?`<div class="note">${periode}</div>`:''}
         </article>`;
       }).join('');
-      requestAnimationFrame(revealOnScroll);
+      requestAnimationFrame(revealReviews);
     }
 
-    /* API */
-    async function apiList(){ const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{cache:'no-store'}); const text=await r.text(); try{ return JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); } }
+    async function apiList(){
+      const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{cache:'no-store'});
+      const text=await r.text();
+      try{ return JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
+    }
     async function apiAdd(rec){
-      const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(rec), cache:'no-store' });
-      const text=await r.text(); let d; try{ d=JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
+      const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(rec), cache:'no-store'
+      });
+      const text=await r.text(); let d;
+      try{ d=JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
       if(!d.ok) throw new Error(d.error||'Erreur serveur');
     }
 
-    /* App */
-    (function initOnce(){
-      if(window.__APP_WIRED__) return; window.__APP_WIRED__=true;
-      const $=s=>document.querySelector(s); const form=$('#form'), msg=$('#msg'), btnAdd=$('#btnAdd'), btnCsv=$('#btnCsv');
+    (function init(){
+      const $=s=>document.querySelector(s);
+      const form=$('#form'), msg=$('#msg'), btnAdd=$('#btnAdd'), btnCsv=$('#btnCsv');
       function showMessage(t){ msg.textContent=t; }
       function formToRecord(){ return{ prenom: $('#prenom').value.trim(), nom: $('#nom').value.trim(), debut_sejour: $('#debut').value, fin_sejour: $('#fin').value, note_lieu: Number($('#noteLieu').value), note_accueil: Number($('#noteAccueil').value), avis_lieu: $('#avisLieu').value.trim(), avis_accueil: $('#avisAccueil').value.trim(), ameliorations: "" }; }
       form.addEventListener('submit', async (e)=>{
