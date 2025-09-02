@@ -38,7 +38,6 @@
       line-height:1.6;
       background: transparent;
     }
-    /* Deux calques : jour / nuit (fondu doux) */
     body::before, body::after{
       content:""; position:fixed; inset:0; z-index:-4;
       background-size:cover; background-position:center; background-repeat:no-repeat;
@@ -50,7 +49,7 @@
     html[data-theme="dark"] body::before{ opacity:0; }
     html[data-theme="dark"] body::after { opacity:1; }
 
-    /* Vignette très légère pour le contraste */
+    /* Vignette légère */
     .vignette{ position:fixed; inset:0; z-index:-3; pointer-events:none; opacity:.10; }
     .vignette::before{
       content:""; position:absolute; inset:0;
@@ -114,7 +113,7 @@
     button.ghost{ background: transparent; color: var(--text); border:1px dashed color-mix(in oklab, var(--text) 30%, transparent); }
     button:hover{ transform: translateY(-1px); }
 
-    /* ===== Stepper clean & pro ===== */
+    /* ===== Stepper ===== */
     .stepper{
       display:flex; align-items:center; justify-content:center; gap:12px; margin: 8px 0 14px;
       flex-wrap: wrap;
@@ -158,6 +157,13 @@
     small{ color: var(--muted2); }
     .hidden{ display:none !important; }
     .summary{ background: var(--glass-strong); border:1px solid rgba(255,255,255,.4); border-radius:14px; padding:12px 14px; }
+
+    /* Animation d’apparition des étapes */
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: stepIn 120ms ease-out; }
   </style>
 </head>
 <body>
@@ -210,7 +216,7 @@
         updateLabel();
       })();
 
-      /* Reveal */
+      /* Reveal panels */
       (function panelsReveal(){
         const items = document.querySelectorAll('.panel:not(.reveal)');
         if (!('IntersectionObserver' in window)){ items.forEach(el=> el.classList.add('reveal')); return; }
@@ -228,9 +234,7 @@
         items.forEach(el=> io.observe(el));
       })();
 
-      /* ===== Assistant de réservation =====
-         Étapes : 0 Dates → 1 Personnes → 2 Véhicule → 3 Animaux (oui/non) → 4 Détail si oui → 5 Récap → POST
-      */
+      /* ===== Assistant de réservation (étapes scindées) ===== */
       (function wizard(){
         const start = document.getElementById('startWizard');
         const wizard = document.getElementById('wizard');
@@ -238,24 +242,36 @@
 
         const SCRIPT_URL = "/api/gas?sheet=Reservations";
 
-        const STEP_DATES = 0, STEP_PEOPLE = 1, STEP_VEHICLE = 2, STEP_HAVE_PETS = 3, STEP_PET_DETAIL = 4, STEP_SUMMARY = 5;
-        const labels = ["Dates","Voyageurs","Véhicule","Animaux","Détails","Récap"];
+        // Étapes
+        const STEP_DATES       = 0;
+        const STEP_PEOPLE      = 1;
+        const STEP_VEHICLE     = 2;
+        const STEP_HAVE_PETS   = 3;
+        const STEP_PET_TYPE    = 4;
+        const STEP_DOG_SEX     = 5;
+        const STEP_DOG_CASTRE  = 6;
+        const STEP_OTHER_DETAILS = 7;
+        const STEP_SUMMARY     = 8;
+
+        const labels = ["Dates","Voyageurs","Véhicule","Animaux","Type","Sexe","Castré","Détails","Récap"];
+
         const state = {
           debut:"", fin:"",
           adultes: 2, enfants: 0,
           vehicule: "Van", electricite: "oui",
-          animaux: "non",
-          animalType: "",
-          chienSexe: "",
-          chienCastre: "",
-          animauxDetails: ""
+          animaux: "non",        // oui | non
+          animalType: "",        // chien | autre
+          chienSexe: "",         // male | femelle
+          chienCastre: "",       // oui | non
+          animauxDetails: ""     // texte si "autre"
         };
+
         let step = -1;
 
         function mount(){
           wizard.innerHTML = `
             ${renderStepper(step)}
-            ${renderStep(step)}
+            <div class="fade-in">${renderStep(step)}</div>
           `;
           bindHandlers();
           updateStepper(step);
@@ -267,17 +283,8 @@
           if (next) next.addEventListener('click', onNext);
           if (back) back.addEventListener('click', ()=>{ step = Math.max(STEP_DATES, step-1); mount(); });
 
-          if (step === STEP_PET_DETAIL){
-            const typeRadios = wizard.querySelectorAll('input[name="animalType"]');
-            const dogBox     = wizard.querySelector('#dogBox');
-            const otherBox   = wizard.querySelector('#otherBox');
-            const refresh = ()=>{
-              const type = wizard.querySelector('input[name="animalType"]:checked')?.value || "";
-              if (dogBox)   dogBox.classList.toggle('hidden', type!=="chien");
-              if (otherBox) otherBox.classList.toggle('hidden', type!=="autre");
-            };
-            typeRadios.forEach(r => r.addEventListener('change', refresh));
-            refresh();
+          if (step === STEP_PET_TYPE){
+            // Rien de spécial
           }
         }
 
@@ -289,38 +296,59 @@
               if (!debut || !fin) return toast('Merci de renseigner les deux dates.');
               if (new Date(fin) < new Date(debut)) return toast('La date de fin doit être après la date de début.');
               state.debut = debut; state.fin = fin;
+              step = STEP_PEOPLE; return mount();
             }
+
             if (step===STEP_PEOPLE){
               const ad = Number(wizard.querySelector('#adultes')?.value||0);
               const en = Number(wizard.querySelector('#enfants')?.value||0);
               if (ad<1) return toast('Au moins 1 adulte.');
               state.adultes = ad; state.enfants = en;
+              step = STEP_VEHICLE; return mount();
             }
+
             if (step===STEP_VEHICLE){
               state.vehicule    = wizard.querySelector('#vehicule')?.value || "Van";
               state.electricite = wizard.querySelector('input[name="elec"]:checked')?.value || "non";
+              step = STEP_HAVE_PETS; return mount();
             }
+
             if (step===STEP_HAVE_PETS){
               state.animaux = wizard.querySelector('input[name="animaux"]:checked')?.value || "non";
-              if (state.animaux === "non"){ step = STEP_SUMMARY; mount(); return; }
-              else { step = STEP_PET_DETAIL; mount(); return; }
+              if (state.animaux === "non"){ step = STEP_SUMMARY; return mount(); }
+              step = STEP_PET_TYPE; return mount();
             }
-            if (step===STEP_PET_DETAIL){
+
+            if (step===STEP_PET_TYPE){
               state.animalType = wizard.querySelector('input[name="animalType"]:checked')?.value || "";
               if (!state.animalType) return toast("Merci de choisir le type d’animal.");
+              if (state.animalType === "chien"){ step = STEP_DOG_SEX; return mount(); }
+              // autre → demander détails
+              step = STEP_OTHER_DETAILS; return mount();
+            }
 
-              if (state.animalType === "chien"){
-                state.chienSexe   = wizard.querySelector('input[name="chienSexe"]:checked')?.value || "";
-                state.chienCastre = wizard.querySelector('input[name="chienCastre"]:checked')?.value || "";
-                if (!state.chienSexe)   return toast("Merci d’indiquer si le chien est mâle ou femelle.");
-                if (!state.chienCastre) return toast("Merci d’indiquer si le chien est castré ou non.");
-                if (state.chienSexe === "male" && state.chienCastre === "non"){
-                  return toast("Désolés, nous n’acceptons pas les chiens mâles non castrés. Notre chien est dominant et n’accepte que les mâles castrés. Merci de votre compréhension 🙏");
-                }
-              } else {
-                state.animauxDetails = (wizard.querySelector('#animauxDetails')?.value || "").trim();
-                if (!state.animauxDetails) return toast("Merci de préciser le(s) animal(aux).");
+            if (step===STEP_DOG_SEX){
+              state.chienSexe = wizard.querySelector('input[name="chienSexe"]:checked')?.value || "";
+              if (!state.chienSexe) return toast("Merci d’indiquer si le chien est mâle ou femelle.");
+              if (state.chienSexe === "male"){ step = STEP_DOG_CASTRE; return mount(); }
+              // femelle → ok
+              step = STEP_SUMMARY; return mount();
+            }
+
+            if (step===STEP_DOG_CASTRE){
+              state.chienCastre = wizard.querySelector('input[name="chienCastre"]:checked')?.value || "";
+              if (!state.chienCastre) return toast("Merci d’indiquer si le chien est castré ou non.");
+              if (state.chienCastre === "non"){
+                return toast("Désolés, nous n’acceptons pas les chiens mâles non castrés. Notre chien est dominant et n’accepte que les mâles castrés. Merci de votre compréhension 🙏");
               }
+              // mâle castré → ok
+              step = STEP_SUMMARY; return mount();
+            }
+
+            if (step===STEP_OTHER_DETAILS){
+              state.animauxDetails = (wizard.querySelector('#animauxDetails')?.value || "").trim();
+              if (!state.animauxDetails) return toast("Merci de préciser le(s) animal(aux).");
+              step = STEP_SUMMARY; return mount();
             }
 
             if (step===STEP_SUMMARY){
@@ -328,8 +356,6 @@
               return;
             }
 
-            step = step + 1;
-            mount();
           }catch(err){
             console.error(err);
             toast("Une erreur est survenue. Essayez de recharger la page.");
@@ -375,13 +401,16 @@
 
         function renderStep(s){
           switch(s){
-            case STEP_DATES:     return renderDates();
-            case STEP_PEOPLE:    return renderPeople();
-            case STEP_VEHICLE:   return renderVehicle();
-            case STEP_HAVE_PETS: return renderHavePets();
-            case STEP_PET_DETAIL:return renderPetDetail();
-            case STEP_SUMMARY:   return renderSummary();
-            default:             return "";
+            case STEP_DATES:        return renderDates();
+            case STEP_PEOPLE:       return renderPeople();
+            case STEP_VEHICLE:      return renderVehicle();
+            case STEP_HAVE_PETS:    return renderHavePets();
+            case STEP_PET_TYPE:     return renderPetType();
+            case STEP_DOG_SEX:      return renderDogSex();
+            case STEP_DOG_CASTRE:   return renderDogCastre();
+            case STEP_OTHER_DETAILS:return renderOtherDetails();
+            case STEP_SUMMARY:      return renderSummary();
+            default:                return "";
           }
         }
 
@@ -439,42 +468,59 @@
             ${actions(true, "Continuer")}
           `;
         }
-        function renderPetDetail(){
+        function renderPetType(){
           return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 5 · Détails des animaux</h2>
+            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 5 · Type d’animal</h2>
             <div class="step">
-              <label>Type d’animal
+              <label>Quel type d’animal amenez-vous ?
                 <div>
                   <label><input type="radio" name="animalType" value="chien" ${state.animalType==="chien"?"checked":""}> Chien</label>
                   <label style="margin-left:12px;"><input type="radio" name="animalType" value="autre" ${state.animalType==="autre"?"checked":""}> Autre</label>
                 </div>
               </label>
-
-              <div id="dogBox" class="${state.animalType==="chien"?"":"hidden"}" style="margin-top:8px;">
-                <div>
-                  <label>Sexe du chien
-                    <div>
-                      <label><input type="radio" name="chienSexe" value="male" ${state.chienSexe==="male"?"checked":""}> Mâle</label>
-                      <label style="margin-left:12px;"><input type="radio" name="chienSexe" value="femelle" ${state.chienSexe==="femelle"?"checked":""}> Femelle</label>
-                    </div>
-                  </label>
-                </div>
-                <div style="margin-top:6px;">
-                  <label>Castré ?
-                    <div>
-                      <label><input type="radio" name="chienCastre" value="oui" ${state.chienCastre==="oui"?"checked":""}> Oui</label>
-                      <label style="margin-left:12px;"><input type="radio" name="chienCastre" value="non" ${state.chienCastre==="non"?"checked":""}> Non</label>
-                    </div>
-                  </label>
-                  <small>Pour des raisons de sécurité, nous n’acceptons pas les mâles non castrés (notre chien est dominant).</small>
-                </div>
-              </div>
-
-              <div id="otherBox" class="${state.animalType==="autre"?"":"hidden"}" style="margin-top:8px;">
-                <label>Précisez le(s) animal(aux)
-                  <textarea id="animauxDetails" rows="3" placeholder="Exemples : 1 chat stérilisé, 2 lapins…">${state.animauxDetails||""}</textarea>
+            </div>
+            ${actions(true)}
+          `;
+        }
+        function renderDogSex(){
+          return `
+            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 6 · Sexe du chien</h2>
+            <div class="step">
+              <div>
+                <label>
+                  <div>
+                    <label><input type="radio" name="chienSexe" value="male" ${state.chienSexe==="male"?"checked":""}> Mâle</label>
+                    <label style="margin-left:12px;"><input type="radio" name="chienSexe" value="femelle" ${state.chienSexe==="femelle"?"checked":""}> Femelle</label>
+                  </div>
                 </label>
               </div>
+              <small>Si votre chien est mâle, nous demanderons s’il est castré à l’étape suivante.</small>
+            </div>
+            ${actions(true)}
+          `;
+        }
+        function renderDogCastre(){
+          return `
+            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 7 · Castration</h2>
+            <div class="step">
+              <label>Votre chien mâle est-il castré ?
+                <div>
+                  <label><input type="radio" name="chienCastre" value="oui" ${state.chienCastre==="oui"?"checked":""}> Oui</label>
+                  <label style="margin-left:12px;"><input type="radio" name="chienCastre" value="non" ${state.chienCastre==="non"?"checked":""}> Non</label>
+                </div>
+              </label>
+              <small>Par sécurité, nous n’acceptons pas les mâles non castrés (notre chien est dominant).</small>
+            </div>
+            ${actions(true)}
+          `;
+        }
+        function renderOtherDetails(){
+          return `
+            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 6 · Détails des animaux</h2>
+            <div class="step">
+              <label>Précisez le(s) animal(aux)
+                <textarea id="animauxDetails" rows="3" placeholder="Exemples : 1 chat stérilisé, 2 lapins…">${state.animauxDetails||""}</textarea>
+              </label>
             </div>
             ${actions(true)}
           `;
@@ -494,7 +540,7 @@
             </ul>
           `;
           return `
-            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 6 · Récapitulatif</h2>
+            <h2 style="font-family:Poppins; margin:0 0 8px;">Étape 8 · Récapitulatif</h2>
             <div class="summary">${resume}</div>
             <div class="actions">
               <button type="button" class="ghost" data-back>Retour</button>
@@ -520,14 +566,14 @@
           else{ msg.className='warn'; msg.textContent = "Une erreur est survenue : " + (data.error || "inconnue"); }
         }
 
-        // Start
+        // Lancer
         start.addEventListener('click', ()=>{
           step = STEP_DATES;
           mount();
           wizard.scrollIntoView({behavior:'smooth', block:'start'});
         });
 
-        // Bouton final → submit
+        // Bouton final → submit (sécurité)
         wizard.addEventListener('click', (e)=>{
           const btn = e.target.closest('[data-next]');
           if (!btn) return;
