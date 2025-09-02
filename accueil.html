@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accueil – Camping de Rivassland</title>
+
+  <!-- Poppins (titres) + Cabin (texte) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --glass: rgba(255,255,255,.58);
+      --glass-strong: rgba(255,255,255,.70);
+      --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
+      --ring:#3b82f6; --text:#0f172a; --muted:#475569; --muted2:#64748b;
+      --shadow: 0 18px 46px rgba(2,6,23,.20);
+      --radius:22px;
+      --transition:220ms cubic-bezier(.22,.61,.36,1);
+    }
+    html[data-theme="dark"]{
+      --glass: rgba(17,24,39,.48);
+      --glass-strong: rgba(17,24,39,.60);
+      --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
+      --ring:#93c5fd; --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
+      --shadow: 0 22px 56px rgba(0,0,0,.46);
+    }
+    @media (prefers-reduced-motion:no-preference){
+      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
+    }
+
+    /* Fond deux calques + vignette sombre */
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    body::before, body::after{
+      content:""; position:fixed; inset:0; z-index:-3;
+      background-size:cover; background-position:center; background-attachment:fixed;
+      transition: opacity 900ms ease;
+    }
+    body::before{ background-image:url("camping.jpg"); opacity:1; }
+    body::after { background-image:url("camping-nuit.jpg"); opacity:0; }
+    .vignette{ position:fixed; inset:0; z-index:-2; pointer-events:none;
+      background: radial-gradient(1200px 800px at 50% 15%, rgba(0,0,0,.22), transparent 60%),
+                  linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.10));
+      opacity:0; transition: opacity 600ms ease;
+    }
+    html[data-theme="dark"] body::before{ opacity:0; }
+    html[data-theme="dark"] body::after { opacity:1; }
+    html[data-theme="dark"] .vignette   { opacity:.32; }
+
+    /* Barre top (nav + thème) */
+    .topbar{
+      position: sticky; top:0; z-index:5;
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding: 10px 16px;
+      backdrop-filter: blur(6px) saturate(120%);
+      background: color-mix(in oklab, rgba(255,255,255,.22) 70%, transparent);
+    }
+    .nav{
+      display:flex; gap:12px; flex-wrap:wrap;
+      background: color-mix(in oklab, var(--glass) 80%, transparent);
+      border:1px solid rgba(255,255,255,.4);
+      padding:6px 10px; border-radius:999px;
+    }
+    .nav a{
+      text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px;
+    }
+    .nav a:hover{ background: rgba(255,255,255,.35); }
+    .theme-toggle{
+      display:inline-flex; align-items:center; gap:8px;
+      border-radius: 999px; padding:8px 14px; color:#fff; font-weight:700;
+      border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
+      background: linear-gradient(180deg, var(--primary), var(--primary-700));
+      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
+      cursor:pointer;
+    }
+    .theme-toggle:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); transform: translateY(-1px); }
+
+    /* HERO : titre centré dans le haut de la page (zone 0–50%) */
+    .hero{
+      min-height: 60svh;
+      display:grid; place-items:center;
+      padding: clamp(16px,4vw,48px);
+    }
+    .hero-title{
+      font-family:"Poppins", system-ui, sans-serif;
+      font-weight:700;
+      font-size: clamp(34px, 6vw, 64px);
+      letter-spacing:.5px;
+      color:#fff;
+      text-shadow: 0 2px 22px rgba(0,0,0,.35), 0 1px 0 rgba(0,0,0,.3);
+      transform: translateY(-10%);
+      animation: fadeSlide .9s ease-out both;
+      text-align:center;
+    }
+    @keyframes fadeSlide{
+      from{ opacity:0; transform: translateY(-16%); }
+      to  { opacity:1; transform: translateY(-10%); }
+    }
+
+    /* Section panneaux */
+    .wrap{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: clamp(12px,3vw,24px);
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items:start;
+      gap: clamp(16px,2.4vw,28px);
+    }
+    @media (max-width: 960px){ .wrap{ grid-template-columns: 1fr; } }
+
+    .panel{
+      background: var(--glass);
+      backdrop-filter: blur(10px) saturate(120%);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(16px,2.4vw,26px);
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-family:"Poppins",system-ui,sans-serif;
+      font-weight:700; font-size: clamp(20px,2.4vw,28px);
+      letter-spacing:.2px; color:var(--text);
+    }
+    .lead{ color:var(--muted2); line-height:1.6; font-size: clamp(16px,1.3vw,18px); }
+
+    /* Équipements */
+    .features{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+    }
+    @media (max-width: 900px){ .features{ grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 560px){ .features{ grid-template-columns: 1fr; } }
+
+    .feature{
+      position:relative;
+      display:flex; align-items:center; gap:12px;
+      padding:12px 14px;
+      background: var(--glass-strong);
+      border:1px solid rgba(255,255,255,.40);
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      cursor: default;
+    }
+    .feature svg{ width:28px; height:28px; flex:0 0 auto; }
+    .feature span{ font-weight:600; color:var(--text); }
+
+    /* Tooltip au survol/focus */
+    .feature[data-tip]::after{
+      content: attr(data-tip);
+      position: absolute;
+      left: 50%; bottom: -8px; transform: translate(-50%, 100%);
+      white-space: nowrap;
+      background: rgba(17,24,39,.92);
+      color: #fff; font-size:12px; padding:6px 10px; border-radius:10px;
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    html[data-theme="dark"] .feature[data-tip]::after{ background: rgba(0,0,0,.92); }
+    .feature:hover::after, .feature:focus-within::after{
+      opacity:1; transform: translate(-50%, calc(100% + 4px));
+    }
+
+    /* Bouton CTA (optionnel) */
+    .cta{
+      margin-top: 10px;
+      display:inline-flex; align-items:center; gap:10px;
+      border-radius: 12px; padding:10px 14px; color:#fff; font-weight:700;
+      border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
+      background: linear-gradient(180deg, var(--primary), var(--primary-700));
+      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
+      text-decoration:none;
+    }
+    .cta:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); transform: translateY(-1px); }
+  </style>
+</head>
+<body>
+  <!-- Calque vignette -->
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- Topbar : nav + thème -->
+  <header class="topbar">
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="accueil.html" aria-current="page">Accueil</a>
+      <a href="index.html">Questionnaire</a>
+    </nav>
+    <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
+      <span id="themeIcon" aria-hidden="true">🌞</span>
+      <span id="themeLabel">Mode clair</span>
+    </button>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Identité du site">
+    <h1 class="hero-title">Camping de Rivassland</h1>
+  </section>
+
+  <!-- PANNEAUX -->
+  <main class="wrap">
+    <!-- Description -->
+    <section class="panel" aria-labelledby="desc-title">
+      <h2 id="desc-title">Bienvenue au bord de la mer</h2>
+      <p class="lead">
+        Le Camping de Rivassland vous accueille entre plages de sable, sentiers côtiers et centre-ville
+        à proximité. Emplacements spacieux, ambiance conviviale, et services pensés pour un séjour
+        confortable : sanitaires entretenus, point de vidange, laverie, piscine et accès direct au littoral.
+      </p>
+      <a class="cta" href="index.html">Donner votre avis</a>
+    </section>
+
+    <!-- Équipements -->
+    <section class="panel" aria-labelledby="equip-title">
+      <h2 id="equip-title">Équipements & Services</h2>
+      <div class="features">
+        <!-- Sanitaires -->
+        <div class="feature" tabindex="0" data-tip="Sanitaires modernes & entretenus">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 3a1 1 0 0 0-1 1v7H3a1 1 0 1 0 0 2h3v2a4 4 0 0 0 4 4h1a1 1 0 1 0 0-2H10a2 2 0 0 1-2-2v-2h8v2a2 2 0 0 1-2 2h-1a1 1 0 1 0 0 2h1a4 4 0 0 0 4-4v-2h3a1 1 0 1 0 0-2h-3V4a1 1 0 0 0-1-1H7z"/></svg>
+          <span>Sanitaires</span>
+        </div>
+
+        <!-- Vidange eaux usées -->
+        <div class="feature" tabindex="0" data-tip="Point de vidange eaux usées">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V3a1 1 0 0 1 1-1zm-7 18a1 1 0 0 0 1 1h12a1 1 0 1 0 0-2H6a1 1 0 0 0-1 1z"/></svg>
+          <span>Vidange</span>
+        </div>
+
+        <!-- Machine à laver -->
+        <div class="feature" tabindex="0" data-tip="Laverie (machines à laver)">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 4h12V4H6v2zm6 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm-4-9h2V7H8v2z"/></svg>
+          <span>Laverie</span>
+        </div>
+
+        <!-- Piscine -->
+        <div class="feature" tabindex="0" data-tip="Piscine extérieure">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 17c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S4.5 21 3 21v-2zM7 5l2-2 2 2-2 2-2-2zm6 2l2-2 2 2-2 2-2-2z"/></svg>
+          <span>Piscine</span>
+        </div>
+
+        <!-- Accès mer -->
+        <div class="feature" tabindex="0" data-tip="Accès direct à la mer">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a2 2 0 0 1 2 2v6.17a3 3 0 1 1-2 0V4a2 2 0 0 1 2-2zm-8 16c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 4 21v-2z"/></svg>
+          <span>Accès mer</span>
+        </div>
+
+        <!-- Centre-ville -->
+        <div class="feature" tabindex="0" data-tip="Centre-ville à proximité">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a6 6 0 0 1 6 6c0 4.5-6 12-6 12S6 12.5 6 8a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+          <span>Centre-ville</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* Thème : auto + forçage via data-theme mémorisé */
+    (function themeInit(){
+      const html = document.documentElement;
+      const saved = localStorage.getItem("theme");
+      if (saved === "light" || saved === "dark") {
+        html.setAttribute("data-theme", saved);
+      } else {
+        const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
+        html.setAttribute("data-theme", prefersDark ? "dark" : "light");
+      }
+      const btn = document.getElementById("themeToggle");
+      const icon = document.getElementById("themeIcon");
+      const label = document.getElementById("themeLabel");
+      function updateLabel(){
+        const isDark = html.getAttribute("data-theme")==="dark";
+        icon.textContent = isDark ? "🌙" : "🌞";
+        label.textContent = isDark ? "Mode sombre" : "Mode clair";
+      }
+      btn.addEventListener("click", ()=>{
+        const next = html.getAttribute("data-theme")==="dark" ? "light" : "dark";
+        html.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+        updateLabel();
+      });
+      updateLabel();
+      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{
+        if (!localStorage.getItem("theme")){
+          html.setAttribute("data-theme", e.matches ? "dark" : "light");
+          updateLabel();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
