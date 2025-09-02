@@ -29,11 +29,10 @@
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    /* Fond deux calques + vignette sombre */
+    /* Fond */
     html,body{ height:100%; }
     body{
-      margin:0;
-      color:var(--text);
+      margin:0; color:var(--text);
       font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
     body::before, body::after{
@@ -52,28 +51,25 @@
     html[data-theme="dark"] body::after { opacity:1; }
     html[data-theme="dark"] .vignette   { opacity:.32; }
 
-    /* Topbar : logo + nav + thème (plus foncée) */
+    /* Topbar plus foncée */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 10px 16px;
       backdrop-filter: blur(6px) saturate(120%);
-      background:
-        color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.22));
+      background: color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.22));
       border-bottom: 1px solid rgba(0,0,0,.12);
       box-shadow: 0 6px 16px rgba(0,0,0,.12);
     }
     html[data-theme="dark"] .topbar{
-      background:
-        color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.08));
+      background: color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.08));
       border-bottom-color: rgba(255,255,255,.10);
       box-shadow: 0 8px 20px rgba(0,0,0,.35);
     }
 
     .nav-left{ display:flex; align-items:center; gap:16px; }
     .logo{
-      height:42px; width:auto;
-      border-radius:8px;
+      height:42px; width:auto; border-radius:8px;
       box-shadow:0 4px 10px rgba(0,0,0,.2);
     }
     .nav{
@@ -83,9 +79,20 @@
       padding:6px 10px; border-radius:999px;
     }
     .nav a{
-      text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px;
+      text-decoration:none; color:var(--text); font-weight:600;
+      padding:6px 10px; border-radius:999px;
     }
     .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35); }
+
+    /* Pill muet “bientôt” */
+    .pill-muted{
+      padding:6px 10px; border-radius:999px; font-weight:600;
+      color: color-mix(in oklab, var(--text) 70%, #000);
+      background: rgba(255,255,255,.22);
+      border:1px solid rgba(255,255,255,.4);
+      opacity:.75;
+      user-select:none;
+    }
 
     .theme-toggle{
       display:inline-flex; align-items:center; gap:8px;
@@ -99,18 +106,14 @@
 
     /* HERO */
     .hero{
-      min-height: 60svh;
-      display:grid; place-items:center;
+      min-height: 60svh; display:grid; place-items:center;
       padding: clamp(16px,4vw,48px);
     }
     .hero-title{
-      font-family:"Poppins", system-ui, sans-serif;
-      font-weight:700;
-      font-size: clamp(34px, 6vw, 64px);
-      letter-spacing:.5px; color:#fff; text-align:center;
+      font-family:"Poppins", system-ui, sans-serif; font-weight:700;
+      font-size: clamp(34px, 6vw, 64px); letter-spacing:.5px; color:#fff; text-align:center;
       text-shadow: 0 2px 22px rgba(0,0,0,.35), 0 1px 0 rgba(0,0,0,.3);
-      transform: translateY(-10%);
-      animation: fadeSlide .9s ease-out both;
+      transform: translateY(-10%); animation: fadeSlide .9s ease-out both;
     }
     @keyframes fadeSlide{ from{ opacity:0; transform: translateY(-16%);} to{opacity:1; transform: translateY(-10%);} }
 
@@ -124,18 +127,14 @@
     @media (max-width: 960px){ .wrap{ grid-template-columns: 1fr; } }
 
     .panel{
-      background: var(--glass);
-      backdrop-filter: blur(10px) saturate(120%);
+      background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
       border: 1px solid rgba(255,255,255,.35);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      border-radius: var(--radius); box-shadow: var(--shadow);
       padding: clamp(16px,2.4vw,26px);
     }
     .panel h2{
-      margin:0 0 10px;
-      font-family:"Poppins",system-ui,sans-serif;
-      font-weight:700; font-size: clamp(20px,2.4vw,28px);
-      letter-spacing:.2px; color:var(--text);
+      margin:0 0 10px; font-family:"Poppins",system-ui,sans-serif;
+      font-weight:700; font-size: clamp(20px,2.4vw,28px); letter-spacing:.2px; color:var(--text);
     }
     .lead{ color:var(--muted2); line-height:1.6; font-size: clamp(16px,1.3vw,18px); }
 
@@ -183,7 +182,7 @@
       <img src="logo.jpg" alt="Camping Rivassland" class="logo">
       <nav class="nav" aria-label="Navigation principale">
         <a href="accueil.html" aria-current="page">Accueil</a>
-        <a href="index.html">Questionnaire</a>
+        <span class="pill-muted" title="Bientôt disponible">Réservations (bientôt)</span>
       </nav>
     </div>
     <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
@@ -239,7 +238,6 @@
   </main>
 
   <script>
-    /* Thème : auto + forçage via data-theme mémorisé */
     (function themeInit(){
       const html = document.documentElement;
       const saved = localStorage.getItem("theme");
