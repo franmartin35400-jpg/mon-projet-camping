@@ -4,40 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Questionnaire Camping Saint-Malo</title>
+
+  <!-- Typographies camping -->
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Rye&display=swap" rel="stylesheet">
+
   <style>
     /* ===== Thème clair par défaut ===== */
     :root{
-      --bg1: #eef2ff;              /* indigo-50 */
-      --bg2: #ffffff;              /* blanc */
-      --card: rgba(255,255,255,.92);
-      --primary: #2563eb;          /* blue-600 */
+      --bg1:#eef2ff;    /* indigo-50 */
+      --bg2:#ffffff;
+      --glass: rgba(255,255,255,.72);
+      --glass-strong: rgba(255,255,255,.82);
+      --primary:#2563eb;
       --primary-700:#1d4ed8;
       --primary-800:#1e40af;
-      --ring:#3b82f6;              /* blue-500 */
-      --text:#0f172a;              /* slate-900 */
-      --muted:#64748b;             /* slate-500 */
-      --shadow: 0 10px 30px rgba(2,6,23,.15);
-      --radius:16px;
-      --transition: 180ms ease;
-      --star-empty:#e5e7eb;        /* gray-200 */
-      --star-full:#f59e0b;         /* amber-500 */
+      --ring:#3b82f6;
+      --text:#0f172a;
+      --muted:#64748b;
+      --shadow: 0 12px 32px rgba(2,6,23,.18);
+      --radius:18px;
+      --star-empty:#e5e7eb;
+      --star-full:#f59e0b;
+      --transition:220ms cubic-bezier(.22,.61,.36,1);
     }
 
     /* ===== Mode sombre auto ===== */
     @media (prefers-color-scheme: dark){
       :root{
-        --bg1:#0f172a;             /* slate-900 */
-        --bg2:#111827;             /* gray-900 */
-        --card: rgba(17,24,39, .72);
-        --primary:#60a5fa;         /* blue-400 */
-        --primary-700:#3b82f6;     /* blue-500 */
-        --primary-800:#1d4ed8;     /* blue-600 */
-        --ring:#93c5fd;            /* blue-300 */
-        --text:#e5e7eb;            /* gray-200 */
-        --muted:#94a3b8;           /* slate-400 */
-        --shadow: 0 12px 34px rgba(2,6,23,.45);
-        --star-empty:#374151;      /* gray-700 */
-        --star-full:#fbbf24;       /* amber-400 */
+        --bg1:#0f172a;  /* slate-900 */
+        --bg2:#111827;  /* gray-900 */
+        --glass: rgba(17,24,39,.52);
+        --glass-strong: rgba(17,24,39,.66);
+        --primary:#60a5fa;
+        --primary-700:#3b82f6;
+        --primary-800:#1d4ed8;
+        --ring:#93c5fd;
+        --text:#e5e7eb;
+        --muted:#94a3b8;
+        --shadow: 0 16px 40px rgba(0,0,0,.45);
+        --star-empty:#374151;
+        --star-full:#fbbf24;
       }
     }
 
@@ -45,57 +51,94 @@
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    /* ===== Fond : image en premier, puis dégradés ===== */
+    /* ===== Fond : image d'abord, puis dégradés ===== */
     html,body{ height:100%; }
     body{
       margin:0;
       color:var(--text);
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
       background-image:
         url("camping.jpg"),
         radial-gradient(1200px 600px at 10% -10%, rgba(59,130,246,.18), transparent 60%),
         radial-gradient(900px 500px at 110% 10%, rgba(99,102,241,.18), transparent 60%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
-
       background-size: cover, cover, cover, cover;
-      background-position:center, center, center, center;
+      background-position: center, center, center, center;
       background-attachment: fixed, fixed, fixed, fixed;
       background-blend-mode: normal, screen, screen, normal;
     }
 
-    .container{
-      max-width: 960px;
-      margin: clamp(16px, 4vw, 48px) auto;
-      padding: clamp(16px, 3vw, 28px);
-      background: var(--card);
-      backdrop-filter: blur(8px) saturate(115%);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255,255,255,.25);
+    /* ===== Layout principal avec intro animée ===== */
+    .page{
+      max-width: 1200px;
+      margin: clamp(16px,4vw,48px) auto;
+      padding: clamp(10px,2vw,18px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(16px,2.4vw,24px);
+      animation: pageIn .7s ease-out both;
+    }
+    @keyframes pageIn{
+      from{ opacity:0; transform:translateY(14px); filter:saturate(90%); }
+      to{ opacity:1; transform:translateY(0); filter:saturate(100%); }
     }
 
-    h1{ font-size: clamp(22px, 3.2vw, 34px); margin:0 0 8px; letter-spacing:.2px; }
-    h2{ font-size: clamp(18px, 2.4vw, 24px); margin:24px 0 8px; color: var(--muted); font-weight:600; }
+    /* ===== Cartes “verre” séparées ===== */
+    .panel{
+      background: var(--glass);
+      backdrop-filter: blur(10px) saturate(120%);
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(16px,2.6vw,28px);
+      position: relative;
+      overflow: clip;
+    }
+    .panel:hover{ transform: translateY(-2px); }
+    .panel:focus-within{ box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 28%, transparent), var(--shadow); }
+
+    .panel.form{ background: var(--glass-strong); }
+    .panel.reviews{ background: var(--glass); }
+
+    /* ===== Titres ===== */
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(26px,3.2vw,36px);
+      letter-spacing:.2px;
+      font-family: "Rye", system-ui, serif;   /* esprit camping */
+      text-shadow: 0 1px 0 rgba(255,255,255,.35);
+    }
+    h2{
+      margin: 8px 0 14px;
+      font-size: clamp(18px,2.2vw,24px);
+      color: var(--muted);
+      font-weight: 600;
+    }
 
     /* ===== Formulaire ===== */
     form{ display:grid; grid-template-columns:1fr 1fr; gap:14px 16px; }
     form label{ font-size:13px; color: var(--muted); display:flex; flex-direction:column; gap:6px; }
     form input, form select, form textarea{
-      padding: 12px 14px; border-radius:12px; border:1px solid rgba(15,23,42,.15);
+      padding: 12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(15,23,42,.16);
       background:#fff; color:#0f172a;
+      box-shadow: inset 0 -2px 0 rgba(2,6,23,.03);
     }
     @media (prefers-color-scheme: dark){
-      form input, form select, form textarea{ background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.3); }
+      form input, form select, form textarea{
+        background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28);
+      }
     }
-    form textarea{ min-height:90px; resize:vertical; }
+    form textarea{ min-height:100px; resize:vertical; }
     form input:focus, form select:focus, form textarea:focus{
       border-color: var(--ring);
       box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 35%, transparent);
       outline:none;
     }
-    /* Zones texte pleine largeur */
-    label:has(#avisLieu), label:has(#avisAccueil){ grid-column: 1/-1; }
+    /* Textareas pleine largeur */
+    label:has(#avisLieu), label:has(#avisAccueil){ grid-column:1/-1; }
 
     /* ===== Boutons ===== */
     .buttons{ display:flex; gap:10px; margin-top:6px; grid-column:1/-1; flex-wrap:wrap; }
@@ -105,33 +148,33 @@
       gap:8px; padding:12px 18px; border-radius:12px;
       border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
       background: linear-gradient(180deg, var(--primary), var(--primary-700));
-      color:#fff; font-weight:600; cursor:pointer;
-      box-shadow: 0 8px 20px color-mix(in oklab, var(--primary) 25%, transparent);
+      color:#fff; font-weight:700; letter-spacing:.2px; cursor:pointer;
+      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
       transform: translateY(0);
     }
-    button:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); }
+    button:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); transform: translateY(-1px); }
     button:active{ transform: translateY(1px); }
-    button:focus-visible{ outline:none; box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 60%, transparent), var(--shadow); }
+    button:focus-visible{ outline:none; box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 58%, transparent), var(--shadow); }
 
-    /* Effet ripple */
+    /* Ripple doux */
     .ripple::after{
       content:""; position:absolute; inset:0;
-      background: radial-gradient(120px 120px at var(--x,50%) var(--y,50%), rgba(255,255,255,.35), transparent 60%);
+      background: radial-gradient(140px 140px at var(--x,50%) var(--y,50%), rgba(255,255,255,.35), transparent 60%);
       opacity:0; transform: scale(0.9);
     }
     .ripple.play::after{ opacity:1; transform:scale(1); transition: opacity .45s ease, transform .45s ease; }
 
-    #msg{ margin:8px 0 0; color: var(--muted); }
-    #countBadge{ color: var(--primary-700); }
+    #msg{ margin:8px 0 0; color: var(--muted); min-height: 1.2em; }
 
-    /* ===== Avis ===== */
-    #reviewsList{ display:grid; gap:12px; margin-top:8px; }
+    /* ===== Liste des avis ===== */
+    #reviewsList{ display:grid; gap:12px; }
     .review{
       background:#fff;
       border:1px solid rgba(15,23,42,.08);
       border-radius:14px;
       padding:14px 16px;
       box-shadow: 0 6px 14px rgba(2,6,23,.06);
+      animation: cardIn .5s ease both;
     }
     @media (prefers-color-scheme: dark){
       .review{
@@ -140,66 +183,85 @@
         box-shadow: 0 8px 20px rgba(0,0,0,.25);
       }
     }
-    .review:hover{ box-shadow: 0 10px 22px rgba(2,6,23,.12); transform: translateY(-2px); }
+    .review:hover{ box-shadow: 0 12px 24px rgba(2,6,23,.12); transform: translateY(-2px); }
+    @keyframes cardIn{
+      from{ opacity:0; transform:translateY(6px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
     .review .note{ color: var(--muted); font-size:12px; margin-top:4px; }
 
-    /* ===== Étoiles ===== */
+    /* Étoiles */
     .stars{ display:inline-block; font-size:20px; position:relative; }
     .star{ display:inline-block; position:relative; width:1.25em; height:1.25em; }
     .star::before{ content:"★"; position:absolute; inset:0; color: var(--star-empty); }
     .star::after{ content:"★"; position:absolute; inset:0; width:var(--w,0%); overflow:hidden; color: var(--star-full); }
 
-    /* ===== Responsive ===== */
-    @media (max-width: 720px){
-      form{ grid-template-columns:1fr; }
-      .buttons{ flex-direction:column; }
-    }
+    /* Grille responsive */
+    @media (max-width: 920px){ .page{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Questionnaire Camping Saint-Malo</h1>
 
-    <form id="form">
-      <label>Prénom: <input id="prenom" required /></label>
-      <label>Nom: <input id="nom" required /></label>
+  <div class="page">
+    <!-- Panneau Questionnaire (verre plus marqué) -->
+    <section class="panel form" aria-labelledby="title-form">
+      <h1 id="title-form">Questionnaire Camping Saint-Malo</h1>
+      <form id="form">
+        <label>Prénom
+          <input id="prenom" autocomplete="given-name" required />
+        </label>
+        <label>Nom
+          <input id="nom" autocomplete="family-name" required />
+        </label>
 
-      <label>Début du séjour: <input type="date" id="debut" /></label>
-      <label>Fin du séjour: <input type="date" id="fin" /></label>
+        <label>Début du séjour
+          <input type="date" id="debut" />
+        </label>
+        <label>Fin du séjour
+          <input type="date" id="fin" />
+        </label>
 
-      <label>Note du lieu:
-        <select id="noteLieu">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5" selected>5</option>
-        </select>
-      </label>
+        <label>Note du lieu
+          <select id="noteLieu">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected>5</option>
+          </select>
+        </label>
 
-      <label>Note de l’accueil:
-        <select id="noteAccueil">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5" selected>5</option>
-        </select>
-      </label>
+        <label>Note de l’accueil
+          <select id="noteAccueil">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected>5</option>
+          </select>
+        </label>
 
-      <label>Avis sur le lieu:<textarea id="avisLieu"></textarea></label>
-      <label>Avis sur les hôtes:<textarea id="avisAccueil"></textarea></label>
+        <label>Avis sur le lieu
+          <textarea id="avisLieu" placeholder="Ce que vous avez aimé, points à améliorer…"></textarea>
+        </label>
+        <label>Avis sur les hôtes
+          <textarea id="avisAccueil" placeholder="Accueil, disponibilité, ambiance…"></textarea>
+        </label>
 
-      <div class="buttons">
-        <button type="submit" id="btnAdd" class="ripple">Ajouter la réponse</button>
-        <button type="button" id="btnCsv" class="ripple">Exporter en CSV</button>
-      </div>
-    </form>
+        <div class="buttons">
+          <button type="submit" id="btnAdd" class="ripple">Ajouter la réponse</button>
+          <button type="button" id="btnCsv" class="ripple">Exporter en CSV</button>
+        </div>
+      </form>
+      <p id="msg" role="status" aria-live="polite"></p>
+    </section>
 
-    <p id="msg"></p>
-
-    <h2>Avis des visiteurs <span id="countBadge"></span></h2>
-    <div id="reviewsList"></div>
+    <!-- Panneau Avis (verre plus léger) -->
+    <section class="panel reviews" aria-labelledby="title-reviews">
+      <h2 id="title-reviews">Avis des visiteurs <span id="countBadge"></span></h2>
+      <div id="reviewsList"></div>
+    </section>
   </div>
 
   <script>
@@ -213,33 +275,40 @@
       location.hostname === "localhost" || location.hostname === "127.0.0.1"
     ) ? "/api/gas" : PROD_API;
 
-    /* ===== Utilitaires UI ===== */
+    /* Utilitaires UI */
     function starHTML(avg){
       avg = Math.round(avg * 2) / 2;
       let h = '<span class="stars">';
-      for (let i=1;i<=5;i++){ const p=Math.min(Math.max(avg-(i-1),0),1); h+=`<span class="star" style="--w:${p*100}%"></span>`; }
+      for (let i=1;i<=5;i++){
+        const p=Math.min(Math.max(avg-(i-1),0),1);
+        h+=`<span class="star" style="--w:${p*100}%"></span>`;
+      }
       return h+'</span> '+avg.toFixed(1)+'/5';
     }
 
     function renderReviews(rows){
+      // anti-doublons
       const seen=new Set(), deduped=[];
       for(const r of rows){
         const key=[r.horodatage??'',(r.prenom??'').trim().toLowerCase(),(r.nom??'').trim().toLowerCase(),(r.avis_lieu??'').trim().toLowerCase(),(r.avis_accueil??'').trim().toLowerCase()].join('|');
         if(!seen.has(key)){ seen.add(key); deduped.push(r); }
       }
-      const list=document.getElementById('reviewsList'); const badge=document.getElementById('countBadge');
-      list.innerHTML=''; badge.textContent=`(${deduped.length})`;
+      const list=document.getElementById('reviewsList');
+      const badge=document.getElementById('countBadge');
+      list.innerHTML='';
+      badge.textContent=`(${deduped.length})`;
+
       list.innerHTML=deduped.map(r=>{
         const noteLieu=Number(r.note_lieu||0), noteAccueil=Number(r.note_accueil||0);
         const avg=(noteLieu+noteAccueil)/2;
         const periode=(r.debut_sejour||r.fin_sejour)?`Séjour : ${r.debut_sejour||'?'} → ${r.fin_sejour||'?'}`:'';
-        return `<div class="review">
+        return `<article class="review">
           <div><strong>Note globale :</strong> ${starHTML(avg)}</div>
           <div>${(r.prenom||'')} ${(r.nom||'')}</div>
           <div><strong>Avis sur le lieu :</strong> ${(r.avis_lieu||'—')}</div>
           <div><strong>Avis sur les hôtes :</strong> ${(r.avis_accueil||'—')}</div>
           ${periode?`<div class="note">${periode}</div>`:''}
-        </div>`;
+        </article>`;
       }).join('');
     }
 
@@ -258,9 +327,13 @@
       }
       async function apiAdd(rec){
         const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{
-          method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(rec), cache:'no-store'
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(rec),
+          cache:'no-store'
         });
-        const text=await r.text(); let d;
+        const text=await r.text();
+        let d;
         try{ d=JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
         if(!d.ok) throw new Error(d.error||'Erreur serveur');
       }
@@ -279,6 +352,7 @@
         };
       }
 
+      // Submit
       form.addEventListener('submit', async (e)=>{
         e.preventDefault();
         try{
@@ -286,6 +360,7 @@
           await apiAdd(formToRecord());
           showMessage('Réponse enregistrée ✅');
           renderReviews(await apiList());
+          form.reset();   // reset doux
         }catch(err){
           showMessage('Erreur: '+err.message);
         }finally{
@@ -293,6 +368,7 @@
         }
       });
 
+      // Export CSV
       btnCsv.addEventListener('click', async ()=>{
         try{
           const rows=await apiList();
@@ -321,13 +397,16 @@
         });
         el.addEventListener('click', ()=>{
           el.classList.add('play');
-          setTimeout(()=> el.classList.remove('play'), 450);
+          setTimeout(()=> el.classList.remove('play'), 460);
         });
       }
       wireRipple(btnAdd); wireRipple(btnCsv);
 
-      // Chargement initial
-      (async()=>{ try{ renderReviews(await apiList()); } catch(e){ showMessage('Chargement impossible : '+e.message); } })();
+      // Chargement initial des avis
+      (async()=>{
+        try{ renderReviews(await apiList()); }
+        catch(e){ showMessage('Chargement impossible : '+e.message); }
+      })();
     })();
   </script>
 </body>
