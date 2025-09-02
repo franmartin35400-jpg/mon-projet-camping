@@ -10,26 +10,20 @@
     html[data-theme="dark"]{--glass:rgba(17,24,39,.46);--glass-strong:rgba(17,24,39,.62);--primary:#60a5fa;--primary-700:#3b82f6;--text:#e5e7eb;--muted:#94a3b8;--shadow:0 22px 56px rgba(0,0,0,.46)}
     html,body{height:100%} body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#000}
 
-    /* Haut/bas très séparés, transition minime (fin de top → début de bottom) */
-    .top, .top-night, .bottom, .bottom-night{
-      position:fixed; inset:0; z-index:-2; background-size:cover; background-position:center; background-repeat:no-repeat; will-change: opacity, transform;
+    /* Calques fond (haut/bas très séparés) */
+    .top,.top-night,.bottom,.bottom-night{
+      position:fixed; inset:0; z-index:-2; background-size:cover; background-position:center; background-repeat:no-repeat;
     }
-    .top{ background-image:url("accueil-haut-jour.jpg"); }
-    .bottom{ background-image:url("camping-accueil-2.jpg"); }
-    .top-night{ background-image:url("accueil-nui.jpg"); opacity:0; }
-    .bottom-night{ background-image:url("camping-accueil-nuit-2.jpg"); opacity:0; }
-
-    /* Masques : grande séparation (quasi aucune zone de mix) */
-    .top, .top-night{
+    /* Séparation nette, fondu minime */
+    .top,.top-night{
       -webkit-mask-image: linear-gradient(to bottom,#000 0,#000 62vh, rgba(0,0,0,.08) 65vh, rgba(0,0,0,0) 67vh);
               mask-image: linear-gradient(to bottom,#000 0,#000 62vh, rgba(0,0,0,.08) 65vh, rgba(0,0,0,0) 67vh);
     }
-    .bottom, .bottom-night{
+    .bottom,.bottom-night{
       -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 60vh, rgba(0,0,0,.9) 68vh, #000 100%);
               mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 60vh, rgba(0,0,0,.9) 68vh, #000 100%);
     }
 
-    /* Bascule nuit */
     html[data-theme="dark"] .top{opacity:0} html[data-theme="dark"] .top-night{opacity:1}
     html[data-theme="dark"] .bottom{opacity:0} html[data-theme="dark"] .bottom-night{opacity:1}
 
@@ -56,6 +50,7 @@
       background:var(--glass); backdrop-filter: blur(10px) saturate(120%);
       border:1px solid rgba(255,255,255,.35); border-radius:var(--radius); box-shadow:var(--shadow);
       padding: clamp(18px,2.6vw,28px);
+      will-change: transform, box-shadow;
     }
     .panel:hover{ transform: translateY(-2px); }
     h2{ font-family:Poppins,system-ui,sans-serif; margin:0 0 12px }
@@ -73,11 +68,11 @@
   </style>
 </head>
 <body>
-  <!-- Fonds haut/bas très séparés -->
-  <div class="top" aria-hidden="true"></div>
-  <div class="top-night" aria-hidden="true"></div>
-  <div class="bottom" aria-hidden="true"></div>
-  <div class="bottom-night" aria-hidden="true"></div>
+  <!-- Calques fond (images définies via JS + fallback) -->
+  <div class="top"    aria-hidden="true" id="bgTop"></div>
+  <div class="top-night" aria-hidden="true" id="bgTopNight"></div>
+  <div class="bottom" aria-hidden="true" id="bgBottom"></div>
+  <div class="bottom-night" aria-hidden="true" id="bgBottomNight"></div>
 
   <header class="topbar">
     <div class="nav-left">
@@ -132,7 +127,39 @@
       u();
     })();
 
-    // Calcul dynamique moyenne avis pour la ligne sous-titre
+    // Pré-chargement avec fallback
+    (async function setBackgrounds(){
+      const bgTop = document.getElementById('bgTop');
+      const bgTopNight = document.getElementById('bgTopNight');
+      const bgBottom = document.getElementById('bgBottom');
+      const bgBottomNight = document.getElementById('bgBottomNight');
+
+      async function canLoad(src){
+        return new Promise(res=>{
+          const im=new Image(); im.onload=()=>res(true); im.onerror=()=>res(false); im.src=src+'?v='+Date.now();
+        });
+      }
+
+      const TOP_DAY_PRIMARY   = 'accueil-haut-jour.jpg';
+      const TOP_DAY_FALLBACK  = 'camping.jpg';
+      const TOP_NIGHT_PRIMARY = 'accueil-nui.jpg';
+      const TOP_NIGHT_FALLBACK= 'camping-nuit.jpg';
+
+      const BOT_DAY           = 'camping-accueil-2.jpg';
+      const BOT_NIGHT_PRIMARY = 'camping-accueil-nuit-2.jpg';
+      const BOT_NIGHT_FALLBACK= 'camping-accueil-2.jpg';
+
+      const topDay   = (await canLoad(TOP_DAY_PRIMARY))   ? TOP_DAY_PRIMARY   : TOP_DAY_FALLBACK;
+      const topNight = (await canLoad(TOP_NIGHT_PRIMARY)) ? TOP_NIGHT_PRIMARY : TOP_NIGHT_FALLBACK;
+      const botNight = (await canLoad(BOT_NIGHT_PRIMARY)) ? BOT_NIGHT_PRIMARY : BOT_NIGHT_FALLBACK;
+
+      if(bgTop)        bgTop.style.backgroundImage = `url("${topDay}")`;
+      if(bgTopNight)   bgTopNight.style.backgroundImage = `url("${topNight}")`;
+      if(bgBottom)     bgBottom.style.backgroundImage = `url("${BOT_DAY}")`;
+      if(bgBottomNight)bgBottomNight.style.backgroundImage = `url("${botNight}")`;
+    })();
+
+    // Moyenne des avis sous le titre
     (async function(){
       try{
         const r=await fetch("/api/gas");
