@@ -27,49 +27,58 @@
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    html,body{ height:100%; }
+    /* Sécurité anti-blanc */
+    html,body{ height:100%; background:#0b1220; }
     body{
       margin:0; color:var(--text);
-      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      line-height: 1.6;
+      font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      line-height:1.6;
       opacity:0; transform: translateY(8px);
       animation: pageEnter .7s ease-out forwards;
     }
     @keyframes pageEnter{ to{ opacity:1; transform: translateY(0); } }
 
-    /* Calque haut : camping.jpg (ou camping-nuit.jpg en dark), occupe ~55% */
-    .bg-top, .bg-top-night{
-      position:fixed; inset:0 0 45vh 0; /* du haut jusqu’à 45vh au-dessus du bas => ~55% de l’écran */
-      background-size:cover; background-position:center top; background-repeat:no-repeat;
-      z-index:-4; transition: opacity 900ms ease;
+    /* ====== FOND PLEIN ÉCRAN SANS “TROU” ====== */
+    .bg-frame{
+      position: fixed; inset: 0; z-index: -5;
+      /* si une image rate, cette couleur sombre évite tout blanc */
+      background: #0b1220;
     }
-    .bg-top{ background-image:url("camping.jpg"); opacity:1; }
-    .bg-top-night{ background-image:url("camping-nuit.jpg"); opacity:0; }
-    html[data-theme="dark"] .bg-top{ opacity:0; }
-    html[data-theme="dark"] .bg-top-night{ opacity:1; }
+    /* Bande haute (55% hauteur) */
+    .bg-top, .bg-top-night{
+      position:absolute; left:0; right:0; top:0; height:55vh;
+      background-size:cover; background-position:center top; background-repeat:no-repeat;
+      transition: opacity 900ms ease;
+    }
+    .bg-top       { background-image:url("camping.jpg");      opacity:1; }
+    .bg-top-night { background-image:url("camping-nuit.jpg"); opacity:0; }
+    html[data-theme="dark"] .bg-top       { opacity:0; }
+    html[data-theme="dark"] .bg-top-night { opacity:1; }
 
-    /* Calque bas : camping-accueil-2.jpg, occupe le reste (45% inférieurs) */
+    /* Bande basse (45% hauteur) */
     .bg-bottom{
-      position:fixed; left:0; right:0; top:55vh; bottom:0;
+      position:absolute; left:0; right:0; bottom:0; height:45vh;
       background-image:url("camping-accueil-2.jpg");
       background-size:cover; background-position:center bottom; background-repeat:no-repeat;
-      z-index:-3;
     }
 
-    /* Fondu très léger sur la zone de chevauchement (10vh) */
-    .overlap-fade{
-      position:fixed; left:0; right:0; top:45vh; height:10vh; z-index:-2;
-      background: linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,0));
-      mix-blend-mode: multiply; pointer-events:none; opacity:.7;
+    /* Chevauchement (fondu) : 12vh au centre */
+    .bg-overlap-fade{
+      position:absolute; left:0; right:0; top:55vh; height:12vh;
+      /* On fond visuellement la jonction (pas de “ligne” blanche) */
+      background: linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,0));
+      mix-blend-mode: multiply; pointer-events:none; opacity:.65;
     }
 
-    .vignette{ position:fixed; inset:0; z-index:-1; pointer-events:none;
+    /* Vignette douce */
+    .vignette{
+      position:fixed; inset:0; z-index:-4; pointer-events:none;
       background: radial-gradient(1200px 800px at 50% 12%, rgba(0,0,0,.18), transparent 60%);
       opacity:.15;
     }
     html[data-theme="dark"] .vignette{ opacity:.32; }
 
-    /* Topbar */
+    /* ====== UI ====== */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
@@ -97,7 +106,6 @@
       cursor:pointer;
     }
 
-    /* HERO + contenus */
     .hero{ min-height: 56svh; display:grid; place-items:center; padding: clamp(16px,4vw,48px); }
     .hero-title{
       font-family:"Poppins", system-ui, sans-serif; font-weight:700;
@@ -152,10 +160,13 @@
   </style>
 </head>
 <body>
-  <div class="bg-top"></div>
-  <div class="bg-top-night"></div>
-  <div class="bg-bottom"></div>
-  <div class="overlap-fade"></div>
+  <!-- FOND global sans trou -->
+  <div class="bg-frame" aria-hidden="true">
+    <div class="bg-top"></div>
+    <div class="bg-top-night"></div>
+    <div class="bg-overlap-fade"></div>
+    <div class="bg-bottom"></div>
+  </div>
   <div class="vignette" aria-hidden="true"></div>
 
   <header class="topbar">
