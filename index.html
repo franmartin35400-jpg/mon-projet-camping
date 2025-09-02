@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ========= Variables ========= */
     :root{
       --bg1:#eef2ff; --bg2:#ffffff;
       --glass: rgba(255,255,255,.54);
@@ -34,7 +33,7 @@
       *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
     }
 
-    /* ========= Fond double calque + vignette ========= */
+    /* Fond + vignette */
     html,body{ height:100%; }
     body{ margin:0; color:var(--text); font-family: "Cabin", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
     body::before, body::after{
@@ -53,14 +52,24 @@
     html[data-theme="dark"] body::after { opacity:1; }
     html[data-theme="dark"] .vignette   { opacity:.32; }
 
-    /* ========= Topbar : logo + nav + thème ========= */
+    /* Topbar plus foncée */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 10px 16px;
       backdrop-filter: blur(6px) saturate(120%);
-      background: color-mix(in oklab, rgba(255,255,255,.22) 70%, transparent);
+      background:
+        color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.22));
+      border-bottom: 1px solid rgba(0,0,0,.12);
+      box-shadow: 0 6px 16px rgba(0,0,0,.12);
     }
+    html[data-theme="dark"] .topbar{
+      background:
+        color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.08));
+      border-bottom-color: rgba(255,255,255,.10);
+      box-shadow: 0 8px 20px rgba(0,0,0,.35);
+    }
+
     .nav-left{ display:flex; align-items:center; gap:16px; }
     .logo{
       height:42px; width:auto;
@@ -76,17 +85,7 @@
     .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px; }
     .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35); }
 
-    .theme-toggle{
-      display:inline-flex; align-items:center; gap:8px;
-      border-radius: 999px; padding:8px 14px; color:#fff; font-weight:700;
-      border:1px solid color-mix(in oklab, var(--primary) 35%, transparent);
-      background: linear-gradient(180deg, var(--primary), var(--primary-700));
-      box-shadow: 0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent);
-      cursor:pointer;
-    }
-    .theme-toggle:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); transform: translateY(-1px); }
-
-    /* ========= Grille principale ========= */
+    /* Grille */
     .page{
       max-width: 1200px; margin: clamp(12px,4vw,36px) auto; padding: clamp(8px,2vw,16px);
       display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: clamp(16px,2.4vw,26px);
@@ -94,7 +93,7 @@
     }
     @keyframes pageIn{ from{ opacity:0; transform:translateY(14px) } to{ opacity:1; transform:translateY(0) } }
 
-    /* ========= Panneaux ========= */
+    /* Panneaux */
     .panel{
       background: var(--glass);
       backdrop-filter: blur(10px) saturate(120%);
@@ -212,14 +211,12 @@
   </div>
 
   <script>
-    /* ========= API : proxy Netlify ========= */
     const PROD_API = "https://gleeful-alfajores-133e70.netlify.app/api/gas";
     const SCRIPT_URL = (
       location.hostname.endsWith("netlify.app") ||
       location.hostname === "localhost" || location.hostname === "127.0.0.1"
     ) ? "/api/gas" : PROD_API;
 
-    /* ========= Thème : auto + forçage via data-theme ========= */
     (function themeInit(){
       const html = document.documentElement;
       const saved = localStorage.getItem("theme");
@@ -252,7 +249,6 @@
       });
     })();
 
-    /* ========= UI utilitaires ========= */
     function starHTML(avg){
       avg = Math.round(avg * 2) / 2;
       let h = '<span class="stars">';
@@ -277,7 +273,6 @@
     }
 
     function renderReviews(rows){
-      // anti-doublons
       const seen=new Set(), deduped=[];
       for(const r of rows){
         const key=[r.horodatage??'',(r.prenom??'').trim().toLowerCase(),(r.nom??'').trim().toLowerCase(),(r.avis_lieu??'').trim().toLowerCase(),(r.avis_accueil??'').trim().toLowerCase()].join('|');
@@ -304,7 +299,6 @@
       requestAnimationFrame(revealOnScroll);
     }
 
-    /* ========= API appels ========= */
     async function apiList(){
       const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{cache:'no-store'});
       const text=await r.text();
@@ -322,7 +316,6 @@
       if(!d.ok) throw new Error(d.error||'Erreur serveur');
     }
 
-    /* ========= App ========= */
     (function initOnce(){
       if(window.__APP_WIRED__) return; window.__APP_WIRED__=true;
 
@@ -345,7 +338,6 @@
         };
       }
 
-      // Submit
       form.addEventListener('submit', async (e)=>{
         e.preventDefault();
         try{
@@ -361,7 +353,6 @@
         }
       });
 
-      // Export CSV
       btnCsv.addEventListener('click', async ()=>{
         try{
           const rows=await apiList();
@@ -380,7 +371,6 @@
         }catch(e){ alert('Export impossible : '+(e.message||e)); }
       });
 
-      // Ripple
       function wireRipple(el){
         if(!el) return;
         el.addEventListener('pointermove', (e)=>{
@@ -396,7 +386,6 @@
       wireRipple(btnAdd); wireRipple(btnCsv);
       wireRipple(document.getElementById('themeToggle'));
 
-      // Chargement initial des avis
       (async()=>{
         try{ renderReviews(await apiList()); }
         catch(e){ showMessage('Chargement impossible : '+e.message); }

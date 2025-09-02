@@ -52,17 +52,25 @@
     html[data-theme="dark"] body::after { opacity:1; }
     html[data-theme="dark"] .vignette   { opacity:.32; }
 
-    /* Topbar : logo + nav + thème */
+    /* Topbar : logo + nav + thème (plus foncée) */
     .topbar{
       position: sticky; top:0; z-index:5;
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 10px 16px;
       backdrop-filter: blur(6px) saturate(120%);
-      background: color-mix(in oklab, rgba(255,255,255,.22) 70%, transparent);
+      background:
+        color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.22));
+      border-bottom: 1px solid rgba(0,0,0,.12);
+      box-shadow: 0 6px 16px rgba(0,0,0,.12);
     }
-    .nav-left{
-      display:flex; align-items:center; gap:16px;
+    html[data-theme="dark"] .topbar{
+      background:
+        color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.08));
+      border-bottom-color: rgba(255,255,255,.10);
+      box-shadow: 0 8px 20px rgba(0,0,0,.35);
     }
+
+    .nav-left{ display:flex; align-items:center; gap:16px; }
     .logo{
       height:42px; width:auto;
       border-radius:8px;
