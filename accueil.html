@@ -6,123 +6,101 @@
   <title>Accueil – Camping de Rivassland</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --glass: rgba(255,255,255,.56);
-      --glass-strong: rgba(255,255,255,.70);
-      --primary:#2563eb; --primary-700:#1d4ed8; --primary-800:#1e40af;
-      --text:#0f172a; --muted:#334155; --muted2:#475569;
-      --ok:#16a34a;
-      --shadow: 0 18px 46px rgba(2,6,23,.20);
-      --radius:22px; --transition:220ms cubic-bezier(.22,.61,.36,1);
+    :root{--glass:rgba(255,255,255,.56);--glass-strong:rgba(255,255,255,.70);--primary:#2563eb;--primary-700:#1d4ed8;--text:#0f172a;--muted:#475569;--ok:#16a34a;--gold:#f59e0b;--shadow:0 18px 46px rgba(2,6,23,.20);--radius:22px;--transition:200ms ease}
+    html[data-theme="dark"]{--glass:rgba(17,24,39,.46);--glass-strong:rgba(17,24,39,.62);--primary:#60a5fa;--primary-700:#3b82f6;--text:#e5e7eb;--muted:#94a3b8;--shadow:0 22px 56px rgba(0,0,0,.46)}
+    html,body{height:100%} body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#000}
+
+    /* Haut/bas très séparés, transition minime (fin de top → début de bottom) */
+    .top, .top-night, .bottom, .bottom-night{
+      position:fixed; inset:0; z-index:-2; background-size:cover; background-position:center; background-repeat:no-repeat; will-change: opacity, transform;
     }
-    html[data-theme="dark"]{
-      --glass: rgba(17,24,39,.46);
-      --glass-strong: rgba(17,24,39,.62);
-      --primary:#60a5fa; --primary-700:#3b82f6; --primary-800:#1d4ed8;
-      --text:#e5e7eb; --muted:#cbd5e1; --muted2:#94a3b8;
-      --shadow: 0 22px 56px rgba(0,0,0,.46);
+    .top{ background-image:url("accueil-haut-jour.jpg"); }
+    .bottom{ background-image:url("camping-accueil-2.jpg"); }
+    .top-night{ background-image:url("accueil-nui.jpg"); opacity:0; }
+    .bottom-night{ background-image:url("camping-accueil-nuit-2.jpg"); opacity:0; }
+
+    /* Masques : grande séparation (quasi aucune zone de mix) */
+    .top, .top-night{
+      -webkit-mask-image: linear-gradient(to bottom,#000 0,#000 62vh, rgba(0,0,0,.08) 65vh, rgba(0,0,0,0) 67vh);
+              mask-image: linear-gradient(to bottom,#000 0,#000 62vh, rgba(0,0,0,.08) 65vh, rgba(0,0,0,0) 67vh);
     }
-    @media (prefers-reduced-motion:no-preference){
-      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), box-shadow var(--transition), transform var(--transition), opacity var(--transition); }
+    .bottom, .bottom-night{
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 60vh, rgba(0,0,0,.9) 68vh, #000 100%);
+              mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 60vh, rgba(0,0,0,.9) 68vh, #000 100%);
     }
-    html,body{height:100%;}
-    body{margin:0; color:var(--text); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; line-height:1.6;}
 
-    /* ===== FOND PLEIN ÉCRAN AVEC MASQUES (couvre tout le scroll) ===== */
-    .bg, .bg-night, .bg2{ position:fixed; inset:0; z-index:-5; background-size:cover; background-position:center; background-repeat:no-repeat; }
-    .bg{     background-image:url("camping.jpg"); }
-    .bg-night{background-image:url("camping-nuit.jpg"); opacity:0; }
-    html[data-theme="dark"] .bg{opacity:0;} html[data-theme="dark"] .bg-night{opacity:1; transition:opacity 900ms ease;}
+    /* Bascule nuit */
+    html[data-theme="dark"] .top{opacity:0} html[data-theme="dark"] .top-night{opacity:1}
+    html[data-theme="dark"] .bottom{opacity:0} html[data-theme="dark"] .bottom-night{opacity:1}
 
-    /* Masque: top image dominante en haut, fondue vers 70vh */
-    .bg, .bg-night{
-      -webkit-mask-image: linear-gradient(to bottom,#000 0,#000 60vh,rgba(0,0,0,.7) 70vh, rgba(0,0,0,0) 85vh);
-              mask-image: linear-gradient(to bottom,#000 0,#000 60vh,rgba(0,0,0,.7) 70vh, rgba(0,0,0,0) 85vh);
+    /* Topbar */
+    .topbar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;
+      backdrop-filter: blur(10px) saturate(120%); background: color-mix(in oklab, rgba(0,0,0,.6) 60%, rgba(255,255,255,.18));
+      border-bottom:1px solid rgba(255,255,255,.2)}
+    .nav-left{display:flex;align-items:center;gap:16px}
+    .logo{height:42px;border-radius:8px}
+    .nav{display:flex;gap:10px;background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px}
+    .nav a{ text-decoration:none; color:var(--text); font-weight:700; padding:6px 12px; border-radius:999px }
+    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35) }
+    .theme-toggle{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 15px;color:#fff;font-weight:700;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));cursor:pointer}
+
+    /* Hero */
+    .hero{ min-height: 64svh; display:grid; place-items:center; padding: clamp(16px,4vw,48px); text-align:center; color:#fff; text-shadow: 0 2px 22px rgba(0,0,0,.35) }
+    .hero h1{ font-family:Poppins,system-ui,sans-serif; font-size: clamp(34px,6vw,64px); margin:0 0 8px }
+    .sub{ font-size: clamp(14px,1.6vw,18px); color:#fff; opacity:.95 }
+
+    /* Contenu */
+    .wrap{ max-width:1200px; margin:0 auto; padding: clamp(12px,3vw,24px); display:grid; grid-template-columns: 1.1fr .9fr; gap: clamp(16px,2.4vw,28px) }
+    @media (max-width:1080px){ .wrap{ grid-template-columns:1fr } }
+    .panel{
+      background:var(--glass); backdrop-filter: blur(10px) saturate(120%);
+      border:1px solid rgba(255,255,255,.35); border-radius:var(--radius); box-shadow:var(--shadow);
+      padding: clamp(18px,2.6vw,28px);
     }
-    /* Bande du bas: image 2 visible surtout sous ~65vh → couvre tout viewport (donc tout le scroll visuellement) */
-    .bg2{
-      background-image:url("camping-accueil-2.jpg");
-      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 60vh, rgba(0,0,0,.9) 72vh, #000 100%);
-              mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 60vh, rgba(0,0,0,.9) 72vh, #000 100%);
-    }
-    .vignette{ position:fixed; inset:0; z-index:-4; pointer-events:none; }
-    .vignette::before{content:""; position:absolute; inset:0; background: radial-gradient(1100px 700px at 50% 12%, rgba(0,0,0,.18), transparent 60%); opacity:.15;}
-    html[data-theme="dark"] .vignette::before{opacity:.30;}
-
-    /* Parallaxe douce (translate uniquement, GPU-friendly) */
-    .parallax{ will-change: transform; }
-
-    /* ===== Topbar ===== */
-    .topbar{position:sticky; top:0; z-index:5; display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px 18px; backdrop-filter: blur(10px) saturate(120%); background: color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.28)); border-bottom:1px solid rgba(255,255,255,.2); box-shadow:0 12px 28px rgba(0,0,0,.22);}
-    html[data-theme="dark"] .topbar{background: color-mix(in oklab, rgba(0,0,0,.66) 70%, rgba(255,255,255,.10)); border-bottom-color: rgba(255,255,255,.16);}
-    .nav-left{display:flex; align-items:center; gap:16px;}
-    .logo{height:42px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,.2);}
-    .nav{display:flex; gap:10px; flex-wrap:wrap; background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px;}
-    .nav a{text-decoration:none; color:var(--text); font-weight:700; padding:6px 12px; border-radius:999px;}
-    .nav a:hover{background: rgba(255,255,255,.38); transform: translateY(-1px);}
-    .nav a[aria-current="page"]{background: rgba(255,255,255,.30);}
-    .theme-toggle{display:inline-flex; align-items:center; gap:8px; border-radius:999px; padding:9px 15px; color:#fff; font-weight:700; border:1px solid color-mix(in oklab, var(--primary) 35%, transparent); background: linear-gradient(180deg, var(--primary), var(--primary-700)); box-shadow:0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent); cursor:pointer;}
-    .theme-toggle:hover{ transform: translateY(-1px) scale(1.01); }
-
-    /* ===== Hero & contenu ===== */
-    .hero{ min-height: 64svh; display:grid; place-items:center; padding: clamp(16px,4vw,48px); }
-    .hero-title{ font-family:Poppins,system-ui,sans-serif; font-weight:700; font-size: clamp(34px,6vw,64px); color:#fff; text-align:center; text-shadow:0 2px 22px rgba(0,0,0,.35); transform: translateY(-6%); opacity:0; animation: heroIn .8s ease-out .12s forwards; }
-    @keyframes heroIn{ to{opacity:1; transform:translateY(0);} }
-
-    .wrap{ max-width:1200px; margin:0 auto; padding: clamp(12px,3vw,24px); display:grid; grid-template-columns: 1.1fr .9fr; align-items:start; gap: clamp(16px,2.4vw,28px); }
-    @media (max-width:1080px){ .wrap{ grid-template-columns:1fr; } }
-
-    .panel{ background:var(--glass); backdrop-filter: blur(10px) saturate(120%); border:1px solid rgba(255,255,255,.35); border-radius:var(--radius); box-shadow:var(--shadow); padding: clamp(18px,2.6vw,28px); opacity:0; transform: translateY(12px) scale(.985); }
-    .panel.reveal{ opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease; }
-    .panel:hover{ transform: translateY(-2px) scale(1.005); }
-
-    .panel h2{ margin:0 0 12px; font-family:Poppins,system-ui,sans-serif; font-weight:700; font-size: clamp(22px,2.4vw,28px); }
-    .lead{ color:var(--muted); line-height:1.75; font-size: clamp(16px,1.3vw,18px); }
-
-    .features{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
-    @media (max-width: 900px){ .features{ grid-template-columns: repeat(2,1fr); } }
-    @media (max-width: 560px){ .features{ grid-template-columns: 1fr; } }
-    .feature{ position:relative; display:flex; align-items:center; gap:12px; padding:14px 16px; background: color-mix(in oklab, rgba(22,163,74,.40) 66%, var(--glass-strong)); border:1px solid color-mix(in oklab, var(--ok) 55%, transparent); border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.10); }
-    .feature:hover{ transform: translateY(-2px) scale(1.01); box-shadow: 0 14px 28px rgba(0,0,0,.14); }
+    .panel:hover{ transform: translateY(-2px); }
+    h2{ font-family:Poppins,system-ui,sans-serif; margin:0 0 12px }
+    .lead{ color:var(--muted); line-height:1.75; font-size: clamp(16px,1.3vw,18px) }
+    .features{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px }
+    @media (max-width: 900px){ .features{ grid-template-columns: repeat(2,1fr) } }
+    @media (max-width: 560px){ .features{ grid-template-columns: 1fr } }
+    .feature{ display:flex; align-items:center; gap:12px; padding:14px 16px; background: color-mix(in oklab, rgba(22,163,74,.40) 66%, var(--glass-strong)); border:1px solid color-mix(in oklab, var(--ok) 55%, transparent); border-radius:16px; }
+    .feature:hover{ transform: translateY(-2px) scale(1.01); }
     .feature svg{ width:28px; height:28px; color: var(--ok); }
-    .feature span{ font-weight:700; }
-    .feature[data-tip]::after{ content: attr(data-tip); position:absolute; left:50%; bottom:-8px; transform:translate(-50%,100%); background:rgba(17,24,39,.92); color:#fff; font-size:12px; padding:6px 10px; border-radius:10px; opacity:0; pointer-events:none; }
-    html[data-theme="dark"] .feature[data-tip]::after{ background:#000; }
-    .feature:hover::after{ opacity:1; transform:translate(-50%, calc(100% + 4px)); }
+    .cta{ margin-top:12px; display:inline-flex; align-items:center; gap:10px; border-radius:12px; padding:12px 16px; color:#fff; font-weight:800; border:1px solid color-mix(in oklab, var(--primary) 35%, transparent); background: linear-gradient(180deg, var(--primary), var(--primary-700)); text-decoration:none }
+    .cta:hover{ transform: translateY(-1px) scale(1.01) }
 
-    .cta{ margin-top:12px; display:inline-flex; align-items:center; gap:10px; border-radius:12px; padding:12px 16px; color:#fff; font-weight:800; border:1px solid color-mix(in oklab, var(--primary) 35%, transparent); background: linear-gradient(180deg, var(--primary), var(--primary-700)); box-shadow:0 10px 22px color-mix(in oklab, var(--primary) 28%, transparent); text-decoration:none; }
-    .cta:hover{ background: linear-gradient(180deg, var(--primary-700), var(--primary-800)); transform: translateY(-1px) scale(1.01); }
+    .stars{ color: var(--gold); letter-spacing:2px; font-weight:700 }
   </style>
 </head>
 <body>
-  <!-- Calques de fond (plein écran, masqués pour fusionner à ~70vh) -->
-  <div class="bg parallax"></div>
-  <div class="bg-night parallax"></div>
-  <div class="bg2 parallax"></div>
-  <div class="vignette" aria-hidden="true"></div>
+  <!-- Fonds haut/bas très séparés -->
+  <div class="top" aria-hidden="true"></div>
+  <div class="top-night" aria-hidden="true"></div>
+  <div class="bottom" aria-hidden="true"></div>
+  <div class="bottom-night" aria-hidden="true"></div>
 
   <header class="topbar">
     <div class="nav-left">
       <img src="logo.jpg" alt="Camping Rivassland" class="logo">
-      <nav class="nav" aria-label="Navigation principale">
+      <nav class="nav">
         <a href="accueil.html" aria-current="page">Accueil</a>
         <a href="reservation.html">Réservations</a>
         <a href="index.html">Donner votre avis</a>
       </nav>
     </div>
-    <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
-      <span id="themeIcon" aria-hidden="true">🌞</span>
-      <span id="themeLabel">Mode clair</span>
-    </button>
+    <button id="themeToggle" class="theme-toggle"><span id="themeIcon">🌞</span><span id="themeLabel">Mode clair</span></button>
   </header>
 
   <section class="hero">
-    <h1 class="hero-title">Bienvenue à Saint-Malo</h1>
+    <div>
+      <h1>Bienvenue à Saint-Malo</h1>
+      <div id="ratingLine" class="sub">Camping <span class="stars" aria-live="polite" aria-atomic="true">★★★★★</span> chez l’habitant</div>
+    </div>
   </section>
 
   <main class="wrap">
-    <section class="panel" aria-labelledby="desc-title">
-      <h2 id="desc-title">Camping de Rivassland</h2>
+    <section class="panel">
+      <h2>Camping de Rivassland</h2>
       <p class="lead">Au cœur de Paramé, à quelques minutes de la mer et du centre-ville, terrain privé de plus de 18 000 m² entouré de verdure.</p>
       <p class="lead">Ambiance décontractée, respectueuse et calme : l’endroit idéal pour faire une pause nature tout en restant proche de la ville.</p>
       <p class="lead">✨ Sur place : emplacements spacieux (vans/tentes), piscine chauffée (juin → septembre), cadre verdoyant pour se ressourcer.</p>
@@ -130,33 +108,15 @@
       <a class="cta" href="index.html" style="margin-left:8px;">Donner votre avis</a>
     </section>
 
-    <section class="panel" aria-labelledby="equip-title">
-      <h2 id="equip-title">Équipements & Services</h2>
+    <section class="panel">
+      <h2>Équipements & Services</h2>
       <div class="features">
-        <div class="feature" tabindex="0" data-tip="Sanitaires modernes & entretenus">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3a1 1 0 0 0-1 1v7H3a1 1 0 1 0 0 2h3v2a4 4 0 0 0 4 4h1a1 1 0 1 0 0-2H10a2 2 0 0 1-2-2v-2h8v2a2 2 0 0 1-2 2h-1a1 1 0 1 0 0 2h1a4 4 0 0 0 4-4v-2h3a1 1 0 1 0 0-2h-3V4a1 1 0 0 0-1-1H7z"/></svg>
-          <span>Sanitaires</span>
-        </div>
-        <div class="feature" tabindex="0" data-tip="Point de vidange eaux usées">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V3a1 1 0 0 1 1-1zm-7 18a1 1 0 0 0 1 1h12a1 1 0 1 0 0-2H6a1 1 0 0 0-1 1z"/></svg>
-          <span>Vidange</span>
-        </div>
-        <div class="feature" tabindex="0" data-tip="Laverie (machines à laver)">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 4h12V4H6v2zm6 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm-4-9h2V7H8v2z"/></svg>
-          <span>Laverie</span>
-        </div>
-        <div class="feature" tabindex="0" data-tip="Piscine extérieure chauffée">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 3 21v-2z"/></svg>
-          <span>Piscine</span>
-        </div>
-        <div class="feature" tabindex="0" data-tip="Accès direct à la mer">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 0 1 2 2v6.17a3 3 0 1 1-2 0V4a2 2 0 0 1 2-2zm-8 16c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 4 21v-2z"/></svg>
-          <span>Accès mer</span>
-        </div>
-        <div class="feature" tabindex="0" data-tip="Centre-ville à proximité">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 1 6 6c0 4.5-6 12-6 12S6 12.5 6 8a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
-          <span>Centre-ville</span>
-        </div>
+        <div class="feature"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3a1 1 0 0 0-1 1v7H3a1 1 0 1 0 0 2h3v2a4 4 0 0 0 4 4h1a1 1 0 1 0 0-2H10a2 2 0 0 1-2-2v-2h8v2a2 2 0 0 1-2 2h-1a1 1 0 1 0 0 2h1a4 4 0 0 0 4-4v-2h3a1 1 0 1 0 0-2h-3V4a1 1 0 0 0-1-1H7z"/></svg> Sanitaires</div>
+        <div class="feature"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V3a1 1 0 0 1 1-1zm-7 18a1 1 0 0 0 1 1h12a1 1 0 1 0 0-2H6a1 1 0 0 0-1 1z"/></svg> Vidange</div>
+        <div class="feature"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 4h12V4H6v2zm6 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm-4-9h2V7H8v2z"/></svg> Laverie</div>
+        <div class="feature"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 3 21v-2z"/></svg> Piscine</div>
+        <div class="feature"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 0 1 2 2v6.17a3 3 0 1 1-2 0V4a2 2 0 0 1 2-2zm-8 16c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 4 21v-2z"/></svg> Accès mer</div>
+        <div class="feature"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 1 6 6c0 4.5-6 12-6 12S6 12.5 6 8a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg> Centre-ville</div>
       </div>
     </section>
   </main>
@@ -165,26 +125,31 @@
     // Thème
     (function(){
       const html=document.documentElement, saved=localStorage.getItem("theme");
-      html.setAttribute("data-theme", (saved==="light"||saved==="dark")?saved:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
+      html.setAttribute("data-theme",(saved==="light"||saved==="dark")?saved:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
       const btn=document.getElementById("themeToggle"), icon=document.getElementById("themeIcon"), label=document.getElementById("themeLabel");
       function u(){ const d=html.getAttribute("data-theme")==="dark"; icon.textContent=d?"🌙":"🌞"; label.textContent=d?"Mode sombre":"Mode clair"; }
-      btn.addEventListener("click", ()=>{ const next=html.getAttribute("data-theme")==="dark"?"light":"dark"; html.setAttribute("data-theme",next); localStorage.setItem("theme",next); u(); }); u();
+      btn.addEventListener("click",()=>{ const next=html.getAttribute("data-theme")==="dark"?"light":"dark"; html.setAttribute("data-theme",next); localStorage.setItem("theme",next); u(); });
+      u();
     })();
 
-    // Reveal panels
-    (function(){
-      const items=document.querySelectorAll('.panel');
-      if(!('IntersectionObserver'in window)){items.forEach(el=>el.classList.add('reveal'));return;}
-      const io=new IntersectionObserver((es)=>{let d=0; es.forEach(e=>{if(e.isIntersecting){e.target.style.transitionDelay=(d*90)+'ms'; e.target.classList.add('reveal'); io.unobserve(e.target); d++;}});},{threshold:.12});
-      items.forEach(el=>io.observe(el));
-    })();
-
-    // Parallaxe douce (très léger)
-    (function(){
-      const layers=document.querySelectorAll('.parallax');
-      let ticking=false;
-      function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(()=>{ const y=window.scrollY||0; layers.forEach((el,i)=>{ const k=i===2? -0.03 : 0.06; el.style.transform=`translate3d(0, ${y*k}px, 0)`; }); ticking=false; });}
-      window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+    // Calcul dynamique moyenne avis pour la ligne sous-titre
+    (async function(){
+      try{
+        const r=await fetch("/api/gas");
+        const data=await r.json();
+        let notes=[], total=0;
+        if(Array.isArray(data)){
+          data.forEach(row=>{
+            const nl=Number(row.noteLieu||row["Note lieu"]||row.note_lieu||0);
+            const na=Number(row.noteAccueil||row["Note accueil"]||row.note_accueil||0);
+            if(nl||na){ const m=(nl+na)/2; notes.push(m); total+=m; }
+          });
+        }
+        const avg = notes.length ? (total/notes.length) : 0;
+        const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5-Math.round(avg));
+        const el=document.getElementById('ratingLine');
+        if(el) el.innerHTML = `Camping <span class="stars" title="${avg.toFixed(1)}/5">${stars}</span> chez l’habitant`;
+      }catch(e){}
     })();
   </script>
 </body>
