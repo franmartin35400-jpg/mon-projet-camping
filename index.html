@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Camping Rivassland – Questionnaire</title>
 
-  <!-- Poppins (titres) + Cabin (texte) -->
   <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -58,22 +57,19 @@
       display:flex; gap:12px; align-items:center; justify-content:space-between;
       padding: 10px 16px;
       backdrop-filter: blur(6px) saturate(120%);
-      background:
-        color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.22));
+      background: color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.22));
       border-bottom: 1px solid rgba(0,0,0,.12);
       box-shadow: 0 6px 16px rgba(0,0,0,.12);
     }
     html[data-theme="dark"] .topbar{
-      background:
-        color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.08));
+      background: color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.08));
       border-bottom-color: rgba(255,255,255,.10);
       box-shadow: 0 8px 20px rgba(0,0,0,.35);
     }
 
     .nav-left{ display:flex; align-items:center; gap:16px; }
     .logo{
-      height:42px; width:auto;
-      border-radius:8px;
+      height:42px; width:auto; border-radius:8px;
       box-shadow:0 4px 10px rgba(0,0,0,.2);
     }
     .nav{
@@ -82,8 +78,18 @@
       border:1px solid rgba(255,255,255,.4);
       padding:6px 10px; border-radius:999px;
     }
-    .nav a{ text-decoration:none; color:var(--text); font-weight:600; padding:6px 10px; border-radius:999px; }
-    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35); }
+    .nav a{
+      text-decoration:none; color:var(--text); font-weight:600;
+      padding:6px 10px; border-radius:999px;
+    }
+    .nav a:hover{ background: rgba(255,255,255,.35); }
+    .pill-muted{
+      padding:6px 10px; border-radius:999px; font-weight:600;
+      color: color-mix(in oklab, var(--text) 70%, #000);
+      background: rgba(255,255,255,.22);
+      border:1px solid rgba(255,255,255,.4);
+      opacity:.75; user-select:none;
+    }
 
     /* Grille */
     .page{
@@ -95,13 +101,9 @@
 
     /* Panneaux */
     .panel{
-      background: var(--glass);
-      backdrop-filter: blur(10px) saturate(120%);
-      border: 1px solid rgba(255,255,255,.30);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: clamp(16px,2.6vw,28px);
-      overflow: clip;
+      background: var(--glass); backdrop-filter: blur(10px) saturate(120%);
+      border: 1px solid rgba(255,255,255,.30); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: clamp(16px,2.6vw,28px); overflow: clip;
     }
     .panel.form{ background: var(--glass-strong); }
     .panel.reviews{ background: var(--glass); }
@@ -171,7 +173,7 @@
       <img src="logo.jpg" alt="Camping Rivassland" class="logo">
       <nav class="nav" aria-label="Navigation principale">
         <a href="accueil.html">Accueil</a>
-        <a href="index.html" aria-current="page">Questionnaire</a>
+        <span class="pill-muted" title="Bientôt disponible">Réservations (bientôt)</span>
       </nav>
     </div>
     <button id="themeToggle" class="theme-toggle" aria-label="Changer de thème">
@@ -211,67 +213,40 @@
   </div>
 
   <script>
+    /* API via Netlify Function */
     const PROD_API = "https://gleeful-alfajores-133e70.netlify.app/api/gas";
     const SCRIPT_URL = (
       location.hostname.endsWith("netlify.app") ||
       location.hostname === "localhost" || location.hostname === "127.0.0.1"
     ) ? "/api/gas" : PROD_API;
 
+    /* Thème */
     (function themeInit(){
       const html = document.documentElement;
       const saved = localStorage.getItem("theme");
-      if (saved === "light" || saved === "dark") {
-        html.setAttribute("data-theme", saved);
-      } else {
-        const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
-        html.setAttribute("data-theme", prefersDark ? "dark" : "light");
-      }
+      if (saved === "light" || saved === "dark") html.setAttribute("data-theme", saved);
+      else html.setAttribute("data-theme", matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
       const btn = document.getElementById("themeToggle");
       const icon = document.getElementById("themeIcon");
       const label = document.getElementById("themeLabel");
-      function updateLabel(){
-        const isDark = html.getAttribute("data-theme")==="dark";
-        icon.textContent = isDark ? "🌙" : "🌞";
-        label.textContent = isDark ? "Mode sombre" : "Mode clair";
-      }
-      btn.addEventListener("click", ()=>{
-        const next = html.getAttribute("data-theme")==="dark" ? "light" : "dark";
-        html.setAttribute("data-theme", next);
-        localStorage.setItem("theme", next);
-        updateLabel();
-      });
+      function updateLabel(){ const isDark = html.getAttribute("data-theme")==="dark"; icon.textContent = isDark ? "🌙" : "🌞"; label.textContent = isDark ? "Mode sombre" : "Mode clair"; }
+      btn.addEventListener("click", ()=>{ const next = html.getAttribute("data-theme")==="dark" ? "light" : "dark"; html.setAttribute("data-theme", next); localStorage.setItem("theme", next); updateLabel(); });
       updateLabel();
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{
-        if (!localStorage.getItem("theme")){
-          html.setAttribute("data-theme", e.matches ? "dark" : "light");
-          updateLabel();
-        }
-      });
+      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e=>{ if (!localStorage.getItem("theme")){ html.setAttribute("data-theme", e.matches ? "dark" : "light"); updateLabel(); } });
     })();
 
+    /* UI utils */
     function starHTML(avg){
       avg = Math.round(avg * 2) / 2;
       let h = '<span class="stars">';
-      for (let i=1;i<=5;i++){
-        const p=Math.min(Math.max(avg-(i-1),0),1);
-        h+=`<span class="star" style="--w:${p*100}%"></span>`;
-      }
+      for (let i=1;i<=5;i++){ const p=Math.min(Math.max(avg-(i-1),0),1); h+=`<span class="star" style="--w:${p*100}%"></span>`; }
       return h+'</span> '+avg.toFixed(1)+'/5';
     }
-
     function revealOnScroll(){
       const items = document.querySelectorAll(".review");
-      const io = new IntersectionObserver((entries)=>{
-        for (const e of entries){
-          if (e.isIntersecting){
-            e.target.classList.add("reveal-in");
-            io.unobserve(e.target);
-          }
-        }
-      }, { threshold:.15 });
+      const io = new IntersectionObserver((entries)=>{ for (const e of entries){ if (e.isIntersecting){ e.target.classList.add("reveal-in"); io.unobserve(e.target); } } }, { threshold:.15 });
       items.forEach(el=> io.observe(el));
     }
-
     function renderReviews(rows){
       const seen=new Set(), deduped=[];
       for(const r of rows){
@@ -280,9 +255,7 @@
       }
       const list=document.getElementById('reviewsList');
       const badge=document.getElementById('countBadge');
-      list.innerHTML='';
-      badge.textContent=`(${deduped.length})`;
-
+      list.innerHTML=''; badge.textContent=`(${deduped.length})`;
       list.innerHTML=deduped.map(r=>{
         const noteLieu=Number(r.note_lieu||0), noteAccueil=Number(r.note_accueil||0);
         const avg=(noteLieu+noteAccueil)/2;
@@ -295,101 +268,40 @@
           ${periode?`<div class="note">${periode}</div>`:''}
         </article>`;
       }).join('');
-
       requestAnimationFrame(revealOnScroll);
     }
 
-    async function apiList(){
-      const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{cache:'no-store'});
-      const text=await r.text();
-      try{ return JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
-    }
+    /* API */
+    async function apiList(){ const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{cache:'no-store'}); const text=await r.text(); try{ return JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); } }
     async function apiAdd(rec){
-      const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(rec),
-        cache:'no-store'
-      });
-      const text=await r.text(); let d;
-      try{ d=JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
+      const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(rec), cache:'no-store' });
+      const text=await r.text(); let d; try{ d=JSON.parse(text); } catch{ throw new Error('Réponse non-JSON: '+text); }
       if(!d.ok) throw new Error(d.error||'Erreur serveur');
     }
 
+    /* App */
     (function initOnce(){
       if(window.__APP_WIRED__) return; window.__APP_WIRED__=true;
-
-      const $=s=>document.querySelector(s);
-      const form=$('#form'), msg=$('#msg'), btnAdd=$('#btnAdd'), btnCsv=$('#btnCsv');
-
+      const $=s=>document.querySelector(s); const form=$('#form'), msg=$('#msg'), btnAdd=$('#btnAdd'), btnCsv=$('#btnCsv');
       function showMessage(t){ msg.textContent=t; }
-
-      function formToRecord(){
-        return{
-          prenom: $('#prenom').value.trim(),
-          nom: $('#nom').value.trim(),
-          debut_sejour: $('#debut').value,
-          fin_sejour: $('#fin').value,
-          note_lieu: Number($('#noteLieu').value),
-          note_accueil: Number($('#noteAccueil').value),
-          avis_lieu: $('#avisLieu').value.trim(),
-          avis_accueil: $('#avisAccueil').value.trim(),
-          ameliorations: ""
-        };
-      }
-
+      function formToRecord(){ return{ prenom: $('#prenom').value.trim(), nom: $('#nom').value.trim(), debut_sejour: $('#debut').value, fin_sejour: $('#fin').value, note_lieu: Number($('#noteLieu').value), note_accueil: Number($('#noteAccueil').value), avis_lieu: $('#avisLieu').value.trim(), avis_accueil: $('#avisAccueil').value.trim(), ameliorations: "" }; }
       form.addEventListener('submit', async (e)=>{
         e.preventDefault();
-        try{
-          btnAdd.disabled = true; btnAdd.style.opacity=.85;
-          await apiAdd(formToRecord());
-          showMessage('Réponse enregistrée ✅');
-          renderReviews(await apiList());
-          form.reset();
-        }catch(err){
-          showMessage('Erreur: '+err.message);
-        }finally{
-          btnAdd.disabled = false; btnAdd.style.opacity=1;
-        }
+        try{ btnAdd.disabled = true; btnAdd.style.opacity=.85; await apiAdd(formToRecord()); showMessage('Réponse enregistrée ✅'); renderReviews(await apiList()); form.reset(); }
+        catch(err){ showMessage('Erreur: '+err.message); }
+        finally{ btnAdd.disabled = false; btnAdd.style.opacity=1; }
       });
-
       btnCsv.addEventListener('click', async ()=>{
         try{
-          const rows=await apiList();
-          if(!rows.length){ alert('Aucune donnée.'); return; }
+          const rows=await apiList(); if(!rows.length){ alert('Aucune donnée.'); return; }
           const headers=['horodatage','prenom','nom','debut_sejour','fin_sejour','note_lieu','note_accueil','avis_lieu','avis_accueil','ameliorations'];
           const lines=[headers.join(',')];
-          for(const r of rows){
-            const vals=headers.map(h=>`"${(r[h]??'').toString().replace(/"/g,'""').replace(/\r?\n/g,' / ')}"`);
-            lines.push(vals.join(','));
-          }
-          const csv='\ufeff'+lines.join('\n');
-          const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-          const url=URL.createObjectURL(blob);
-          const a=document.createElement('a'); a.href=url; a.download='reponses_camping.csv'; a.click();
-          URL.revokeObjectURL(url);
+          for(const r of rows){ const vals=headers.map(h=>`"${(r[h]??'').toString().replace(/"/g,'""').replace(/\r?\n/g,' / ')}"`); lines.push(vals.join(',')); }
+          const csv='\ufeff'+lines.join('\n'); const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob);
+          const a=document.createElement('a'); a.href=url; a.download='reponses_camping.csv'; a.click(); URL.revokeObjectURL(url);
         }catch(e){ alert('Export impossible : '+(e.message||e)); }
       });
-
-      function wireRipple(el){
-        if(!el) return;
-        el.addEventListener('pointermove', (e)=>{
-          const r=el.getBoundingClientRect();
-          el.style.setProperty('--x',(e.clientX-r.left)+'px');
-          el.style.setProperty('--y',(e.clientY-r.top)+'px');
-        });
-        el.addEventListener('click', ()=>{
-          el.classList.add('play');
-          setTimeout(()=> el.classList.remove('play'), 460);
-        });
-      }
-      wireRipple(btnAdd); wireRipple(btnCsv);
-      wireRipple(document.getElementById('themeToggle'));
-
-      (async()=>{
-        try{ renderReviews(await apiList()); }
-        catch(e){ showMessage('Chargement impossible : '+e.message); }
-      })();
+      (async()=>{ try{ renderReviews(await apiList()); } catch(e){ showMessage('Chargement impossible : '+e.message); } })();
     })();
   </script>
 </body>
