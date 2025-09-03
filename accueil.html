@@ -9,11 +9,10 @@
     :root{
       --glass: rgba(255,255,255,.56);
       --primary:#2563eb; --primary-700:#1d4ed8;
-      --text:#0f172a; --muted:#334155;
-      --ok:#16a34a;
+      --text:#0f172a; --muted:#334155; --ok:#16a34a;
       --shadow: 0 18px 46px rgba(2,6,23,.20);
-      --radius:22px;
-      --transition:220ms ease;
+      --radius:22px; --transition:220ms cubic-bezier(.2,.8,.2,1);
+      --hover-lift: translateY(-4px) scale(1.01);
     }
     html[data-theme="dark"]{
       --glass: rgba(17,24,39,.46);
@@ -21,46 +20,64 @@
       --text:#e5e7eb; --muted:#cbd5e1;
       --shadow: 0 22px 56px rgba(0,0,0,.46);
     }
-    body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6}
+    @media (prefers-reduced-motion:no-preference){
+      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition), opacity var(--transition); }
+    }
+    body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6;background:#000}
 
-    /* Fond */
-    .bg,.bg-night{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat}
+    /* Fonds */
+    .bg,.bg-night{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;background-repeat:no-repeat}
     .bg{background-image:url("camping-accueil-2.jpg")}
-    .bg-night{background-image:url("accueil-nui.jpg");opacity:0;transition:opacity .8s ease}
+    .bg-night{opacity:0}
     html[data-theme="dark"] .bg{opacity:0}
     html[data-theme="dark"] .bg-night{opacity:1}
 
+    /* Effet "vagues" doux au scroll */
+    .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+      radial-gradient(transparent, rgba(0,0,0,.25)) fixed;
+      mix-blend-mode:multiply;opacity:.18}
+
     /* Topbar */
-    .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;backdrop-filter:blur(10px);background:rgba(0,0,0,.4);border-bottom:1px solid rgba(255,255,255,.2)}
-    .logo{height:42px;border-radius:8px}
+    .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(14px,4vw,22px);
+      backdrop-filter:blur(10px) saturate(120%);background:rgba(0,0,0,.42);border-bottom:1px solid rgba(255,255,255,.2)}
+    .logo{height:42px;border-radius:10px;transform:translateZ(0)}
+    .logo:hover{transform:var(--hover-lift)}
     .nav{display:flex;gap:10px;background:var(--glass);border:1px solid rgba(255,255,255,.35);padding:6px 10px;border-radius:999px}
     .nav a{text-decoration:none;color:var(--text);font-weight:700;padding:6px 12px;border-radius:999px}
-    .nav a:hover,.nav a[aria-current="page"]{background:rgba(255,255,255,.3)}
-    .theme-toggle{padding:8px 14px;border-radius:999px;background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:700;border:none;cursor:pointer}
+    .nav a:hover,.nav a[aria-current="page"]{background:rgba(255,255,255,.32);transform:translateY(-2px)}
+    .theme-toggle{padding:9px 15px;border-radius:999px;background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:800;border:none;cursor:pointer}
+    .theme-toggle:hover{transform:var(--hover-lift);box-shadow:0 10px 24px rgba(37,99,235,.35)}
 
     /* Hero */
-    .hero{min-height:60vh;display:grid;place-items:center;text-align:center;padding:40px 20px}
-    .hero-title{font-family:Poppins,sans-serif;font-size:clamp(34px,6vw,60px);font-weight:700;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6)}
-    .hero-sub{margin-top:12px;font-size:20px;color:#fff;opacity:.9}
+    .hero{min-height:60vh;display:grid;place-items:center;text-align:center;padding: clamp(28px,7vw,56px) 20px}
+    .hero-title{font-family:Poppins,sans-serif;font-size:clamp(34px,6vw,60px);font-weight:700;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6);letter-spacing:.3px}
+    .hero-sub{margin-top:12px;font-size:clamp(16px,2.4vw,22px);color:#fff;opacity:.92}
+    .pulse{animation:pulse 2.6s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:.95;transform:translateZ(0)}50%{opacity:.75}}
 
     /* Panels */
-    .wrap{max-width:1100px;margin:0 auto;padding:20px;display:grid;gap:20px}
-    .panel{background:var(--glass);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;animation:fadeIn .8s ease both}
+    .wrap{max-width:min(1200px,94vw);margin:0 auto;padding: clamp(12px,3vw,24px);display:grid;gap: clamp(14px,2.4vw,22px)}
+    .grid-2{display:grid;grid-template-columns:1.1fr .9fr;gap: clamp(14px,2.4vw,22px)}
+    @media (max-width:1024px){.grid-2{grid-template-columns:1fr}}
+    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,2.6vw,28px);animation:fadeIn .6s ease both}
+    .panel:hover{transform:var(--hover-lift)}
     @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
     h2{margin-top:0;font-family:Poppins,sans-serif}
-    .lead{color:var(--muted);line-height:1.7}
+    .lead{color:var(--muted);line-height:1.75;font-size:clamp(15px,1.3vw,18px)}
 
     /* Features */
     .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-    .feature{background:rgba(22,163,74,.4);border:1px solid rgba(22,163,74,.6);padding:14px;border-radius:14px;display:flex;align-items:center;gap:10px;cursor:default}
-    .feature:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.2)}
+    .feature{background:rgba(22,163,74,.42);border:1px solid rgba(22,163,74,.58);padding:14px;border-radius:16px;display:flex;align-items:center;gap:10px;transform:translateZ(0)}
+    .feature:hover{transform:var(--hover-lift);box-shadow:0 10px 24px rgba(0,0,0,.25)}
     .feature svg{width:24px;height:24px;color:var(--ok)}
   </style>
 </head>
 <body>
-  <div class="bg"></div>
-  <div class="bg-night"></div>
+  <!-- Fonds -->
+  <div class="bg" aria-hidden="true"></div>
+  <div class="bg-night" id="bgNight" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
   <header class="topbar">
     <img src="logo.jpg" alt="Camping Rivassland" class="logo">
@@ -73,16 +90,16 @@
   </header>
 
   <section class="hero">
-    <div>
-      <h1 class="hero-title">Bienvenue à Saint-Malo</h1>
-      <div class="hero-sub">Camping ★★★ chez l’habitant</div>
+    <div class="pulse">
+      <h1 class="hero-title">Bienvenue à Rivassland</h1>
+      <div class="hero-sub">Camping chez l’habitant</div>
     </div>
   </section>
 
   <main class="wrap">
     <section class="panel">
       <h2>Camping de Rivassland</h2>
-      <p class="lead">Au cœur de Paramé, à seulement quelques minutes de la mer et du centre-ville de Saint-Malo, nous vous accueillons sur un grand terrain privé de plus de 18 000 m² entouré de verdure.</p>
+      <p class="lead">Au cœur de Paramé, à seulement quelques minutes de la mer et du centre-ville de Saint-Malo, nous vous accueillons sur un grand terrain privé de plus de 18&nbsp;000 m² entouré de verdure.</p>
       <p class="lead">Dans une ambiance décontractée et calme, notre camping chez l’habitant est l’endroit idéal pour faire une pause nature tout en restant proche de la ville.</p>
     </section>
 
@@ -100,7 +117,7 @@
   </main>
 
   <script>
-    // Thème
+    // Thème + bouton
     (function(){
       const html=document.documentElement;
       const saved=localStorage.getItem("theme");
@@ -113,6 +130,18 @@
       function update(){const dark=html.getAttribute("data-theme")==="dark";icon.textContent=dark?"🌙":"🌞";}
       btn.addEventListener("click",()=>{const next=html.getAttribute("data-theme")==="dark"?"light":"dark";html.setAttribute("data-theme",next);localStorage.setItem("theme",next);update()});
       update();
+    })();
+
+    // Image nuit demandée : accueil-haut-jour.jpg (fallback camping-nuit.jpg)
+    (function ensureNightBackground(){
+      const el = document.getElementById('bgNight');
+      if(!el) return;
+      const preferred = "accueil-haut-jour.jpg";  // <-- demandé
+      const fallback  = "camping-nuit.jpg";
+      const test = new Image();
+      test.onload = () => { el.style.backgroundImage = `url("${preferred}")`; };
+      test.onerror = () => { el.style.backgroundImage = `url("${fallback}")`; console.warn("[Accueil] Image nuit introuvable, fallback sur", fallback); };
+      test.src = preferred + "?v=" + Date.now();
     })();
   </script>
 </body>

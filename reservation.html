@@ -6,32 +6,39 @@
   <title>Réservations – Camping Rivassland</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--glass:rgba(255,255,255,.56);--glass-strong:rgba(255,255,255,.70);--primary:#2563eb;--primary-700:#1d4ed8;--text:#0f172a;--muted:#334155;--muted2:#475569;--ok:#16a34a;--warn:#dc2626;--shadow:0 18px 46px rgba(2,6,23,.20);--radius:22px;--transition:200ms ease}
+    :root{--glass:rgba(255,255,255,.56);--glass-strong:rgba(255,255,255,.70);--primary:#2563eb;--primary-700:#1d4ed8;--text:#0f172a;--muted:#334155;--muted2:#475569;--ok:#16a34a;--warn:#dc2626;--shadow:0 18px 46px rgba(2,6,23,.20);--radius:22px;--transition:220ms cubic-bezier(.2,.8,.2,1);--hover-lift: translateY(-4px) scale(1.01)}
     html[data-theme="dark"]{--glass:rgba(17,24,39,.46);--glass-strong:rgba(17,24,39,.62);--primary:#60a5fa;--primary-700:#3b82f6;--text:#e5e7eb;--muted:#cbd5e1;--muted2:#94a3b8;--shadow:0 22px 56px rgba(0,0,0,.46)}
+    @media (prefers-reduced-motion:no-preference){
+      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition), opacity var(--transition);}
+    }
     html,body{height:100%} body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#000}
 
-    /* Fond: resa jour/nuit */
-    .bg, .bg-night{ position:fixed; inset:0; z-index:-1; background-size:cover; background-position:center; background-repeat:no-repeat }
-    .bg{ background-image:url("resa-jour.jpg"); }
-    .bg-night{ background-image:url("resa-nuit.jpg"); opacity:0; }
+    /* Fond: essaie resa-jour/nuit, sinon fallback camping.jpg/nuit */
+    .bg, .bg-night{ position:fixed; inset:0; z-index:-1; background-size:cover; background-position:center; background-repeat:no-repeat; }
+    .bg-night{ opacity:0 }
     html[data-theme="dark"] .bg{ opacity:0 } html[data-theme="dark"] .bg-night{ opacity:1 }
 
     /* Topbar */
-    .topbar{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 18px;backdrop-filter:blur(10px) saturate(120%);background:color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.28));border-bottom:1px solid rgba(255,255,255,.2)}
-    .nav-left{display:flex;align-items:center;gap:16px}.logo{height:42px;border-radius:8px}
+    .topbar{position:sticky;top:0;z-index:5;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px clamp(14px,4vw,22px);
+      backdrop-filter:blur(10px) saturate(120%);background:color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.28));border-bottom:1px solid rgba(255,255,255,.2)}
+    .nav-left{display:flex;align-items:center;gap:16px}.logo{height:42px;border-radius:10px}
+    .logo:hover{transform:var(--hover-lift)}
     .nav{display:flex;gap:10px;background:color-mix(in oklab,var(--glass) 84%,transparent);border:1px solid rgba(255,255,255,.45);padding:6px 10px;border-radius:999px}
     .nav a{ text-decoration:none; color:var(--text); font-weight:700; padding:6px 12px; border-radius:999px }
-    .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.35) }
-    .theme-toggle{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 15px;color:#fff;font-weight:700;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));cursor:pointer}
+    .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.35); transform:translateY(-2px)}
+    .theme-toggle{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 15px;color:#fff;font-weight:800;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));cursor:pointer}
+    .theme-toggle:hover{transform:var(--hover-lift);box-shadow:0 10px 24px rgba(37,99,235,.35)}
 
     /* Contenu */
-    .wrap{max-width:920px;margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px)}
-    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,3vw,28px)}
+    .wrap{max-width:min(960px,94vw);margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px)}
+    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,3vw,28px);animation:fadeIn .6s ease both}
+    .panel:hover{transform:var(--hover-lift)}
     h1{margin:0 0 10px; font-family:Poppins,system-ui,sans-serif}
     .ok{background:color-mix(in oklab,var(--ok) 12%,transparent);border:1px solid color-mix(in oklab,var(--ok) 35%,transparent);color:color-mix(in oklab,var(--ok) 80%,#000);padding:10px 12px;border-radius:12px}
     .warn{background:color-mix(in oklab,var(--warn) 12%,transparent);border:1px solid color-mix(in oklab,var(--warn) 35%,transparent);color:color-mix(in oklab,var(--warn) 80%,#000);padding:10px 12px;border-radius:12px}
     button{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:800;cursor:pointer}
     button.ghost{background:transparent;color:var(--text);border:1px dashed color-mix(in oklab,var(--text) 30%,transparent)}
+    button:hover{transform:var(--hover-lift)}
     .stepper{display:flex;align-items:center;justify-content:center;gap:12px;margin: 8px 0 14px;flex-wrap:wrap}
     .stepper .item{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:56px}
     .stepper .dot{--sz:34px;width:var(--sz);height:var(--sz);border-radius:50%;display:grid;place-items:center;font-weight:700;background:rgba(255,255,255,.72);border:1px solid rgba(0,0,0,.08)}
@@ -46,6 +53,7 @@
     html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background:#0b1220;color:#e5e7eb;border-color:rgba(148,163,184,.28)}
     .summary{background:var(--glass-strong);border:1px solid rgba(255,255,255,.4);border-radius:14px;padding:12px 14px}
 
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
     @keyframes stepIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}} .fade-in{animation:stepIn 130ms ease-out}
 
     /* Écran refusé */
@@ -54,8 +62,8 @@
   </style>
 </head>
 <body>
-  <div class="bg" aria-hidden="true"></div>
-  <div class="bg-night" aria-hidden="true"></div>
+  <div class="bg" id="bgDay" aria-hidden="true"></div>
+  <div class="bg-night" id="bgNight" aria-hidden="true"></div>
 
   <header class="topbar">
     <div class="nav-left">
@@ -63,7 +71,7 @@
       <nav class="nav">
         <a href="accueil.html">Accueil</a>
         <a href="reservation.html" aria-current="page">Réservations</a>
-        <a href="index.html">Donner votre avis</a>
+        <a href="index.html">Avis</a>
       </nav>
     </div>
     <button id="themeToggle" class="theme-toggle"><span id="themeIcon">🌞</span><span id="themeLabel">Mode clair</span></button>
@@ -96,8 +104,22 @@
 
   <script>
     // Thème
-    (function(){const html=document.documentElement,s=localStorage.getItem("theme");html.setAttribute("data-theme",(s==="light"||s==="dark")?s:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));const b=document.getElementById("themeToggle"),i=document.getElementById("themeIcon"),l=document.getElementById("themeLabel");function u(){const d=html.getAttribute("data-theme")==="dark";i.textContent=d?"🌙":"🌞";l.textContent=d?"Mode sombre":"Mode clair"}b.addEventListener("click",()=>{const n=html.getAttribute("data-theme")==="dark"?"light":"dark";html.setAttribute("data-theme",n);localStorage.setItem("theme",n);u()});u()})();
+    (function(){const html=document.documentElement,s=localStorage.getItem("theme");html.setAttribute("data-theme",(s==="light"||"dark"===s)?s:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));const b=document.getElementById("themeToggle"),i=document.getElementById("themeIcon"),l=document.getElementById("themeLabel");function u(){const d=html.getAttribute("data-theme")==="dark";i.textContent=d?"🌙":"🌞";l.textContent=d?"Mode sombre":"Mode clair"}b.addEventListener("click",()=>{const n=html.getAttribute("data-theme")==="dark"?"light":"dark";html.setAttribute("data-theme",n);localStorage.setItem("theme",n);u()});u()})();
 
+    // Fonds: essaie resa-jour/nuit puis fallback
+    (async function setBackgrounds(){
+      const day = document.getElementById('bgDay');
+      const night = document.getElementById('bgNight');
+      async function canLoad(src){ return new Promise(res=>{ const im=new Image(); im.onload=()=>res(true); im.onerror=()=>res(false); im.src=src+'?v='+Date.now(); });}
+      const DAY_PRIMARY='resa-jour.jpg', DAY_FALLBACK='camping.jpg';
+      const NIGHT_PRIMARY='resa-nuit.jpg', NIGHT_FALLBACK='camping-nuit.jpg';
+      const daySrc   = (await canLoad(DAY_PRIMARY))   ? DAY_PRIMARY   : DAY_FALLBACK;
+      const nightSrc = (await canLoad(NIGHT_PRIMARY)) ? NIGHT_PRIMARY : NIGHT_FALLBACK;
+      if(day) day.style.backgroundImage = `url("${daySrc}")`;
+      if(night) night.style.backgroundImage = `url("${nightSrc}")`;
+    })();
+
+    // Wizard
     (function wizard(){
       const start=document.getElementById('startWizard'), root=document.getElementById('wizard');
       const overlay=document.getElementById('refuse'), backBtn=document.getElementById('refuseBack');
