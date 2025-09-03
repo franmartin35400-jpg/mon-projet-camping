@@ -3,85 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Accueil – Camping de Rivassland</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --glass: rgba(255,255,255,.56);
-      --primary:#2563eb; --primary-700:#1d4ed8;
-      --text:#0f172a; --muted:#334155; --ok:#16a34a;
-      --shadow: 0 18px 46px rgba(2,6,23,.20);
-      --radius:22px; --transition:220ms cubic-bezier(.2,.8,.2,1);
-      --hover-lift: translateY(-4px) scale(1.01);
-      --ring: 0 0 0 8px rgba(37,99,235,.12);
-    }
-    html[data-theme="dark"]{
-      --glass: rgba(17,24,39,.46);
-      --primary:#60a5fa; --primary-700:#3b82f6;
-      --text:#e5e7eb; --muted:#cbd5e1;
-      --shadow: 0 22px 56px rgba(0,0,0,.46);
-      --ring: 0 0 0 8px rgba(96,165,250,.12);
-    }
-    @media (prefers-reduced-motion:no-preference){
-      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition), opacity var(--transition); }
-    }
-    body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6;background:#000;overflow-x:hidden}
-
-    /* Fonds */
-    .bg,.bg-night{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;background-repeat:no-repeat}
-    .bg{background-image:url("camping-accueil-2.jpg")}
-    .bg-night{opacity:0}
-    html[data-theme="dark"] .bg{opacity:0}
-    html[data-theme="dark"] .bg-night{opacity:1}
-
-    /* Grain doux */
-    .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(transparent, rgba(0,0,0,.22));mix-blend-mode:multiply;opacity:.18}
-
-    /* Topbar */
-    .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(14px,4vw,22px);
-      backdrop-filter:blur(10px) saturate(120%);background:rgba(0,0,0,.42);border-bottom:1px solid rgba(255,255,255,.2)}
-    .logo{height:42px;border-radius:10px;transform:translateZ(0)}
-    .logo:hover{transform:var(--hover-lift)}
-    .nav{display:flex;gap:8px;background:var(--glass);border:1px solid rgba(255,255,255,.35);padding:6px 8px;border-radius:999px}
-    .nav a{text-decoration:none;color:var(--text);font-weight:700;padding:6px 12px;border-radius:999px}
-    .nav a:hover,.nav a[aria-current="page"]{background:rgba(255,255,255,.32);transform:translateY(-2px)}
-    .theme-toggle{padding:9px 15px;border-radius:999px;background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:800;border:none;cursor:pointer;position:relative;overflow:hidden}
-    .theme-toggle:hover{transform:var(--hover-lift);box-shadow:0 10px 24px rgba(37,99,235,.35)}
-
-    /* Hero */
-    .hero{min-height:60vh;display:grid;place-items:center;text-align:center;padding: clamp(28px,7vw,56px) 20px}
-    .hero-title{font-family:Poppins,sans-serif;font-size:clamp(34px,6vw,60px);font-weight:700;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.6);letter-spacing:.3px}
-    .hero-sub{margin-top:12px;font-size:clamp(16px,2.4vw,22px);color:#fff;opacity:.92}
-    .pulse{animation:pulse 2.6s ease-in-out infinite}
-    @keyframes pulse{0%,100%{opacity:.95;transform:translateZ(0)}50%{opacity:.75}}
-
-    /* Panels */
-    .wrap{max-width:min(1200px,94vw);margin:0 auto;padding: clamp(12px,3vw,24px);display:grid;gap: clamp(14px,2.4vw,22px)}
-    .grid-2{display:grid;grid-template-columns:1.1fr .9fr;gap: clamp(14px,2.4vw,22px)}
-    @media (max-width:1024px){.grid-2{grid-template-columns:1fr}}
-    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,2.6vw,28px);animation:fadeIn .6s ease both;transform-style:preserve-3d}
-    .panel:hover{transform:var(--hover-lift)}
-    .reveal{opacity:0; transform:translateY(16px)}
-    .reveal.in{opacity:1; transform:none; transition: opacity .6s ease, transform .6s ease}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-
-    h2{margin-top:0;font-family:Poppins,sans-serif}
-    .lead{color:var(--muted);line-height:1.75;font-size:clamp(15px,1.3vw,18px)}
-
-    /* Features */
-    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-    .feature{background:rgba(22,163,74,.42);border:1px solid rgba(22,163,74,.58);padding:14px;border-radius:16px;display:flex;align-items:center;gap:10px;transform:translateZ(0);position:relative}
-    .feature::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:var(--ring);opacity:0}
-    .feature:hover{transform:var(--hover-lift);box-shadow:0 10px 24px rgba(0,0,0,.25)}
-    .feature:hover::after{opacity:1}
-    .feature svg{width:24px;height:24px;color:var(--ok)}
-  </style>
+  <title>Accueil – Camping Rivassland</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+  <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
-<body>
-  <!-- Fonds -->
-  <div class="bg" aria-hidden="true"></div>
-  <div class="bg-night" id="bgNight" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
+<body data-bg-day="camping-accueil-2.jpg" data-bg-night="accueil-haut-jour.jpg">
+  <div class="page-bg" aria-hidden="true"></div>
+  <div class="page-bg-night" aria-hidden="true"></div>
 
   <header class="topbar">
     <img src="logo.jpg" alt="Camping Rivassland" class="logo">
@@ -91,89 +21,29 @@
       <a href="reservation.html">Réservations</a>
       <a href="index.html">Avis</a>
     </nav>
-    <button id="themeToggle" class="theme-toggle"><span id="themeIcon">🌞</span></button>
-  </header>
-
-  <section class="hero">
-    <div class="pulse">
-      <h1 class="hero-title">Bienvenue à Rivassland</h1>
-      <div class="hero-sub">Camping chez l’habitant</div>
+    <div class="controls" style="justify-self:end; display:flex; align-items:center; gap:8px">
+      <button id="accountBtn" class="ghost" type="button">Se connecter</button>
+      <span id="userName" class="hint" style="min-width:0"></span>
+      <button id="themeToggle" class="theme-toggle"><span id="themeIcon">🌞</span><span id="themeLabel">Mode clair</span></button>
     </div>
-  </section>
+  </header>
 
   <main class="wrap">
     <section class="panel reveal">
-      <h2>Camping de Rivassland</h2>
-      <p class="lead">Au cœur de Paramé, à seulement quelques minutes de la mer et du centre-ville de Saint-Malo, nous vous accueillons sur un grand terrain privé de plus de 18&nbsp;000 m² entouré de verdure.</p>
-      <p class="lead">Dans une ambiance décontractée et calme, notre camping chez l’habitant est l’endroit idéal pour faire une pause nature tout en restant proche de la ville.</p>
-    </section>
-
-    <section class="panel reveal">
-      <h2>Équipements</h2>
-      <div class="features">
-        <div class="feature"><svg viewBox="0 0 24 24"><path d="M7 3a1 1 0 0 0-1 1v7H3a1 1 0 1 0 0 2h3v2a4 4 0 0 0 4 4h1a1 1 0 1 0 0-2H10a2 2 0 0 1-2-2v-2h8v2a2 2 0 0 1-2 2h-1a1 1 0 1 0 0 2h1a4 4 0 0 0 4-4v-2h3a1 1 0 1 0 0-2h-3V4a1 1 0 0 0-1-1H7z"/></svg>Sanitaires</div>
-        <div class="feature"><svg viewBox="0 0 24 24"><path d="M12 2a1 1 0 0 1 1 1v8h3l-4 4-4-4h3V3a1 1 0 0 1 1-1zm-7 18a1 1 0 0 0 1 1h12a1 1 0 1 0 0-2H6a1 1 0 0 0-1 1z"/></svg>Vidange</div>
-        <div class="feature"><svg viewBox="0 0 24 24"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 4h12V4H6v2zm6 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm-4-9h2V7H8v2z"/></svg>Laverie</div>
-        <div class="feature"><svg viewBox="0 0 24 24"><path d="M3 17c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 3 21v-2z"/></svg>Piscine</div>
-        <div class="feature"><svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2v6.17a3 3 0 1 1-2 0V4a2 2 0 0 1 2-2zm-8 16c1.5 0 2-.8 3-1.2 1-.4 1.5-.8 3-.8s2 .4 3 .8 1.5 1.2 3 1.2 2-.8 3-1.2 1.5-.8 3-.8v2c-1.5 0-2 .4-3 .8s-1.5 1.2-3 1.2-2-.8-3-1.2-1.5-.8-3-.8-2 .4-3 .8S5.5 21 4 21v-2z"/></svg>Accès mer</div>
-        <div class="feature"><svg viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 1 6 6c0 4.5-6 12-6 12S6 12.5 6 8a6 6 0 0 1 6-6zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>Centre-ville</div>
+      <h1 style="font-size:clamp(28px,6vw,48px)">Bienvenue à Rivassland</h1>
+      <p class="lead">Camping chez l’habitant – Saint-Malo</p>
+      <div class="divider"></div>
+      <p>Au cœur de Paramé, à quelques minutes de la mer et du centre-ville de Saint-Malo, nous vous accueillons sur un grand terrain privé de plus de 18 000 m² entouré de verdure. Ambiance décontractée, respectueuse et calme.</p>
+      <ul>
+        <li>Emplacements spacieux pour vans et tentes</li>
+        <li>Piscine chauffée (juin → septembre)</li>
+        <li>Cadre verdoyant et reposant</li>
+      </ul>
+      <div class="actions" style="margin-top:10px">
+        <a href="reservation.html"><button>Réserver maintenant</button></a>
+        <a href="index.html"><button class="ghost">Donner un avis</button></a>
       </div>
     </section>
   </main>
-
-  <script>
-    // Thème + ripple boutons
-    (function(){
-      const html=document.documentElement;
-      const saved=localStorage.getItem("theme");
-      html.setAttribute("data-theme",
-        saved==="light"||saved==="dark" ? saved :
-        (matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light")
-      );
-      const btn=document.getElementById("themeToggle");
-      const icon=document.getElementById("themeIcon");
-      function update(){icon.textContent=html.getAttribute("data-theme")==="dark"?"🌙":"🌞";}
-      function ripple(e){
-        const r=document.createElement('span'); const rect=e.currentTarget.getBoundingClientRect();
-        r.style.position='absolute'; r.style.borderRadius='999px'; r.style.pointerEvents='none';
-        r.style.transform='translate(-50%, -50%)'; r.style.left=(e.clientX-rect.left)+'px'; r.style.top=(e.clientY-rect.top)+'px';
-        r.style.width=r.style.height=Math.max(rect.width,rect.height)*1.2+'px';
-        r.style.background='rgba(255,255,255,.35)'; r.style.opacity='0'; r.style.transition='opacity .6s ease';
-        e.currentTarget.appendChild(r); requestAnimationFrame(()=>{r.style.opacity='1'; setTimeout(()=>{r.style.opacity='0'; setTimeout(()=>r.remove(),600)},180)});
-      }
-      btn.addEventListener("click",(e)=>{const next=html.getAttribute("data-theme")==="dark"?"light":"dark";html.setAttribute("data-theme",next);localStorage.setItem("theme",next);update();ripple(e)});
-      update();
-    })();
-
-    // Image nuit = accueil-haut-jour.jpg (fallback camping-nuit.jpg)
-    (function ensureNightBackground(){
-      const el = document.getElementById('bgNight'); if(!el) return;
-      const preferred = "accueil-haut-jour.jpg"; const fallback  = "camping-nuit.jpg";
-      const test = new Image();
-      test.onload = () => { el.style.backgroundImage = `url("${preferred}")`; };
-      test.onerror = () => { el.style.backgroundImage = `url("${fallback}")`; console.warn("[Accueil] Fallback nuit :", fallback); };
-      test.src = preferred + "?v=" + Date.now();
-    })();
-
-    // Apparition au scroll
-    (function revealOnScroll(){
-      const els=[...document.querySelectorAll('.reveal')];
-      if(!('IntersectionObserver' in window)){ els.forEach(el=>el.classList.add('in')); return; }
-      const io=new IntersectionObserver((entries)=>{ entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:.15});
-      els.forEach(el=>io.observe(el));
-    })();
-
-    // Tilt subtil sur panels
-    (function tilt(){
-      document.querySelectorAll('.panel').forEach(card=>{
-        card.addEventListener('mousemove',e=>{
-          const r=card.getBoundingClientRect(), x=e.clientX-r.left, y=e.clientY-r.top;
-          const rx=((y/r.height)-.5)*4, ry=((x/r.width)-.5)*-4;
-          card.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
-        });
-        card.addEventListener('mouseleave',()=> card.style.transform='');
-      });
-    })();
-  </script>
 </body>
 </html>
