@@ -7,44 +7,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --glass: rgba(255,255,255,.56);
-      --glass-strong: rgba(255,255,255,.70);
-      --primary:#2563eb; --primary-700:#1d4ed8;
-      --text:#0f172a; --muted:#475569; --shadow:0 18px 46px rgba(2,6,23,.20);
-      --radius:22px; --transition:200ms ease; --gold:#f59e0b;
+      --glass: rgba(255,255,255,.56); --glass-strong: rgba(255,255,255,.70);
+      --primary:#2563eb; --primary-700:#1d4ed8; --text:#0f172a;
+      --muted:#475569; --shadow:0 18px 46px rgba(2,6,23,.20);
+      --radius:22px; --transition:220ms cubic-bezier(.2,.8,.2,1);
+      --gold:#f59e0b; --hover-lift: translateY(-4px) scale(1.01);
     }
     html[data-theme="dark"]{
-      --glass: rgba(17,24,39,.46);
-      --glass-strong: rgba(17,24,39,.62);
-      --primary:#60a5fa; --primary-700:#3b82f6;
-      --text:#e5e7eb; --muted:#94a3b8; --shadow:0 22px 56px rgba(0,0,0,.46);
+      --glass: rgba(17,24,39,.46); --glass-strong: rgba(17,24,39,.62);
+      --primary:#60a5fa; --primary-700:#3b82f6; --text:#e5e7eb;
+      --muted:#94a3b8; --shadow:0 22px 56px rgba(0,0,0,.46);
     }
     @media (prefers-reduced-motion:no-preference){
-      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition); }
+      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition), opacity var(--transition);}
     }
+    html,body{height:100%} body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#000}
 
-    html,body{height:100%}
-    body{margin:0; color:var(--text); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:#000}
-
-    /* Fond: jour/nuit sans transition fancy */
+    /* Fond jour/nuit */
     .bg, .bg-night{ position:fixed; inset:0; z-index:-1; background-size:cover; background-position:center; background-repeat:no-repeat }
     .bg{ background-image:url("camping.jpg"); }
     .bg-night{ background-image:url("camping-nuit.jpg"); opacity:0; }
-    html[data-theme="dark"] .bg{ opacity:0; }
-    html[data-theme="dark"] .bg-night{ opacity:1; }
+    html[data-theme="dark"] .bg{ opacity:0; } html[data-theme="dark"] .bg-night{ opacity:1; }
 
     /* Topbar */
-    .topbar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;
-      backdrop-filter: blur(10px) saturate(120%); background: color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.28));
-      border-bottom:1px solid rgba(255,255,255,.2)}
+    .topbar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px clamp(14px,4vw,22px);
+      backdrop-filter: blur(10px) saturate(120%); background: color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.28)); border-bottom:1px solid rgba(255,255,255,.2)}
     .nav-left{display:flex;align-items:center;gap:16px}
-    .logo{height:42px;border-radius:8px}
-    .nav{display:flex;gap:10px;background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 10px; border-radius:999px}
+    .logo{height:42px;border-radius:10px}
+    .logo:hover{transform:var(--hover-lift)}
+    .nav{display:flex;gap:8px;background: color-mix(in oklab, var(--glass) 84%, transparent); border:1px solid rgba(255,255,255,.45); padding:6px 8px; border-radius:999px}
     .nav a{ text-decoration:none; color:var(--text); font-weight:700; padding:6px 12px; border-radius:999px }
-    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35) }
+    .nav a[aria-current="page"], .nav a:hover{ background: rgba(255,255,255,.35); transform:translateY(-2px) }
     .theme-toggle{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 15px;color:#fff;font-weight:700;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));cursor:pointer}
 
-    /* Grille : align-items:start => panneaux indépendants (hauteurs) */
+    /* Grille */
     .wrap{
       max-width:1100px; margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px);
       display:grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start;
@@ -54,23 +50,25 @@
     .panel{
       background:var(--glass); backdrop-filter: blur(10px) saturate(120%);
       border: 1px solid rgba(255,255,255,.35); border-radius: var(--radius); box-shadow: var(--shadow);
-      padding: clamp(18px,3vw,28px);
-      will-change: transform, box-shadow;
+      padding: clamp(18px,3vw,28px); transform-style:preserve-3d;
     }
-    .panel:hover{ transform: translateY(-2px); }
+    .panel:hover{ transform: var(--hover-lift) }
 
     h1,h2{ font-family:Poppins,system-ui,sans-serif; margin:0 0 10px }
     label{display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:14px}
     input,select,textarea{ padding:12px 14px; border-radius:14px; border:1px solid rgba(15,23,42,.16); background:#fff }
     html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{ background:#0b1220; color:#e5e7eb; border-color: rgba(148,163,184,.28) }
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px } @media(max-width:640px){ .row{ grid-template-columns:1fr } }
-    button{ display:inline-flex; align-items:center; gap:8px; padding:12px 16px; border-radius:12px; border:1px solid color-mix(in oklab, var(--primary) 35%, transparent); background: linear-gradient(180deg, var(--primary), var(--primary-700)); color:#fff; font-weight:800; cursor:pointer }
+    button{ display:inline-flex; align-items:center; gap:8px; padding:12px 16px; border-radius:12px; border:1px solid color-mix(in oklab, var(--primary) 35%, transparent); background: linear-gradient(180deg, var(--primary), var(--primary-700)); color:#fff; font-weight:800; cursor:pointer; position:relative; overflow:hidden }
     button:hover{ transform: translateY(-1px) scale(1.01); }
     .hint{ color:var(--muted); font-size:12px }
 
     /* Avis */
-    .stars{ color: var(--gold); font-size:18px; letter-spacing:2px }
-    .avis-item{ background: var(--glass-strong); border:1px solid rgba(255,255,255,.45); border-radius:16px; padding:14px; margin-top:12px }
+    .stars{ color: var(--gold); font-size:18px; letter-spacing:2px; display:inline-block; transform:translateZ(0) }
+    .stars.burst{ animation: pop .4s ease }
+    @keyframes pop{ 50%{ transform: scale(1.15) } }
+    .avis-item{ background: var(--glass-strong); border:1px solid rgba(255,255,255,.45); border-radius:16px; padding:14px; margin-top:12px; transform-style:preserve-3d }
+    .avis-item:hover{ transform: var(--hover-lift) }
   </style>
 </head>
 <body>
@@ -82,15 +80,16 @@
       <img src="logo.jpg" alt="Camping Rivassland" class="logo">
       <nav class="nav">
         <a href="accueil.html">Accueil</a>
+        <a href="lieu.html">Lieu</a>
         <a href="reservation.html">Réservations</a>
-        <a href="index.html" aria-current="page">Donner votre avis</a>
+        <a href="index.html" aria-current="page">Avis</a>
       </nav>
     </div>
     <button id="themeToggle" class="theme-toggle"><span id="themeIcon">🌞</span><span id="themeLabel">Mode clair</span></button>
   </header>
 
   <main class="wrap">
-    <!-- Colonne 1 : Formulaire (hauteur indépendante) -->
+    <!-- Formulaire -->
     <section class="panel" id="panel-form">
       <h1>Votre avis nous aide 💬</h1>
       <form id="form">
@@ -129,7 +128,7 @@
       </form>
     </section>
 
-    <!-- Colonne 2 : Avis (hauteur indépendante) -->
+    <!-- Avis -->
     <section class="panel" id="panel-avis">
       <h2>Avis des visiteurs</h2>
       <div id="avisList"></div>
@@ -175,11 +174,10 @@
             <div style="margin-top:8px"><strong>Avis sur les hôtes :</strong><br>${avisH||"<em>(vide)</em>"}</div>
             <div style="margin-top:8px; color:var(--muted)">${date?new Date(date).toLocaleString():''}</div>
           `;
+          const st=el.querySelector('.stars'); st && (st.classList.add('burst'), setTimeout(()=>st.classList.remove('burst'),400));
           list.appendChild(el);
         });
-      }catch(e){
-        list.textContent="Impossible de charger les avis.";
-      }
+      }catch(e){ list.textContent="Impossible de charger les avis."; }
     }
 
     form.addEventListener('submit', async (e)=>{
@@ -197,6 +195,18 @@
         else{ msg.textContent="Erreur lors de l’envoi."; }
       }catch(e){ msg.textContent="Erreur réseau."; }
     });
+
+    // Tilt subtil
+    (function tilt(){
+      document.querySelectorAll('.panel').forEach(card=>{
+        card.addEventListener('mousemove',e=>{
+          const r=card.getBoundingClientRect(), x=e.clientX-r.left, y=e.clientY-r.top;
+          const rx=((y/r.height)-.5)*4, ry=((x/r.width)-.5)*-4;
+          card.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+        });
+        card.addEventListener('mouseleave',()=> card.style.transform='');
+      });
+    })();
 
     load();
   </script>

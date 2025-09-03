@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Le lieu – Camping Rivassland</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--glass:rgba(255,255,255,.56);--primary:#2563eb;--primary-700:#1d4ed8;--text:#0f172a;--muted:#334155;--shadow:0 18px 46px rgba(2,6,23,.20);--radius:22px;--transition:220ms cubic-bezier(.2,.8,.2,1);--hover-lift: translateY(-4px) scale(1.01)}
+    html[data-theme="dark"]{--glass:rgba(17,24,39,.46);--primary:#60a5fa;--primary-700:#3b82f6;--text:#e5e7eb;--muted:#cbd5e1;--shadow:0 22px 56px rgba(0,0,0,.46)}
+    @media (prefers-reduced-motion:no-preference){
+      *{ transition: color var(--transition), background-color var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition), opacity var(--transition); }
+    }
+    body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#000}
+
+    /* Fond (réutilise camping.jpg/nuit) */
+    .bg,.bg-night{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat}
+    .bg{background-image:url("camping.jpg")}
+    .bg-night{background-image:url("camping-nuit.jpg");opacity:0}
+    html[data-theme="dark"] .bg{opacity:0} html[data-theme="dark"] .bg-night{opacity:1}
+
+    /* Topbar */
+    .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(14px,4vw,22px);backdrop-filter:blur(10px) saturate(120%);background:rgba(0,0,0,.42);border-bottom:1px solid rgba(255,255,255,.2)}
+    .logo{height:42px;border-radius:10px}
+    .nav{display:flex;gap:8px;background:var(--glass);border:1px solid rgba(255,255,255,.35);padding:6px 8px;border-radius:999px}
+    .nav a{text-decoration:none;color:var(--text);font-weight:700;padding:6px 12px;border-radius:999px}
+    .nav a:hover,.nav a[aria-current="page"]{background:rgba(255,255,255,.32);transform:translateY(-2px)}
+    .theme-toggle{padding:9px 15px;border-radius:999px;background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:800;border:none;cursor:pointer}
+
+    /* Contenu */
+    .wrap{max-width:min(1200px,94vw);margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px)}
+    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,3vw,28px);transform-style:preserve-3d}
+    .panel:hover{transform:var(--hover-lift)}
+    h1{margin:0 0 10px; font-family:Poppins,system-ui,sans-serif}
+    .lead{color:var(--muted)}
+
+    /* Galerie */
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px}
+    .card{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.45)}
+    html[data-theme="dark"] .card{background:rgba(17,24,39,.45)}
+    .card img{width:100%;height:200px;object-fit:cover;display:block}
+    .card .txt{padding:12px}
+    .card:hover{transform:var(--hover-lift);box-shadow:0 12px 28px rgba(0,0,0,.25)}
+    .card .zoom{position:absolute;inset:0;opacity:0}
+    .card:hover .zoom{opacity:1;background:linear-gradient(180deg,transparent,rgba(0,0,0,.35));}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;place-items:center;z-index:20}
+    .lightbox.open{display:grid}
+    .lb-card{max-width:min(1000px,92vw);max-height:88vh;display:grid;grid-template-rows:auto auto;background:var(--glass);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.45);border-radius:18px;overflow:hidden}
+    .lb-card img{width:100%;height:min(66vh,640px);object-fit:cover;display:block}
+    .lb-caption{padding:12px 14px;color:var(--text)}
+    .lb-actions{position:absolute;top:18px;right:18px;display:flex;gap:8px}
+    .icon-btn{background:rgba(0,0,0,.45);color:#fff;border:none;border-radius:12px;padding:10px;cursor:pointer}
+    .icon-btn:hover{transform:translateY(-2px)}
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="bg-night" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <img src="logo.jpg" alt="Camping Rivassland" class="logo">
+    <nav class="nav">
+      <a href="accueil.html">Accueil</a>
+      <a href="lieu.html" aria-current="page">Lieu</a>
+      <a href="reservation.html">Réservations</a>
+      <a href="index.html">Avis</a>
+    </nav>
+    <button id="themeToggle" class="theme-toggle"><span id="themeIcon">🌞</span></button>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <h1>Le lieu</h1>
+      <p class="lead">Découvrez quelques vues emblématiques du terrain, des espaces communs et des alentours. Ajoute simplement tes images <strong>lieu1.jpg → lieu5.jpg</strong> à la racine — les légendes ci-dessous sont modifiables.</p>
+
+      <div class="gallery">
+        <!-- Remplace les src par tes vraies images si besoin -->
+        <figure class="card" data-caption="Piscine chauffée – parfaite de juin à septembre">
+          <img src="lieu1.jpg" alt="Piscine chauffée" onerror="this.src='camping.jpg'">
+          <div class="txt"><strong>Piscine chauffée</strong><br><span class="lead">Ouverte en saison, idéale après la plage.</span></div>
+          <div class="zoom"></div>
+        </figure>
+
+        <figure class="card" data-caption="Allées verdoyantes – calme et nature">
+          <img src="lieu2.jpg" alt="Allées verdoyantes" onerror="this.src='camping.jpg'">
+          <div class="txt"><strong>Allées verdoyantes</strong><br><span class="lead">Grand terrain arboré et ombragé.</span></div>
+          <div class="zoom"></div>
+        </figure>
+
+        <figure class="card" data-caption="Sanitaires propres – entretenus quotidiennement">
+          <img src="lieu3.jpg" alt="Sanitaires" onerror="this.src='camping.jpg'">
+          <div class="txt"><strong>Sanitaires</strong><br><span class="lead">Entretien régulier, eau chaude.</span></div>
+          <div class="zoom"></div>
+        </figure>
+
+        <figure class="card" data-caption="Espace détente – hamacs & lecture">
+          <img src="lieu4.jpg" alt="Espace détente" onerror="this.src='camping.jpg'">
+          <div class="txt"><strong>Espace détente</strong><br><span class="lead">Havre de paix pour se ressourcer.</span></div>
+          <div class="zoom"></div>
+        </figure>
+
+        <figure class="card" data-caption="Emplacements spacieux pour vans et tentes">
+          <img src="lieu5.jpg" alt="Emplacements" onerror="this.src='camping.jpg'">
+          <div class="txt"><strong>Emplacements</strong><br><span class="lead">Nombreux spots plats et spacieux.</span></div>
+          <div class="zoom"></div>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-modal="true" role="dialog">
+    <div class="lb-card">
+      <img id="lbImg" src="" alt="">
+      <div class="lb-caption" id="lbCap"></div>
+      <div class="lb-actions">
+        <button class="icon-btn" id="lbPrev" aria-label="Précédent">◀︎</button>
+        <button class="icon-btn" id="lbNext" aria-label="Suivant">▶︎</button>
+        <button class="icon-btn" id="lbClose" aria-label="Fermer">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Thème
+    (function(){
+      const html=document.documentElement;
+      const saved=localStorage.getItem("theme");
+      html.setAttribute("data-theme",
+        saved==="light"||saved==="dark" ? saved :
+        (matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light")
+      );
+      const btn=document.getElementById("themeToggle");
+      const icon=document.getElementById("themeIcon");
+      function update(){const dark=html.getAttribute("data-theme")==="dark";icon.textContent=dark?"🌙":"🌞";}
+      btn.addEventListener("click",()=>{const next=html.getAttribute("data-theme")==="dark"?"light":"dark";html.setAttribute("data-theme",next);localStorage.setItem("theme",next);update()});
+      update();
+    })();
+
+    // Lightbox
+    (function(){
+      const cards=[...document.querySelectorAll('.card')];
+      const lb=document.getElementById('lightbox'), img=document.getElementById('lbImg'), cap=document.getElementById('lbCap');
+      const prev=document.getElementById('lbPrev'), next=document.getElementById('lbNext'), close=document.getElementById('lbClose');
+      let idx=0;
+      function open(i){ idx=i; const c=cards[idx]; img.src=c.querySelector('img').src; cap.textContent=c.dataset.caption||''; lb.classList.add('open'); }
+      function move(d){ idx=(idx+d+cards.length)%cards.length; open(idx); }
+      cards.forEach((c,i)=> c.addEventListener('click',()=>open(i)));
+      close.addEventListener('click',()=>lb.classList.remove('open'));
+      prev.addEventListener('click',()=>move(-1)); next.addEventListener('click',()=>move(1));
+      lb.addEventListener('click',(e)=>{ if(e.target===lb) lb.classList.remove('open'); });
+      window.addEventListener('keydown',e=>{ if(!lb.classList.contains('open')) return; if(e.key==='Escape') lb.classList.remove('open'); if(e.key==='ArrowLeft') move(-1); if(e.key==='ArrowRight') move(1); });
+    })();
+  </script>
+</body>
+</html>

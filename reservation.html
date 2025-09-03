@@ -13,7 +13,7 @@
     }
     html,body{height:100%} body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#000}
 
-    /* Fond: essaie resa-jour/nuit, sinon fallback camping.jpg/nuit */
+    /* Fond resa jour/nuit avec fallback */
     .bg, .bg-night{ position:fixed; inset:0; z-index:-1; background-size:cover; background-position:center; background-repeat:no-repeat; }
     .bg-night{ opacity:0 }
     html[data-theme="dark"] .bg{ opacity:0 } html[data-theme="dark"] .bg-night{ opacity:1 }
@@ -23,7 +23,7 @@
       backdrop-filter:blur(10px) saturate(120%);background:color-mix(in oklab, rgba(0,0,0,.55) 55%, rgba(255,255,255,.28));border-bottom:1px solid rgba(255,255,255,.2)}
     .nav-left{display:flex;align-items:center;gap:16px}.logo{height:42px;border-radius:10px}
     .logo:hover{transform:var(--hover-lift)}
-    .nav{display:flex;gap:10px;background:color-mix(in oklab,var(--glass) 84%,transparent);border:1px solid rgba(255,255,255,.45);padding:6px 10px;border-radius:999px}
+    .nav{display:flex;gap:8px;background:color-mix(in oklab,var(--glass) 84%,transparent);border:1px solid rgba(255,255,255,.45);padding:6px 8px;border-radius:999px}
     .nav a{ text-decoration:none; color:var(--text); font-weight:700; padding:6px 12px; border-radius:999px }
     .nav a:hover, .nav a[aria-current="page"]{ background: rgba(255,255,255,.35); transform:translateY(-2px)}
     .theme-toggle{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:9px 15px;color:#fff;font-weight:800;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));cursor:pointer}
@@ -31,12 +31,12 @@
 
     /* Contenu */
     .wrap{max-width:min(960px,94vw);margin: clamp(14px,4vw,42px) auto; padding: clamp(12px,2.6vw,24px)}
-    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,3vw,28px);animation:fadeIn .6s ease both}
+    .panel{background:var(--glass);backdrop-filter:blur(10px) saturate(120%);border:1px solid rgba(255,255,255,.35);border-radius:var(--radius);box-shadow:var(--shadow);padding: clamp(18px,3vw,28px);animation:fadeIn .6s ease both;transform-style:preserve-3d}
     .panel:hover{transform:var(--hover-lift)}
     h1{margin:0 0 10px; font-family:Poppins,system-ui,sans-serif}
     .ok{background:color-mix(in oklab,var(--ok) 12%,transparent);border:1px solid color-mix(in oklab,var(--ok) 35%,transparent);color:color-mix(in oklab,var(--ok) 80%,#000);padding:10px 12px;border-radius:12px}
     .warn{background:color-mix(in oklab,var(--warn) 12%,transparent);border:1px solid color-mix(in oklab,var(--warn) 35%,transparent);color:color-mix(in oklab,var(--warn) 80%,#000);padding:10px 12px;border-radius:12px}
-    button{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:800;cursor:pointer}
+    button{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid color-mix(in oklab,var(--primary) 35%,transparent);background:linear-gradient(180deg,var(--primary),var(--primary-700));color:#fff;font-weight:800;cursor:pointer;position:relative;overflow:hidden}
     button.ghost{background:transparent;color:var(--text);border:1px dashed color-mix(in oklab,var(--text) 30%,transparent)}
     button:hover{transform:var(--hover-lift)}
     .stepper{display:flex;align-items:center;justify-content:center;gap:12px;margin: 8px 0 14px;flex-wrap:wrap}
@@ -70,6 +70,7 @@
       <img src="logo.jpg" alt="Camping Rivassland" class="logo">
       <nav class="nav">
         <a href="accueil.html">Accueil</a>
+        <a href="lieu.html">Lieu</a>
         <a href="reservation.html" aria-current="page">Réservations</a>
         <a href="index.html">Avis</a>
       </nav>
@@ -106,7 +107,7 @@
     // Thème
     (function(){const html=document.documentElement,s=localStorage.getItem("theme");html.setAttribute("data-theme",(s==="light"||"dark"===s)?s:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));const b=document.getElementById("themeToggle"),i=document.getElementById("themeIcon"),l=document.getElementById("themeLabel");function u(){const d=html.getAttribute("data-theme")==="dark";i.textContent=d?"🌙":"🌞";l.textContent=d?"Mode sombre":"Mode clair"}b.addEventListener("click",()=>{const n=html.getAttribute("data-theme")==="dark"?"light":"dark";html.setAttribute("data-theme",n);localStorage.setItem("theme",n);u()});u()})();
 
-    // Fonds: essaie resa-jour/nuit puis fallback
+    // Fonds: essaie resa-jour/nuit puis fallback camping.jpg/nuit
     (async function setBackgrounds(){
       const day = document.getElementById('bgDay');
       const night = document.getElementById('bgNight');
