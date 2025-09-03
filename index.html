@@ -6,6 +6,12 @@
   <title>Avis – Camping Rivassland</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Séparation visuelle : formulaire vs liste */
+    @media (min-width: 981px){
+      #panel-form{ align-self:start; position:sticky; top:90px }
+    }
+  </style>
   <script src="app.js" defer></script>
   <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
@@ -29,7 +35,6 @@
   </header>
 
   <main class="wrap grid-2">
-    <!-- Formulaire (arrêt à la bonne hauteur) -->
     <section class="panel" id="panel-form">
       <h1>Votre avis nous aide 💬</h1>
       <form id="form">
@@ -61,7 +66,6 @@
       </form>
     </section>
 
-    <!-- Avis -->
     <section class="panel" id="panel-avis">
       <h2>Avis des visiteurs</h2>
       <div id="avisList"></div>
@@ -105,7 +109,7 @@
     form.addEventListener('submit', async (e)=>{
       e.preventDefault();
 
-      // 🔒 Exiger d'être connecté
+      // 🔒 Auth requise
       const REQUIRE_AUTH = true;
       if (REQUIRE_AUTH) {
         if (!(window.netlifyIdentity && netlifyIdentity.currentUser())) {

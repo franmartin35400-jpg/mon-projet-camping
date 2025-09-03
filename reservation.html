@@ -6,6 +6,11 @@
   <title>Réservations – Camping Rivassland</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Quelques ajustements pour la lisibilité */
+    .panel h1,.panel h2{letter-spacing:.2px}
+    .panel .lead strong{font-weight:700}
+  </style>
   <script src="app.js" defer></script>
   <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
@@ -28,12 +33,12 @@
     </div>
   </header>
 
-  <!-- Overlay “Accès refusé” -->
+  <!-- Overlay refus -->
   <div id="refuse" class="overlay">
     <div class="card">
       <h2 style="font-family:Poppins;margin:0 0 8px;">Accès refusé</h2>
       <p class="warn" style="margin:0 0 10px;">
-        Nous n’acceptons pas les chiens <strong>mâles non castrés</strong>. Notre chien résidant est dominant : cela garantit la sécurité et le confort de tous.
+        Nous n’acceptons pas les chiens <strong>mâles non castrés</strong>. Notre chien résidant est dominant ; cette règle garantit la sécurité et le confort de tous.
       </p>
       <div style="display:flex;gap:10px;margin-top:10px">
         <button id="refuseBack" class="ghost">Revenir aux animaux</button>
@@ -43,7 +48,6 @@
   </div>
 
   <main class="wrap grid-2">
-    <!-- Intro -->
     <section class="panel">
       <h1>Réserver un emplacement</h1>
       <p class="lead">Réservation rapide : indiquez vos <strong>dates</strong>, le <strong>nombre de personnes</strong>, votre <strong>véhicule</strong> et si vous avez des <strong>animaux</strong>.</p>
@@ -51,7 +55,6 @@
       <div class="actions"><button id="startWizard">Commencer</button></div>
     </section>
 
-    <!-- Wizard -->
     <section class="panel" id="wizard" aria-live="polite" aria-atomic="true"></section>
   </main>
 
@@ -76,19 +79,19 @@
         if(n) n.addEventListener('click',onNext); if(b) b.addEventListener('click',()=>{step=Math.max(STEP.DATES,step-1); hideRefuse(); mount()});
       }
       function onNext(){
-        if(step===STEP.DATES){ const d=root.querySelector('#debut')?.value,f=root.querySelector('#fin')?.value; if(!d||!f) return toast("Dates manquantes"); if(new Date(f)<new Date(d)) return toast("Fin avant début"); st.debut=d;st.fin=f; step=STEP.PEOPLE; return mount(); }
+        if(step===STEP.DATES){ const d=root.querySelector('#debut')?.value,f=root.querySelector('#fin')?.value; if(!d||!f) return toast("Merci d’indiquer vos dates"); if(new Date(f)<new Date(d)) return toast("La date de fin doit être après la date de début"); st.debut=d;st.fin=f; step=STEP.PEOPLE; return mount(); }
         if(step===STEP.PEOPLE){ const a=+root.querySelector('#adultes').value||0, e=+root.querySelector('#enfants').value||0; if(a<1) return toast("Au moins 1 adulte"); st.adultes=a;st.enfants=e; step=STEP.VEHICLE; return mount(); }
         if(step===STEP.VEHICLE){ st.vehicule=root.querySelector('#vehicule').value; st.electricite=root.querySelector('input[name="elec"]:checked')?.value||"non"; step=STEP.HAVE_PETS; return mount(); }
         if(step===STEP.HAVE_PETS){ st.animaux=root.querySelector('input[name="animaux"]:checked')?.value||"non"; if(st.animaux==="non"){ step=STEP.SUMMARY; return mount(); } step=STEP.PET_TYPE; return mount(); }
-        if(step===STEP.PET_TYPE){ st.animalType=root.querySelector('input[name="animalType"]:checked')?.value||""; if(!st.animalType) return toast("Choisissez le type"); if(st.animalType==="chien"){ step=STEP.DOG_SEX; } else { step=STEP.OTHER_DETAILS; } return mount(); }
-        if(step===STEP.DOG_SEX){ st.chienSexe=root.querySelector('input[name="chienSexe"]:checked')?.value||""; if(!st.chienSexe) return toast("Sexe du chien"); if(st.chienSexe==="male"){ step=STEP.DOG_CASTRE; } else { step=STEP.SUMMARY; } return mount(); }
+        if(step===STEP.PET_TYPE){ st.animalType=root.querySelector('input[name="animalType"]:checked')?.value||""; if(!st.animalType) return toast("Choisissez le type d’animal"); if(st.animalType==="chien"){ step=STEP.DOG_SEX; } else { step=STEP.OTHER_DETAILS; } return mount(); }
+        if(step===STEP.DOG_SEX){ st.chienSexe=root.querySelector('input[name="chienSexe"]:checked')?.value||""; if(!st.chienSexe) return toast("Indiquez le sexe du chien"); if(st.chienSexe==="male"){ step=STEP.DOG_CASTRE; } else { step=STEP.SUMMARY; } return mount(); }
         if(step===STEP.DOG_CASTRE){
           st.chienCastre=root.querySelector('input[name="chienCastre"]:checked')?.value||"";
-          if(!st.chienCastre) return toast("Castration ?");
+          if(!st.chienCastre) return toast("Votre chien est-il castré ?");
           if(st.chienCastre==="non"){ showRefuse(); return; }
           step=STEP.SUMMARY; return mount();
         }
-        if(step===STEP.OTHER_DETAILS){ st.animauxDetails=(root.querySelector('#animauxDetails')?.value||"").trim(); if(!st.animauxDetails) return toast("Précisez l’animal"); step=STEP.SUMMARY; return mount(); }
+        if(step===STEP.OTHER_DETAILS){ st.animauxDetails=(root.querySelector('#animauxDetails')?.value||"").trim(); if(!st.animauxDetails) return toast("Précisez votre animal"); step=STEP.SUMMARY; return mount(); }
         if(step===STEP.SUMMARY){ submit().catch(()=>toast("Erreur d’envoi")); }
       }
       function toast(t){ let n=root.querySelector('.warn'); if(!n){n=document.createElement('p');n.className='warn';root.appendChild(n);} n.textContent=t; }
@@ -106,7 +109,7 @@
 
       function view(s){
         if(s===STEP.DATES) return `<h2>Étape 1 · Vos dates</h2>
-          <div class="step cols"><label>Début<input type="date" id="debut" value="${st.debut}"></label><label>Fin<input type="date" id="fin" value="${st.fin}"></label></div>${actions(false)}`;
+          <div class="step cols"><label>Arrivée<input type="date" id="debut" value="${st.debut}"></label><label>Départ<input type="date" id="fin" value="${st.fin}"></label></div>${actions(false)}`;
         if(s===STEP.PEOPLE) return `<h2>Étape 2 · Voyageurs</h2>
           <div class="step cols"><label>Adultes<input type="number" id="adultes" min="1" value="${st.adultes}"></label><label>Enfants<input type="number" id="enfants" min="0" value="${st.enfants}"></label></div>${actions(true)}`;
         if(s===STEP.VEHICLE) return `<h2>Étape 3 · Véhicule</h2>
@@ -120,7 +123,7 @@
             <label style="margin-left:12px"><input type="radio" name="animaux" value="oui" ${st.animaux==="oui"?"checked":""}> Oui</label></div>
           </label></div>${actions(true,"Continuer")}`;
         if(s===STEP.PET_TYPE) return `<h2>Étape 5 · Type d’animal</h2>
-          <div class="step"><label>Quel type ?
+          <div class="step"><label>Quel type d’animal ?
             <div><label><input type="radio" name="animalType" value="chien" ${st.animalType==="chien"?"checked":""}> Chien</label>
             <label style="margin-left:12px"><input type="radio" name="animalType" value="autre" ${st.animalType==="autre"?"checked":""}> Autre</label></div>
           </label></div>${actions(true)}`;
@@ -154,7 +157,7 @@
       }
 
       async function submit(){
-        // 🔒 Exiger d'être connecté
+        // 🔒 Auth requise
         const REQUIRE_AUTH = true;
         if (REQUIRE_AUTH) {
           if (!(window.netlifyIdentity && netlifyIdentity.currentUser())) {

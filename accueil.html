@@ -4,8 +4,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Accueil – Camping Rivassland</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Hero centré, hors panneau de verre */
+    .hero{
+      text-align:center; padding: clamp(40px, 18vh, 160px) 14px 18px;
+    }
+    .hero h1{
+      font-family: "Playfair Display", serif;
+      font-size: clamp(36px, 7vw, 68px);
+      line-height: 1.02; margin: 0 0 8px;
+      text-shadow: 0 12px 30px rgba(0,0,0,.28);
+    }
+    .hero .sub{
+      font-family: Poppins, system-ui, sans-serif;
+      font-weight: 600;
+      font-size: clamp(16px, 2.8vw, 24px);
+      color: color-mix(in oklab, #ffffff 92%, #d1fae5);
+      display:inline-block; padding: 6px 14px; border-radius: 999px;
+      background: color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.08));
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,.35);
+    }
+    /* Vignettes équipements (comme avant) */
+    .chips{
+      display:flex; flex-wrap:wrap; gap:10px; margin-top:10px
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px; border-radius:999px; font-weight:700;
+      background: color-mix(in oklab, #22c55e 18%, rgba(255,255,255,.55));
+      border:1px solid color-mix(in oklab, #22c55e 42%, rgba(255,255,255,.45));
+      color:#064e3b;
+    }
+    html[data-theme="dark"] .chip{
+      background: color-mix(in oklab, #22c55e 26%, rgba(17,24,39,.55));
+      border-color: color-mix(in oklab, #22c55e 46%, rgba(255,255,255,.25));
+      color:#d1fae5;
+    }
+  </style>
   <script src="app.js" defer></script>
   <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
@@ -28,18 +66,28 @@
     </div>
   </header>
 
+  <!-- Titre central hors panneau -->
+  <section class="hero">
+    <h1>Bienvenue à Rivassland</h1>
+    <div class="sub">Camping chez l’habitant</div>
+  </section>
+
   <main class="wrap">
     <section class="panel reveal">
-      <h1 style="font-size:clamp(28px,6vw,48px)">Bienvenue à Rivassland</h1>
-      <p class="lead">Camping chez l’habitant – Saint-Malo</p>
+      <h2>Entre mer et verdure</h2>
+      <p class="lead">À Paramé – Saint-Malo, à quelques minutes de la mer et du centre-ville, sur un terrain privé de plus de 18 000 m² entouré de verdure.</p>
       <div class="divider"></div>
-      <p>Au cœur de Paramé, à quelques minutes de la mer et du centre-ville de Saint-Malo, nous vous accueillons sur un grand terrain privé de plus de 18 000 m² entouré de verdure. Ambiance décontractée, respectueuse et calme.</p>
-      <ul>
-        <li>Emplacements spacieux pour vans et tentes</li>
-        <li>Piscine chauffée (juin → septembre)</li>
-        <li>Cadre verdoyant et reposant</li>
-      </ul>
-      <div class="actions" style="margin-top:10px">
+      <div class="chips">
+        <div class="chip">🏊 Piscine chauffée</div>
+        <div class="chip">🚿 Sanitaires</div>
+        <div class="chip">⚡ Électricité</div>
+        <div class="chip">🌊 Accès mer</div>
+        <div class="chip">🏙️ Centre-ville proche</div>
+        <div class="chip">🧺 Machine à laver</div>
+        <div class="chip">🚐 Emplacements vans & tentes</div>
+        <div class="chip">♻️ Vidange eaux usées</div>
+      </div>
+      <div class="actions" style="margin-top:14px">
         <a href="reservation.html"><button>Réserver maintenant</button></a>
         <a href="index.html"><button class="ghost">Donner un avis</button></a>
       </div>
