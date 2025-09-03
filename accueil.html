@@ -7,30 +7,47 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Hero centré, hors panneau de verre */
+    /* Hero centré, hors panneau de verre principal */
     .hero{
+      position:relative; isolation:isolate; /* confine le mix-blend à la zone hero */
       text-align:center; padding: clamp(40px, 18vh, 160px) 14px 18px;
     }
     .hero h1{
       font-family: "Playfair Display", serif;
       font-size: clamp(36px, 7vw, 68px);
       line-height: 1.02; margin: 0 0 8px;
-      text-shadow: 0 12px 30px rgba(0,0,0,.28);
+      color:#fff; text-shadow: 0 12px 30px rgba(0,0,0,.28);
     }
     .hero .sub{
       font-family: Poppins, system-ui, sans-serif;
       font-weight: 600;
       font-size: clamp(16px, 2.8vw, 24px);
-      color: color-mix(in oklab, #ffffff 92%, #d1fae5);
-      display:inline-block; padding: 6px 14px; border-radius: 999px;
-      background: color-mix(in oklab, rgba(0,0,0,.35) 35%, rgba(255,255,255,.08));
+      color:#fff;
+    }
+    /* Panneau “verre” en difference derrière le titre */
+    .hero-blend{
+      position:relative; display:inline-block; padding: 14px 18px; border-radius: 28px;
+    }
+    .hero-blend::before{
+      content:""; position:absolute; inset:-12px; border-radius: 32px;
+      /* Un “verre” qui s’adapte à l’image grâce au mix-blend */
+      background: rgba(255,255,255,.92);
+      mix-blend-mode: difference;
+      filter: blur(4px);
+      /* un soupçon de relief */
+      box-shadow: 0 22px 56px rgba(0,0,0,.25);
+      z-index:-1;
+    }
+    /* Sous-puce dans une pastille légère pour l’élégance */
+    .hero-badge{
+      display:inline-block; margin-top:6px; padding:6px 14px; border-radius:999px;
+      color:#fff; border:1px solid rgba(255,255,255,.35);
+      background: color-mix(in oklab, rgba(0,0,0,.45) 45%, rgba(255,255,255,.08));
       backdrop-filter: blur(6px);
-      border: 1px solid rgba(255,255,255,.35);
     }
+
     /* Vignettes équipements (comme avant) */
-    .chips{
-      display:flex; flex-wrap:wrap; gap:10px; margin-top:10px
-    }
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px }
     .chip{
       display:inline-flex; align-items:center; gap:8px;
       padding:10px 12px; border-radius:999px; font-weight:700;
@@ -66,10 +83,12 @@
     </div>
   </header>
 
-  <!-- Titre central hors panneau -->
+  <!-- Titre central avec panneau blend -->
   <section class="hero">
-    <h1>Bienvenue à Rivassland</h1>
-    <div class="sub">Camping chez l’habitant</div>
+    <div class="hero-blend">
+      <h1>Bienvenue à Rivassland</h1>
+      <div class="hero-badge">Camping chez l’habitant</div>
+    </div>
   </section>
 
   <main class="wrap">
