@@ -7,10 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Hero centré, hors panneau de verre principal */
+    /* Hero centré */
     .hero{
-      position:relative; isolation:isolate; /* confine le mix-blend à la zone hero */
-      text-align:center; padding: clamp(40px, 18vh, 160px) 14px 18px;
+      position:relative;
+      text-align:center;
+      padding: clamp(40px, 18vh, 160px) 14px 18px;
     }
     .hero h1{
       font-family: "Playfair Display", serif;
@@ -24,37 +25,73 @@
       font-size: clamp(16px, 2.8vw, 24px);
       color:#fff;
     }
-    /* Panneau “verre” en difference derrière le titre */
+
+    /* Panneau “verre” serré derrière juste le titre */
     .hero-blend{
-      position:relative; display:inline-block; padding: 14px 18px; border-radius: 28px;
+      display:inline-block;
+      position:relative;
     }
     .hero-blend::before{
-      content:""; position:absolute; inset:-12px; border-radius: 32px;
-      /* Un “verre” qui s’adapte à l’image grâce au mix-blend */
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:10px;
       background: rgba(255,255,255,.92);
       mix-blend-mode: difference;
-      filter: blur(4px);
-      /* un soupçon de relief */
-      box-shadow: 0 22px 56px rgba(0,0,0,.25);
+      filter: blur(2px);
       z-index:-1;
     }
-    /* Sous-puce dans une pastille légère pour l’élégance */
+
+    /* Sous-puce élégante */
     .hero-badge{
-      display:inline-block; margin-top:6px; padding:6px 14px; border-radius:999px;
-      color:#fff; border:1px solid rgba(255,255,255,.35);
+      display:inline-block;
+      margin-top:6px; padding:6px 14px;
+      border-radius:999px;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.35);
       background: color-mix(in oklab, rgba(0,0,0,.45) 45%, rgba(255,255,255,.08));
       backdrop-filter: blur(6px);
     }
 
-    /* Vignettes équipements (comme avant) */
+    /* Vignettes équipements */
     .chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:10px }
     .chip{
+      position:relative;
       display:inline-flex; align-items:center; gap:8px;
-      padding:10px 12px; border-radius:999px; font-weight:700;
+      padding:10px 14px;
+      border-radius:999px; font-weight:700;
       background: color-mix(in oklab, #22c55e 18%, rgba(255,255,255,.55));
       border:1px solid color-mix(in oklab, #22c55e 42%, rgba(255,255,255,.45));
       color:#064e3b;
+      cursor:pointer;
+      transition: all 0.3s ease;
     }
+    .chip:hover{
+      transform: scale(1.05);
+      background:#22c55e; color:#fff;
+    }
+    /* Tooltip moderne */
+    .chip::after{
+      content: attr(data-desc);
+      position:absolute;
+      bottom:120%; left:50%;
+      transform:translateX(-50%);
+      opacity:0; visibility:hidden;
+      width:max-content; max-width:260px;
+      background:rgba(0,0,0,.8);
+      color:#fff; font-size:14px; line-height:1.4;
+      padding:8px 12px;
+      border-radius:8px;
+      text-align:center;
+      box-shadow:0 6px 20px rgba(0,0,0,.25);
+      transition:opacity .3s ease, transform .3s ease;
+      pointer-events:none;
+    }
+    .chip:hover::after{
+      opacity:1; visibility:visible;
+      transform:translateX(-50%) translateY(-6px);
+    }
+
     html[data-theme="dark"] .chip{
       background: color-mix(in oklab, #22c55e 26%, rgba(17,24,39,.55));
       border-color: color-mix(in oklab, #22c55e 46%, rgba(255,255,255,.25));
@@ -87,8 +124,8 @@
   <section class="hero">
     <div class="hero-blend">
       <h1>Bienvenue à Rivassland</h1>
-      <div class="hero-badge">Camping chez l’habitant</div>
     </div>
+    <div class="hero-badge">Camping chez l’habitant</div>
   </section>
 
   <main class="wrap">
@@ -97,14 +134,14 @@
       <p class="lead">À Paramé – Saint-Malo, à quelques minutes de la mer et du centre-ville, sur un terrain privé de plus de 18 000 m² entouré de verdure.</p>
       <div class="divider"></div>
       <div class="chips">
-        <div class="chip">🏊 Piscine chauffée</div>
-        <div class="chip">🚿 Sanitaires</div>
-        <div class="chip">⚡ Électricité</div>
-        <div class="chip">🌊 Accès mer</div>
-        <div class="chip">🏙️ Centre-ville proche</div>
-        <div class="chip">🧺 Machine à laver</div>
-        <div class="chip">🚐 Emplacements vans & tentes</div>
-        <div class="chip">♻️ Vidange eaux usées</div>
+        <div class="chip" data-desc="Eau chauffée à 28–30°C, du 1er juin au 1er septembre.">🏊 Piscine chauffée</div>
+        <div class="chip" data-desc="3 blocs sanitaires, chacun équipé de douche et toilettes.">🚿 Sanitaires</div>
+        <div class="chip" data-desc="Bornes électriques accessibles avec rallonges disponibles.">⚡ Électricité</div>
+        <div class="chip" data-desc="Nous accueillons les vans jusqu’à 6,5 m ainsi que tout type de véhicule.">🚐 Emplacements vans & tentes</div>
+        <div class="chip" data-desc="Accès direct au réseau d’égouts pour la vidange.">♻️ Vidange eaux usées</div>
+        <div class="chip" data-desc="Plage de Rochebonne située à seulement 700 m.">🌊 Accès mer</div>
+        <div class="chip" data-desc="Au cœur de Paramé, à 30 min à pied de la vieille ville ou 7 min en bus.">🏙️ Centre-ville proche</div>
+        <div class="chip" data-desc="Machine à laver disponible, utilisation payante.">🧺 Machine à laver</div>
       </div>
       <div class="actions" style="margin-top:14px">
         <a href="reservation.html"><button>Réserver maintenant</button></a>
